@@ -67,34 +67,4 @@ public class ProjectWebMvcConfig extends WebMvcConfigurationSupport {
         );
         return fastJsonConfig;
     }
-
-    /**
-     * 添加静态资源
-     *
-     * @param registry
-     */
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/")
-                .addResourceLocations("classpath:/templates/")
-                .addResourceLocations("classpath:/META-INF/resources/");
-    }
-
-    /**
-     * 跨域支持
-     *
-     * @param registry
-     */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        //对哪些目录可以跨域访问
-        registry.addMapping("/**")
-                //允许哪些网站可以跨域访问
-                .allowedOrigins("*")
-                //允许哪些方法
-                .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS", "HEAD")
-                .maxAge(3600 * 24);
-    }
-
 }
