@@ -1,13 +1,14 @@
 package com.softwarecooperative.softwareciooperative.utils.file;
 
-import com.yy.common.config.RCConfig;
-import com.yy.common.constant.Constants;
-import com.yy.common.exception.file.FileNameLengthLimitExceededException;
-import com.yy.common.exception.file.FileSizeLimitExceededException;
-import com.yy.common.exception.file.InvalidExtensionException;
-import com.yy.common.utils.DateUtils;
-import com.yy.common.utils.StringUtils;
-import com.yy.common.utils.uuid.Seq;
+
+import com.softwarecooperative.softwareciooperative.framework.config.SoftCooperativeDesignConfig;
+import com.softwarecooperative.softwareciooperative.framework.exception.file.FileNameLengthLimitExceededException;
+import com.softwarecooperative.softwareciooperative.framework.exception.file.FileSizeLimitExceededException;
+import com.softwarecooperative.softwareciooperative.framework.exception.file.InvalidExtensionException;
+import com.softwarecooperative.softwareciooperative.framework.net.Constants;
+import com.softwarecooperative.softwareciooperative.utils.DateUtils;
+import com.softwarecooperative.softwareciooperative.utils.StringUtils;
+import com.softwarecooperative.softwareciooperative.utils.uuid.Seq;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +36,7 @@ public class FileUploadUtils {
     /**
      * 默认上传的地址
      */
-    private static String defaultBaseDir = RCConfig.getProfile();
+    private static String defaultBaseDir = SoftCooperativeDesignConfig.getProfile();
 
     public static void setDefaultBaseDir(String defaultBaseDir) {
         FileUploadUtils.defaultBaseDir = defaultBaseDir;
@@ -127,7 +128,7 @@ public class FileUploadUtils {
     }
 
     public static final String getPathFileName(String uploadDir, String fileName) throws IOException {
-        int dirLastIndex = RCConfig.getProfile().length() + 1;
+        int dirLastIndex = SoftCooperativeDesignConfig.getProfile().length() + 1;
         String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
         return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
     }

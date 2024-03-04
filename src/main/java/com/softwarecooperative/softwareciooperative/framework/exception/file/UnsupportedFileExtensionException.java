@@ -1,4 +1,4 @@
-package com.softwarecooperative.softwareciooperative.framework.exception;
+package com.softwarecooperative.softwareciooperative.framework.exception.file;
 
 
 import java.io.PrintStream;

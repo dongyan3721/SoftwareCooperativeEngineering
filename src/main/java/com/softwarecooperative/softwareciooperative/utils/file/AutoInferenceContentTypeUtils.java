@@ -1,6 +1,6 @@
 package com.softwarecooperative.softwareciooperative.utils.file;
 
-import com.softwarecooperative.softwareciooperative.framework.exception.UnsupportedFileExtensionException;
+import com.softwarecooperative.softwareciooperative.framework.exception.file.UnsupportedFileExtensionException;
 import com.softwarecooperative.softwareciooperative.utils.StringUtils;
 
 import java.util.HashMap;

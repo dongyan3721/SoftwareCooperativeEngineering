@@ -8,6 +8,7 @@ import 'bootstrap'
 import $ from 'jquery'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import '../tail.main.css'
 
 
 const app = createApp(App)
@@ -16,9 +17,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 
-// 集成element-plus
-app.use(ElementPlus)
-//国际化
+//集成element-plus并国际化
 app.use(ElementPlus, {
     locale: zhCn,
 })

@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.softwarecooperative</groupId>
-    <artifactId>softwareciooperative</artifactId>
+    <artifactId>software-cooperative</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>softwareciooperative</name>
     <description>softwareciooperative</description>
