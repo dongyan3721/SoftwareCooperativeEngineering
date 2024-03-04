@@ -1,9 +1,10 @@
-package com.softwarecooperative.softwareciooperative.utils.string;
+package com.softwarecooperative.softwareciooperative.utils;
 
-import com.yy.common.constant.Constants;
-import com.yy.common.text.StrFormatter;
+import com.softwarecooperative.softwareciooperative.utils.constant.Constants;
+import com.softwarecooperative.softwareciooperative.utils.text.StrFormatter;
 import org.springframework.util.AntPathMatcher;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 /**
