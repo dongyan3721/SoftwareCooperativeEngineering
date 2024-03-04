@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 
@@ -18,7 +16,7 @@ import java.util.List;
 
 /**
  * @author Santa Antilles
- * @description
+ * @description fastjson2配置
  * @date 2024/3/4-20:01:35
  */
 // 文档地址：https://gitee.com/wenshao/fastjson2/blob/main/docs/features_cn.md
