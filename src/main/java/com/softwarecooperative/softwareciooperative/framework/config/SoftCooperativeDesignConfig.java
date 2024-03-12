@@ -123,7 +123,7 @@ public class SoftCooperativeDesignConfig {
      */
     public static String getImportPath()
     {
-        return getProfile() + "/import";
+        return getProfile() + "import/";
     }
 
     /**
@@ -131,7 +131,7 @@ public class SoftCooperativeDesignConfig {
      */
     public static String getAvatarPath()
     {
-        return getProfile() + "/avatar";
+        return getProfile() + "avatar/";
     }
 
 
@@ -140,7 +140,7 @@ public class SoftCooperativeDesignConfig {
      */
     public static String getDishPicPath()
     {
-        return getProfile() + "/dishPic";
+        return getProfile() + "dishPic/";
     }
 
 
@@ -149,7 +149,7 @@ public class SoftCooperativeDesignConfig {
      */
     public static String getDownloadPath()
     {
-        return getProfile() + "/download/";
+        return getProfile() + "download/";
     }
 
     /**
@@ -157,6 +157,6 @@ public class SoftCooperativeDesignConfig {
      */
     public static String getUploadPath()
     {
-        return getProfile() + "/upload";
+        return getProfile() + "upload/";
     }
 }

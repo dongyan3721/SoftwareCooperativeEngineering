@@ -6,6 +6,9 @@ spring:
     username: root
     password: 9G%ZN##Vu8^T6Pn
 
+logging:
+  config: classpath:logback-spring.xml
+
 backend:
   # 名称
   name: SoftwareCooperativeDesign
@@ -16,7 +19,7 @@ backend:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/sc/uploadPath，Linux配置 /home/sc/uploadPath）
-  profile: D:/sc/uploadPath
+  profile: D:/sc/uploadPath/
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
