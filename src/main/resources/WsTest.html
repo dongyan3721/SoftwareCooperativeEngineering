@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 聊天客户端</title>
+    <style>
+        #messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<div id="messages"></div>
+<input type="text" id="message" placeholder="Type your message here...">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+    // 使用 WebSocket 连接到服务器
+    const socket = new WebSocket('ws://localhost:8080/test/114514');
+
+    // 当连接建立时执行
+    socket.addEventListener('open', function (event) {
+        console.log('Connected to server');
+    });
+
+    // 当收到消息时执行
+    socket.addEventListener('message', function (event) {
+        const messages = document.getElementById('messages');
+        const message = document.createElement('div');
+        message.innerText = event.data;
+        messages.appendChild(message);
+    });
+
+    // 当连接关闭时执行
+    socket.addEventListener('close', function (event) {
+        console.log('Disconnected from server');
+    });
+
+    // 发送消息
+    function sendMessage() {
+        const input = document.getElementById('message');
+        const message = input.value;
+        if (message.trim() !== '') {
+            socket.send(message);
+            input.value = '';
+        }
+    }
+</script>
+</body>
+</html>
