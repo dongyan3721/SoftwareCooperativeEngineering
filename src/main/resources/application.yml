@@ -6,11 +6,11 @@ spring:
     username: root
     password: ${MYSQL_PASSWORD}
   rabbitmq:
-    host: localhost
+    host: 47.101.34.15
     port: 5672
-    virtual-host: /SoftwareCooperativeEngineering
+    virtual-host: SoftwareCooperativeEngineering
     username: sce
-    password: 114514
+    password: ${RABBIT_PASSWORD}
   data:
     redis:
       host: 47.120.49.22
