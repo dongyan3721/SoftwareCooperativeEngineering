@@ -4,10 +4,30 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://47.101.34.15:3306/soft?useSSL=true&serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8
     username: root
-    password: 9G%ZN##Vu8^T6Pn
+    password: ${MYSQL_PASSWORD}
+  rabbitmq:
+    host: localhost
+    port: 5672
+    virtual-host: /SoftwareCooperativeEngineering
+    username: sce
+    password: 114514
+  data:
+    redis:
+      host: 47.120.49.22
+      port: 6379
+      database: 2
+      password: ${REDIS_PASSWORD}
 
 logging:
   config: classpath:logback-spring.xml
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.softwarecooperative.softwarecooperative.pojo.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
 
 backend:
   # 名称
@@ -33,8 +53,8 @@ backend:
 
 aliyun:
   oss:
-    endpoint: https://oss-cn-hangzhou.aliyuncs.com
-    accessKeyId: LTAI5tBZgjw5GGZzNz8h5rth
-    # 去掉最后一段___，否则推不上去
-    accessKeySecret: PXEletd9Or0DxJK8jOF049d4IcW9U2___
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    # 使用环境变量配置
+    access-key-id: ${OSS_ACCESS_KEY_ID}
+    access-key-secret: ${OSS_ACCESS_KEY_SECRET}
     bucketName: software-cooperative-engineering

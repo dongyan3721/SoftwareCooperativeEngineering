@@ -1,15 +1,17 @@
-package com.softwarecooperative.softwareciooperative.utils.alioss;
+package com.softwarecooperative.softwareciooperative.framework.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Data
 @Component
 @ConfigurationProperties(prefix = "aliyun.oss")
-public class AliOSSProperties {
+@Data
+public class AliOssProperties {
+
     private String endpoint;
     private String accessKeyId;
     private String accessKeySecret;
     private String bucketName;
+
 }
