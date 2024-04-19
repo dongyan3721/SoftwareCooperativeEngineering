@@ -1,10 +1,10 @@
 const routes = [
     {
         path: '/',
-        redirect: '/index'
+        redirect: '/test'
     },
     {
-        path: '/index',
+        path: '/test',
         name: 'index',
         component: ()=>import('@/view/Test.vue')
     }
