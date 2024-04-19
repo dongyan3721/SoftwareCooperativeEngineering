@@ -4,13 +4,15 @@ import { getToken } from './auth.js'
 import errorCode from './errorCode'
 import { tansParams, blobValidate } from "@/util/ruoyi";
 import CustomHttpStatus from "@/util/CustomHttpStatus";
+import context from "@/configuration/context.js";
+// import {saveAs} from 'file-saver'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
 // 创建axios实例
 const service = axios.create({
   // axios中请求配置有baseURL选项，表示请求URL公共部分
-  baseURL: "http://localhost:8080",
+  baseURL: context,
   // 超时
   timeout: 10000,
   // 取消axios自动解析json，用自己定义的雪花算法id拦截器拦截
@@ -102,8 +104,7 @@ service.interceptors.response.use(res => {
 )
 
 // 通用下载方法
-/**export function download(url, params, filename, config) {
-  downloadLoadingInstance = Loading.service({ text: "正在下载数据，请稍候", spinner: "el-icon-loading", background: "rgba(0, 0, 0, 0.7)", })
+export function download(url, params, filename, config) {
   return service.post(url, params, {
     transformRequest: [(params) => { return tansParams(params) }],
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -120,12 +121,10 @@ service.interceptors.response.use(res => {
       const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
       ElMessage.error(errMsg);
     }
-    downloadLoadingInstance.close();
   }).catch((r) => {
     console.error(r)
     ElMessage.error('下载文件出现错误，请联系管理员！')
-    downloadLoadingInstance.close();
   })
-}*/
+}
 
 export default service
