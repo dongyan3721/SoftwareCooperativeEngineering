@@ -24,6 +24,7 @@
     "highlight.js": "^11.9.0",
     "jquery": "^3.7.1",
     "jquery-ui-dist": "^1.13.2",
+    "js-base64": "^3.7.7",
     "js-cookie": "^3.0.5",
     "markdown-it": "^14.0.0",
     "naive-ui": "^2.34.3",

@@ -1,5 +1,7 @@
 <script setup>
 
+import {manufacturePreviewUrl} from "@/util/filePreviewUrl.js";
+
 const testTableData = reactive(
     [
   { name: 'AAA', duty: '撰写文档1', uploadStatus: '未交'},
