@@ -39,21 +39,34 @@ export const useUserStore = defineStore(
             token.value = undefined
         }
 
+        // 用户大角色
+        const userRole = ref()
+
+        // 学生或教师id
+        const userId = ref()
+
+        // 学生或教师姓名
+        const userName = ref()
+
+        // 头像
+        const avatar = ref()
+
+        // 学生在项目过程中扮演的角色
+        const studentRole = ref()
+
+        // 学生归属小组id号
+        const studentGroup = ref()
+
+        // 学生归属教学班号
+        const studentClass = ref()
+
+
         return {
             token, setCookie, clearCookie
         }
     },
     // 通用持久化
     {
-        persist: {
-            storage: {
-                getItem(key){
-                    return localStorage.getItem(key)
-                },
-                serItem(key, value){
-                    localStorage.setItem(key, value)
-                }
-            }
-        }
+        persist: true
     }
 )
