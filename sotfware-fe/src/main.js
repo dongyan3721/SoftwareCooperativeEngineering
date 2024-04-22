@@ -11,7 +11,7 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import '../tail.main.scss'
 import pinia from "@/store/index.js";
 // 全局样式引入
-import '@/assets/style/typesetting.scss'
+// import '@/assets/style/typesetting.scss'
 
 
 const app = createApp(App)

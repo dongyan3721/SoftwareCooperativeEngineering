@@ -1,6 +1,9 @@
 <script setup>
-
 import {manufacturePreviewUrl} from "@/util/filePreviewUrl.js";
+import {useUserStore} from "@/store/useUserStore.js";
+const userStore = useUserStore()
+
+const userId = userStore.userId
 
 const testTableData = reactive(
     [
