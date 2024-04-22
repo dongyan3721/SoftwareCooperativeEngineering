@@ -46,13 +46,15 @@ create table b_group
 (
     group_id            int(15) primary key comment '队伍代号',
     group_name          varchar(36)  not null comment '队伍名称',
+    class_id            int(15) not null comment '队伍归属课程号',
     group_avatar        varchar(512) not null comment '队伍头像链接',
     group_introduction  varchar(512) null comment '队伍介绍',
     group_leader_id     int(15) not null comment '队长id',
     -- 以下两项都是冗余的，减少查询次数
     group_leader_name   varchar(36) comment '队长姓名',
     group_leader_avatar varchar(512) comment '队长头像',
-    foreign key (group_leader_id) references b_student (student_id)
+    foreign key (group_leader_id) references b_student (student_id),
+    foreign key (class_id) references b_class (class_id)
 ) comment '小组表';
 
 -- 课程基本设置表(应ccp的要求，课程提供一个基本骨架)
