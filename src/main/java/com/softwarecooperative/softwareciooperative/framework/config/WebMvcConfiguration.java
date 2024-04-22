@@ -38,8 +38,10 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("注册jwt拦截器");
-//        registry.addInterceptor(jwtInterceptor()).addPathPatterns("/**")
-//                .excludePathPatterns("/doc.html");
+        registry.addInterceptor(jwtInterceptor())
+                .addPathPatterns("/teacher/**")
+                .addPathPatterns("/student/**")
+                .addPathPatterns("/common/**");
         super.addInterceptors(registry);
     }
 

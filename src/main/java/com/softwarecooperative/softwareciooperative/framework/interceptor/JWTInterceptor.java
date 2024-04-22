@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.framework.interceptor;
 
+import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
 import com.softwarecooperative.softwareciooperative.framework.exception.UnAuthenticatedException;
 import com.softwarecooperative.softwareciooperative.framework.net.HttpStatus;
 import com.softwarecooperative.softwareciooperative.utils.JwtUtils;
@@ -29,6 +30,7 @@ public class JWTInterceptor implements HandlerInterceptor {
         String userId;
         try {
             userId = JwtUtils.verify(token);
+            BaseContext.setCurrentId(userId);
         } catch (UnAuthenticatedException e) {
             throw new GeneralServiceException("Time Expired!", HttpStatus.FORBIDDEN);
         }
