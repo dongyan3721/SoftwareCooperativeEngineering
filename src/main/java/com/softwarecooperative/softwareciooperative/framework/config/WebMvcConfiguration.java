@@ -3,28 +3,53 @@ package com.softwarecooperative.softwareciooperative.framework.config;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
+import com.softwarecooperative.softwareciooperative.framework.interceptor.JWTInterceptor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Santa Antilles
- * @description fastjson2配置
- * @date 2024/3/4-20:01:35
+ * 大坑，WebMvcConfigurationSupport只能被一个类继承，多的无效
  */
-// 文档地址：https://gitee.com/wenshao/fastjson2/blob/main/docs/features_cn.md
+@Slf4j
 @Configuration
-public class ProjectWebMvcConfig extends WebMvcConfigurationSupport {
+public class WebMvcConfiguration extends WebMvcConfigurationSupport {
+
+    /**
+     * JWT拦截器配置
+     * @return
+     */
+    @Bean
+    public JWTInterceptor jwtInterceptor(){
+        return new JWTInterceptor();
+    }
 
     @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        log.info("注册jwt拦截器");
+//        registry.addInterceptor(jwtInterceptor()).addPathPatterns("/**")
+//                .excludePathPatterns("/doc.html");
+        super.addInterceptors(registry);
+    }
+
+    /**
+     * 消息转换器
+     * @param converters
+     */
+    @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        log.info("准备消息转换...");
         //定义一个convert转换消息的对象
         FastJsonHttpMessageConverter fastConverter=new FastJsonHttpMessageConverter();
         // 添加fastjson的配置信息，比如是否要格式化返回的json数据
@@ -64,5 +89,20 @@ public class ProjectWebMvcConfig extends WebMvcConfigurationSupport {
                 // JSONWriter.Feature.WriteLongAsString
         );
         return fastJsonConfig;
+    }
+
+    /**
+     * 设置静态资源映射
+     * @param registry
+     */
+    @Override
+    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        log.info("准备资源映射...");
+        registry.addResourceHandler("/systemPictures/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir")+ File.separator+"uploadFile"+ File.separator+"systemPictures"+File.separator);
+        registry.addResourceHandler("/uploadFile/pluginFiles/logo/**")
+                .addResourceLocations("file:" + System.getProperty("user.dir")+ File.separator+"uploadFile"+File.separator+"pluginFiles"+File.separator+"logo"+File.separator);
+        registry.addResourceHandler("doc.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 }
