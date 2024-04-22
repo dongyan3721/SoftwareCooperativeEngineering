@@ -1,6 +1,6 @@
 <!--
--- @description 老师课程设置
--- @date 2024/4/21-22:47:59
+-- @description 老师分小组与学生交流
+-- @date 2024/4/22-18:54:25
 -->
 
 <script setup>

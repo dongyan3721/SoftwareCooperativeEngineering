@@ -27,7 +27,7 @@ export default defineConfig({
     }),
     // 自动导入vue相关依赖
     AutoImport({
-      imports: ['vue', 'vue-router']
+      imports: ['vue', 'vue-router', 'pinia']
     })
   ],
   resolve: {

@@ -62,7 +62,8 @@ export const useUserStore = defineStore(
 
 
         return {
-            token, setCookie, clearCookie
+            token, setCookie, clearCookie,
+            userRole, userId, userName, avatar, studentRole, studentClass, studentGroup
         }
     },
     // 通用持久化
