@@ -11,3 +11,5 @@ pinia.use(persist)
 
 // 默认导出给main.js挂载
 export default pinia
+
+export * from "./useUserStore.js"

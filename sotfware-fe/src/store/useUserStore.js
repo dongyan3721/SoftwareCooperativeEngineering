@@ -29,15 +29,38 @@ userStore.$patch((state) => {
 export const useUserStore = defineStore(
     'user',
     ()=>{
-        const token = ref()
 
-        const setCookie = (resp)=>{
-            token.value = resp
+        // 设置登录
+        const setGeneralLoginInfo = (resp)=>{
+            token.value = resp.token
+            userRole.value = resp.data.userRole
+            userId.value = resp.data.studentId || resp.data.teacherId
+            userName.value = resp.data.studentName || resp.data.teacherName
+            avatar.value = resp.data.avatar
         }
 
-        const clearCookie = ()=>{
+        const setStudentLoginSpeciality = (resp)=>{
+            studentRole.value = resp.data.studentRole
+            studentGroup.value = resp.data.studentGroup
+            studentClass.value = resp.data.studentClass
+        }
+
+        const setTeacherLoginSpeciality = (resp)=>{
+            // 暂时不设置
+        }
+
+        const clearLoginInFo = ()=>{
             token.value = undefined
+            userRole.value = undefined
+            userId.value = undefined
+            userName.value = undefined
+            avatar.value = undefined
+            studentRole.value = undefined
+            studentGroup.value = undefined
+            studentClass.value = undefined
         }
+
+        const token = ref()
 
         // 用户大角色
         const userRole = ref()
@@ -62,8 +85,8 @@ export const useUserStore = defineStore(
 
 
         return {
-            token, setCookie, clearCookie,
-            userRole, userId, userName, avatar, studentRole, studentClass, studentGroup
+            token, setGeneralLoginInfo, setStudentLoginSpeciality, setTeacherLoginSpeciality,
+            userRole, userId, userName, avatar, studentRole, studentClass, studentGroup, clearLoginInFo
         }
     },
     // 通用持久化
