@@ -1,7 +1,7 @@
 const routes = [
     {
         path: '/',
-        redirect: '/login'
+        redirect: '/preview'
     },
     {
         path: '/test',
@@ -53,6 +53,11 @@ const routes = [
         path: '/teacher-course-setting',
         name: 'teacher-course-setting',
         component: ()=>import('@/view/teacher/teacher-course-settings.vue')
+    },
+    {
+        path: '/preview',
+        name: 'preview',
+        component: ()=>import('@/components/student/student-menu.vue')
     }
 ];
 

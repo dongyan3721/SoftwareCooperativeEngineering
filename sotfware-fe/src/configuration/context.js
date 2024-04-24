@@ -7,8 +7,8 @@
 const NOW_ENVIRONMENT = import.meta.env.VITE_MODE_NAME
 
 const BASE_API_CONFIG = {
-    production: 'http://47.101.34.15:8080',
-    development: 'http://127.0.0.1:8080'
+    production: '/prod-api',
+    development: '/dev-api'
 }
 
 export default BASE_API_CONFIG[NOW_ENVIRONMENT]

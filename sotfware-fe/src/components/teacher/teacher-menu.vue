@@ -1,14 +1,13 @@
 <!--
 -- @author Santa Antilles
--- @description 学生大菜单，写页面只要往对应插槽里面插就行了
--- @date 2024/4/23-20:44:31
+-- @description
+-- @date 2024/4/24-20:19:15
 -->
 
 <script setup>
 import {useRoute} from "vue-router";
 const route = useRoute()
-import {ArrowRight, EditPen, Notebook} from "@element-plus/icons-vue";
-import {Peoples} from "@icon-park/vue-next";
+import {ArrowRight, Edit, ChatDotRound, Monitor, Setting} from "@element-plus/icons-vue";
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
 const userStore = useUserStore()
@@ -36,22 +35,30 @@ const quitLogin = ()=>{
               style="color: #f9f9f9; display: flex; align-items: center; justify-content: center; width: 200px">软件协同设计</span>
         </div>
         <el-menu style="border: none" :default-active="currentUrl" router background-color="#162E56" text-color="#f9f9f9">
-          <el-menu-item index="/student-main">
+          <el-menu-item index="/teacher-course-setting">
             <template #title>
-              <el-icon><EditPen /></el-icon>
-              课程学习
+              <el-icon><Setting /></el-icon>
+              课程设置
             </template>
           </el-menu-item>
-          <el-menu-item index="/student-task">
+          <el-menu-item index="/teacher-monitor">
             <template #title>
-              <el-icon><Notebook /></el-icon>
-              课程任务
+              <el-icon><Monitor /></el-icon>
+              任务监督
             </template>
           </el-menu-item>
-          <el-menu-item index="/student-group">
+          <el-menu-item index="/teacher-chat">
             <template #title>
-              <el-icon><peoples theme="outline" size="18" fill="#fff"/></el-icon>
-              我的小组
+              <el-icon><ChatDotRound /></el-icon>
+              师生探讨
+            </template>
+          </el-menu-item>
+          <el-menu-item index="/teacher-grade">
+            <template #title>
+              <el-icon>
+                <Edit />
+              </el-icon>
+              学生成绩
             </template>
           </el-menu-item>
         </el-menu>
