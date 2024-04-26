@@ -1,6 +1,7 @@
 package com.softwarecooperative.softwareciooperative.pojo.entity;
 
 
+import com.softwarecooperative.softwareciooperative.framework.annotation.PrimaryKey;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 public class BStudentTaskSubmit implements Serializable {
 
+  @PrimaryKey
   private Integer recordId;
   private Integer taskId;
   private Integer taskHandler;

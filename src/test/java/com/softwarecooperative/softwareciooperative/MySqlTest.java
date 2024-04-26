@@ -16,7 +16,6 @@ public class MySqlTest {
     @Test
     public void testInsert() {
         BClass bClass = BClass.builder()
-                .classId(SnowflakeIdWorker.nextId())
                 .teacherId(114514)
                 .teacherName("李田所")
                 .courseId(114514)
