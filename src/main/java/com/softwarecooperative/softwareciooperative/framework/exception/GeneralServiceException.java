@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.framework.exception;
 
+import com.softwarecooperative.softwareciooperative.framework.net.CustomHttpStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import lombok.Setter;
 public class GeneralServiceException extends RuntimeException{
     public GeneralServiceException(String message) {
         super(message);
+        this.code = CustomHttpStatus.SERVICE_ERROR;
     }
     private int code;
 

@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.Files;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AliOssTest {
 
     @Test
@@ -22,7 +22,7 @@ class AliOssTest {
     private AliOssUtil aliOSSUtil;
     @Test
     void ossTest() throws IOException {
-        String fileName = "javaweb答辩.pptx";
+        String fileName = "litiansuo.png";
         BufferedInputStream bis = new BufferedInputStream(
                 this.getClass().getClassLoader().getResourceAsStream("testfile" + "/" + fileName));
         byte[] fileData = bis.readAllBytes();

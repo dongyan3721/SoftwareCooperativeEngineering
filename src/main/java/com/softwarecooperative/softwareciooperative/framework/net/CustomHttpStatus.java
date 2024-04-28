@@ -7,4 +7,5 @@ package com.softwarecooperative.softwareciooperative.framework.net;
  */
 public class CustomHttpStatus {
     public static final int NO_NEED_TO_FLUSH_TOKEN = 1001;
+    public static final Integer SERVICE_ERROR = 1145;
 }

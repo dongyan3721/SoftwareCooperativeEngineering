@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.TeacherMapper">
+    <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher">
+        SELECT * FROM b_teacher
+            <where>
+                <if test="teacherId != null"> AND teacher_id = #{teacherId} </if>
+                <if test="teacherName != null"> AND teacher_name = #{teacherName} </if>
+                <if test="password != null"> AND `password` = #{password} </if>
+            </where>
+    </select>
+</mapper>
