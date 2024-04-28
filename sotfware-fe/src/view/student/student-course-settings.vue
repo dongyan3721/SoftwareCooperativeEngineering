@@ -4,11 +4,15 @@
 -->
 
 <script setup>
-
+import StudentMenu from "@/components/student/student-menu.vue";
 </script>
 
 <template>
+  <student-menu>
+    <div class="w-100">
 
+    </div>
+  </student-menu>
 </template>
 
 <style scoped>
