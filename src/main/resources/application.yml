@@ -20,6 +20,10 @@ spring:
       port: 6379
       database: 2
       password: ${REDIS_PASSWORD}
+    mongodb:
+      host: 127.0.0.1
+      database: sce
+      port: 27017
 
 # springdoc-openapi项目配置
 springdoc:

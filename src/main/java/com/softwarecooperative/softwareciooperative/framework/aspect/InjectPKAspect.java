@@ -26,7 +26,7 @@ public class InjectPKAspect {
     /**
      * 切入点
      */
-    @Pointcut("execution(* com.softwarecooperative.softwareciooperative.dao.mapper.*.*(..)) && " +
+    @Pointcut("execution(* com.softwarecooperative.softwareciooperative.dao.*.*.*(..)) && " +
             "@annotation(com.softwarecooperative.softwareciooperative.framework.annotation.InjectSnowFlakeId)")
     public void autoInjectPKPointCut() {}
 
@@ -40,19 +40,46 @@ public class InjectPKAspect {
         if (args == null || args.length == 0 || args[0] == null)
             return;
 
-        Object entity = args[0];
-        Class clazz = entity.getClass();
-        Field pk = Arrays.stream(clazz.getDeclaredFields())
-                .filter(f -> Arrays.asList(f.getAnnotations()).stream()
-                        .anyMatch(a -> a.annotationType().equals(PrimaryKey.class)))
-                .findFirst()
-                .get();
-        pk.setAccessible(true);
-        try {
-            pk.set(entity, SnowflakeIdWorker.nextId());
-        } catch (IllegalAccessException e) {
-            log.error("让我看看！");
-            e.printStackTrace();
+        Object arg = args[0];
+        // 如果是列表，逐个添加
+        if (arg instanceof Iterable<?>) {
+            Object entity = null;
+            for (Object e : (Iterable<?>) arg) {
+                entity = e;
+                break;
+            }
+            if (entity == null)
+                return;
+            Class clazz = entity.getClass();
+            Field pk = Arrays.stream(clazz.getDeclaredFields())
+                    .filter(f -> Arrays.asList(f.getAnnotations()).stream()
+                            .anyMatch(a -> a.annotationType().equals(PrimaryKey.class)))
+                    .findFirst()
+                    .get();
+            pk.setAccessible(true);
+            ((Iterable<?>) arg).forEach(ent -> {
+                try {
+                    pk.set(ent, SnowflakeIdWorker.nextId());
+                } catch (IllegalAccessException e) {
+                    log.error("让我看看！");
+                    e.printStackTrace();
+                }
+            });
+        // 如果是实体类，直接添加
+        } else {
+            Class clazz = arg.getClass();
+            Field pk = Arrays.stream(clazz.getDeclaredFields())
+                    .filter(f -> Arrays.asList(f.getAnnotations()).stream()
+                            .anyMatch(a -> a.annotationType().equals(PrimaryKey.class)))
+                    .findFirst()
+                    .get();
+            pk.setAccessible(true);
+            try {
+                pk.set(arg, SnowflakeIdWorker.nextId());
+            } catch (IllegalAccessException e) {
+                log.error("让我看看！");
+                e.printStackTrace();
+            }
         }
     }
 }
