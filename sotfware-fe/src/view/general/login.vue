@@ -6,20 +6,21 @@
 
 <template>
   <div class="flex h-screen w-screen items-center justify-center page-container"
-        style="background-image: url('/login-register-background.jpg')">
+        style="background-image: url('/login-register-background.jpg');
+        background-size: cover; background-position: center center" id="background1">
     <Verify :show="showVerify" @close="closeVerifyWindow" @success="handleVerifySuccess"></Verify>
-    <div class="container h-2/5 w-2/5 min-w-150 min-h-75 rounded-xl flex-col items-center justify-around"
+    <div class="container h-2/5 w-2/6 min-w-150 min-h-75 rounded-xl flex-col items-center justify-around"
           style="background-color: rgba(255, 255, 255, .6)">
       <div class="w-9/10 h-auto flex items-center justify-center mt-2">
         <h2 class="text-3xl font-bold">欢迎回来</h2>
       </div>
       <div class="w-9/10 h-4/5 flex mt-3 justify-around">
-        <div class="w-3/10 h-9/10">
-          <img src="/login-decorate.png" alt="登录认证" class="h-100 w-100 rounded-xl">
-        </div>
-        <div class="w-1/10 h-19/20 flex items-center justify-center">
-          <div class="h-100 w-1.5 bg-neutral-400 opacity-75"/>
-        </div>
+<!--        <div class="w-3/10 h-9/10">-->
+<!--          <img src="/login-decorate.png" alt="登录认证" class="h-100 w-100 rounded-xl">-->
+<!--        </div>-->
+<!--        <div class="w-1/10 h-19/20 flex items-center justify-center">-->
+<!--          <div class="h-100 w-1.5 bg-neutral-400 opacity-75"/>-->
+<!--        </div>-->
         <div class="h-9/10 flex items-center">
           <el-form :model="form" ref="formRef" :inline="false" size="large" :rules="formRules">
             <el-form-item prop="id">

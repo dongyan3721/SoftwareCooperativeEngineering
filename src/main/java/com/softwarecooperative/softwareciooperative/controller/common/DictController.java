@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.controller.common;
 
+import com.softwarecooperative.softwareciooperative.framework.annotation.AccessWithoutVerification;
 import com.softwarecooperative.softwareciooperative.framework.net.TableDataInfo;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BDict;
 import com.softwarecooperative.softwareciooperative.service.DictService;
@@ -20,7 +21,7 @@ import java.util.List;
  * @Date 2024/4/28-22:55:43
  */
 @RestController
-@RequestMapping("/dev-api/common/dict")
+@RequestMapping("/common/dict")
 @Tag(name = "公共字典接口")
 @Slf4j
 public class DictController {
@@ -30,6 +31,7 @@ public class DictController {
 
     @GetMapping("/{dictName}")
     @Operation(summary = "获取字典键值对")
+    @AccessWithoutVerification
     public TableDataInfo getDictByDictName(@PathVariable String dictName) {
         List<BDict> res = dictService.getDictByName(dictName);
         return TableDataInfo.success(res, res.size());

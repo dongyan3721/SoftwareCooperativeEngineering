@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.controller.student;
 
+import com.softwarecooperative.softwareciooperative.framework.annotation.AccessWithoutVerification;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.LoginFailedException;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
@@ -31,6 +32,7 @@ public class StudentLoginController {
 
     @PostMapping("/login")
     @Operation(summary = "学生登录")
+    @AccessWithoutVerification
     public AjaxResult teacherLogin(@RequestBody BStudent student) throws LoginFailedException {
         BStudent res = loginService.studentLogin(student);
         // 获取token
