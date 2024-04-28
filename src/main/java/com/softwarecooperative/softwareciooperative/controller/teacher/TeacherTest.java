@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeacherTest {
 
 
-    @SpecificRoleOnly(role="aaa")
+//    @SpecificRoleOnly(role="aaa")
     @GetMapping("test")
     @Operation(summary = "测试接口1")
     public AjaxResult test(){

@@ -11,6 +11,7 @@ import {ArrowRight, EditPen, Notebook} from "@element-plus/icons-vue";
 import {Peoples} from "@icon-park/vue-next";
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
+import {studentLogin} from "@/web-api/general/login.js";
 const userStore = useUserStore()
 const {avatar, userName} = storeToRefs(userStore)
 const {clearLoginInFo} = userStore
