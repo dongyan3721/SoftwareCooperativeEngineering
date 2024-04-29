@@ -33,10 +33,14 @@ export const useUserStore = defineStore(
         // 设置登录
         const setGeneralLoginInfo = (resp)=>{
             token.value = resp.token
-            userRole.value = resp.data.userRole
             userId.value = resp.data.studentId || resp.data.teacherId
             userName.value = resp.data.studentName || resp.data.teacherName
             avatar.value = resp.data.avatar
+        }
+
+        const setUserRole = (val)=>{
+            // 根据用户填的表单数据来设置用户大角色
+            userRole.value = val
         }
 
         const setStudentLoginSpeciality = (resp)=>{
@@ -62,7 +66,7 @@ export const useUserStore = defineStore(
 
         const token = ref()
 
-        // 用户大角色
+        // 用户大角色，是学生还是老师
         const userRole = ref()
 
         // 学生或教师id
@@ -86,7 +90,7 @@ export const useUserStore = defineStore(
 
         return {
             token, setGeneralLoginInfo, setStudentLoginSpeciality, setTeacherLoginSpeciality,
-            userRole, userId, userName, avatar, studentRole, studentClass, studentGroup, clearLoginInFo
+            userRole, userId, userName, avatar, studentRole, studentClass, studentGroup, clearLoginInFo, setUserRole
         }
     },
     // 通用持久化

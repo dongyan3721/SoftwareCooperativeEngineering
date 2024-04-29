@@ -5,5 +5,6 @@
  */
 
 export default {
-    NO_NEED_TO_FLUSH_TOKEN: 1001
+    NO_NEED_TO_FLUSH_TOKEN: 1001,
+    SERVICE_ERROR: 1145
 }
