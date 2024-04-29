@@ -21,9 +21,12 @@ spring:
       database: 2
       password: ${REDIS_PASSWORD}
     mongodb:
-      host: 127.0.0.1
+      host: 47.101.34.15
       database: sce
       port: 27017
+      username: dev-1
+      password: ${MONGO_PASSWORD}
+      authentication-database: admin
 
 # springdoc-openapi项目配置
 springdoc:
