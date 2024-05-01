@@ -19,5 +19,5 @@ public class BClassTask implements Serializable {
   private String taskContent;
   private LocalDateTime deadline;
   private Integer taskOrder;
-
+  private String taskStudentRole;
 }
