@@ -15,7 +15,7 @@ public class BClassTask implements Serializable {
 
   @PrimaryKey
   private Integer taskId;
-  private String classId;
+  private Integer classId;
   private String taskContent;
   private LocalDateTime deadline;
   private Integer taskOrder;

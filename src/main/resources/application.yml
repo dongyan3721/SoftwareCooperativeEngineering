@@ -24,7 +24,7 @@ spring:
       host: 47.101.34.15
       database: sce
       port: 27017
-      username: dev-1
+      username: xiaomazhenzhu
       password: ${MONGO_PASSWORD}
       authentication-database: admin
 
