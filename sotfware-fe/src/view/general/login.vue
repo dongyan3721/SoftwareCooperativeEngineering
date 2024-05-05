@@ -73,10 +73,16 @@ import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
 import {studentLogin, teacherLogin} from "@/web-api/general/login.js";
 const userStore = useUserStore()
-const {userId, userName, userRole} = storeToRefs(userStore)
+const {setGeneralLoginInfo, setStudentLoginSpeciality, setUserRole} = userStore
 
 function setUserStore(response){
-
+  // 登录身份为学生
+  if (valueNameReflection[form.role]==='教师'){
+    setGeneralLoginInfo(response)
+  }else{
+    setGeneralLoginInfo(response)
+    setStudentLoginSpeciality(response)
+  }
 }
 
 // 控制验证码是否出现
@@ -111,8 +117,10 @@ const submitForm = ()=>{
         }).then(res=>{
           if(res.code===200){
             // 设置前端存储信息
-            setUserStore()
+            setUserStore(res)
+            setUserRole(form.role)
             ElMessage.success("登录成功！")
+            router.push('/teacher-main')
           }else{
             ElMessage.error("账号或密码错误！")
           }
@@ -122,8 +130,10 @@ const submitForm = ()=>{
           studentId: form.id, password: form.password
         }).then(res=>{
           if(res.code===200){
-            setUserStore()
+            setUserStore(res)
+            setUserRole(form.role)
             ElMessage.success("登录成功！")
+            router.push('/student-amin')
           }else{
             ElMessage.error("账号或密码错误！")
           }

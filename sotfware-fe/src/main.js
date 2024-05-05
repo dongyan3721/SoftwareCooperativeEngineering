@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import ElementPlus from 'element-plus'
+import NaiveUI from 'naive-ui'
 import 'element-plus/dist/index.css'
 import App from './App.vue'
 import router from './router/index'
@@ -24,6 +25,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(ElementPlus, {
     locale: zhCn,
 })
+// 集成naiveUI
+app.use(NaiveUI)
 // 集成vue-router
 app.use(router)
 // 集成jQuery
