@@ -23,7 +23,7 @@ spring:
     mongodb:
       host: 47.101.34.15
       database: sce
-      port: 27017
+      port: 19198
       username: xiaomazhenzhu
       password: ${MONGO_PASSWORD}
       authentication-database: admin

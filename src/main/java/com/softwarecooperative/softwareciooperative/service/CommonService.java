@@ -9,8 +9,10 @@ import java.util.List;
  * @Author 嘉然今天吃向晚
  * @Date 2024/4/28-23:01:59
  */
-public interface DictService {
+public interface CommonService {
 
     List<BDict> getDictByName(String dictName);
+
+    String uploadFile(byte[] bytes, String originalFilename);
 
 }
