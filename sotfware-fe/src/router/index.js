@@ -1,7 +1,7 @@
 const routes = [
     {
         path: '/',
-        redirect: '/login'
+        redirect: '/preview'
     },
     {
         path: '/test',
@@ -57,7 +57,7 @@ const routes = [
     {
         path: '/preview',
         name: 'preview',
-        component: ()=>import('@/components/student/student-menu.vue')
+        component: ()=>import('@/components/general/progress-bar.vue')
     }
 ];
 

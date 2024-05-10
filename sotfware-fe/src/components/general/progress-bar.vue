@@ -6,8 +6,8 @@
 
 <script setup>
 import {changeColor} from "seemly";
-import {LoadingOne, HourglassFull, CheckOne, Caution, Seal} from "@icon-park/vue-next";
-
+import {LoadingOne, HourglassFull, CheckOne, Caution, Seal, PeoplesTwo} from "@icon-park/vue-next";
+import {sys_task_submit_status} from "@/configuration/dictionary.js";
 const rate = computed(()=>{
   let rec = 0;
   props.progressItems.forEach(t=>{
@@ -27,8 +27,9 @@ const props = defineProps({
    *   taskFinishStatus: 任务完成状态
    *   完成或正在进行或未完成
    *   只要按照group_id查询b_student_task_submit，把本组所有完成过的任务都查出来，看最后一个项目，如果最后一个项目的
-   *   提交状态全部是2，那么认为全部结束；如果有3，则是任务被打回状态，有1是等待批阅，有0是没有完成
+   *   提交状态全部是2，那么认为全部结束；如果有3，则是任务被打回状态，有1是等待批阅，有0是没有完成，4是未分配任务状态
    *   排序先于这个任务的都是完成，晚于这个任务的都是未完成
+   *   老师批阅完成后，自动创建下一个任务的未分配任务状态
    * }
    */
   /**
@@ -53,14 +54,23 @@ const handleViewSubmitDetail = (taskId) =>{
         <n-timeline horizontal size="large" :icon-size="24">
           <n-timeline-item v-for="t in props.progressItems" type="success" :title="t.title" :time="t.deadline" :key="t.taskId">
 <!--            提交详情在完成提交的任务内出现-->
-            <el-button text type="primary" @click="handleViewSubmitDetail" v-if="t.taskFinishStatus==='2'">提交详情</el-button>
-            <el-button text v-else :disabled="t.taskFinishStatus==='1'||t.taskFinishStatus===''">前往提交</el-button>
+            <el-button text type="primary" @click="handleViewSubmitDetail" v-if="t.taskFinishStatus===sys_task_submit_status.PASS">
+              提交详情
+            </el-button>
+
+
+
+            <el-button text v-if="t.taskFinishStatus!==sys_task_submit_status.PASS&&t.taskFinishStatus!==sys_task_submit_status.UNASSIGNED"
+                       :disabled="t.taskFinishStatus===sys_task_submit_status.WAIT_FOR_TEACHER_MARK||t.taskFinishStatus===sys_task_submit_status.UNREACHED">前往提交</el-button>
+
+            <el-button text v-if="t.taskFinishStatus===sys_task_submit_status.UNASSIGNED">待分配任务</el-button>
             <template #icon>
-              <check-one theme="outline" size="24" fill="#46b300" v-if="t.taskFinishStatus==='2'"/>
-              <loading-one theme="outline" size="24" fill="#003dff" v-if="t.taskFinishStatus==='0'"/>
-              <seal theme="outline" size="24" fill="#003dff" v-if="t.taskFinishStatus==='1'"/>
-              <caution theme="outline" size="24" fill="#dd524d" v-if="t.taskFinishStatus==='3'"/>
-              <hourglass-full theme="outline" size="24" fill="#606266" v-if="t.taskFinishStatus===''"/>
+              <check-one theme="outline" size="24" fill="#46b300" v-if="t.taskFinishStatus===sys_task_submit_status.PASS"/>
+              <peoples-two theme="outline" size="24" fill="#606266" v-if="t.taskFinishStatus===sys_task_submit_status.UNASSIGNED"/>
+              <loading-one theme="outline" size="24" fill="#003dff" v-if="t.taskFinishStatus===sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON"/>
+              <seal theme="outline" size="24" fill="#003dff" v-if="t.taskFinishStatus===sys_task_submit_status.WAIT_FOR_TEACHER_MARK"/>
+              <caution theme="outline" size="24" fill="#dd524d" v-if="t.taskFinishStatus===sys_task_submit_status.REDO"/>
+              <hourglass-full theme="outline" size="24" fill="#606266" v-if="t.taskFinishStatus===sys_task_submit_status.UNREACHED"/>
             </template>
           </n-timeline-item>
 <!--          <n-timeline-item type="success" title="需求分析" time="2024-05-04 20:46">-->
@@ -81,14 +91,8 @@ const handleViewSubmitDetail = (taskId) =>{
 
         </n-timeline>
         <div class="mt-2">
-          <n-progress
-              type="line"
-              indicator-placement="inside"
-              :percentage="rate"
-              color="#dd524d"
-              :rail-color="changeColor('#dd524d', { alpha: 0.2 })"
-              :height="24"
-          />
+          <n-progress type="line" indicator-placement="inside" :percentage="rate" color="#dd524d"
+              :rail-color="changeColor('#dd524d', { alpha: 0.2 })" :height="24"/>
         </div>
       </div>
     </el-col>
