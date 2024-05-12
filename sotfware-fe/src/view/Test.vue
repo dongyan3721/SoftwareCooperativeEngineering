@@ -1,6 +1,7 @@
 <script setup>
 import ProgressBar from "@/components/general/progress-bar.vue";
 import {sys_task_submit_status} from "@/configuration/dictionary.js";
+import StudentGroupDescription from "@/components/student/student-group-description.vue";
 
 const testData = ref([
   {
@@ -39,6 +40,18 @@ const testData = ref([
 
 <template>
   <progress-bar :progress-items="testData"/>
+  <br/>
+  <el-row>
+    <el-col :span="4"/>
+    <el-col :span="16">
+      <student-group-description :edit-vis="true" group-avatar="http://47.120.49.22:8080/static/avatar/bbb.jpg"
+                                 group-introduction="大号的要我人多啊合肥索菲亚四风也大有的等会我熬夜的我i滚犊子来吃吧世俗一人一额土狗复古刷到过"
+                                 group-leader-avatar="http://47.120.49.22:8080/static/avatar/bbb.jpg"
+                                 group-leader-name="AAA莆田高仿K姐"
+                                 group-name="贼能C"/>
+    </el-col>
+    <el-col :span="4"/>
+  </el-row>
 </template>
 
 <style scoped lang="scss">

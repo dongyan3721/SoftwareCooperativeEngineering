@@ -6,12 +6,12 @@
 
 <script setup>
 import {changeColor} from "seemly";
-import {LoadingOne, HourglassFull, CheckOne, Caution, Seal, PeoplesTwo} from "@icon-park/vue-next";
+import {LoadingOne, HourglassFull, CheckOne, Caution, Seal, PeoplesTwo, DocumentFolder} from "@icon-park/vue-next";
 import {sys_task_submit_status} from "@/configuration/dictionary.js";
 const rate = computed(()=>{
   let rec = 0;
   props.progressItems.forEach(t=>{
-    if(t.taskFinishStatus==='2') ++rec
+    if(t.taskFinishStatus===sys_task_submit_status.PASS) ++rec
   })
   return rec/props.progressItems.length*100
 })
@@ -41,20 +41,36 @@ const props = defineProps({
 
 
 const handleViewSubmitDetail = (taskId) =>{
-
+  console.log(taskId)
+  dialogVis.value = true
 }
-
+// 控制提交详情对话窗口的可见性
+const dialogVis = ref(false)
+// 关闭对话窗口
+const closeSubmitDialog = ()=>{
+  dialogVis.value = false
+}
 </script>
 
 <template>
   <el-row>
-    <el-col :span="4"/>
-    <el-col :span="16">
+    <el-col :span="2">
+      <el-dialog v-model="dialogVis" @close="closeSubmitDialog">
+        <template #header>
+          <div class="flex items-center justify-start">
+            <document-folder theme="outline" size="18" fill="#2a3f67" style="display: inline"/>
+            <span class="ml-1 text-base">提交详情</span>
+          </div>
+        </template>
+        <!--一个表格，有本组每个人上传的东西-->
+      </el-dialog>
+    </el-col>
+    <el-col :span="20">
       <div class="my-2">
         <n-timeline horizontal size="large" :icon-size="24">
           <n-timeline-item v-for="t in props.progressItems" type="success" :title="t.title" :time="t.deadline" :key="t.taskId">
 <!--            提交详情在完成提交的任务内出现-->
-            <el-button text type="primary" @click="handleViewSubmitDetail" v-if="t.taskFinishStatus===sys_task_submit_status.PASS">
+            <el-button text type="primary" @click="handleViewSubmitDetail(t.taskId)" v-if="t.taskFinishStatus===sys_task_submit_status.PASS">
               提交详情
             </el-button>
 
@@ -96,7 +112,7 @@ const handleViewSubmitDetail = (taskId) =>{
         </div>
       </div>
     </el-col>
-    <el-col :span="4"/>
+    <el-col :span="2"/>
   </el-row>
 </template>
 
