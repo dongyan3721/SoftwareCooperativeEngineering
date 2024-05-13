@@ -9,4 +9,5 @@ public class StringConstant {
     public static final String LOGIN_FAILED = "用户名或密码错误";
     public static final String INTERNAL_SERVER_ERROR = "内部错误，请联系管理员";
     public static final String ILLEGAL_OPERATION = "非法操作";
+    public static final String MODIFY_PASSWORD_FAILED = "旧密码不正确";
 }

@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.service;
 
+import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 
 /**
@@ -11,4 +12,6 @@ public interface TeacherService {
     BTeacher getTeacherById(Integer id);
 
     void modifyTeacher(BTeacher bTeacher);
+
+    void changePassword(ChangePasswordDTO changePasswordDTO);
 }

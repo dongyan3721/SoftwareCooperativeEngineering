@@ -3,9 +3,12 @@ package com.softwarecooperative.softwareciooperative.service.impl;
 import com.softwarecooperative.softwareciooperative.dao.mapper.TeacherMapper;
 import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.IllegalOperationException;
+import com.softwarecooperative.softwareciooperative.framework.exception.service.ModifyPasswordException;
 import com.softwarecooperative.softwareciooperative.framework.net.StringConstant;
+import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.TeacherService;
+import com.softwarecooperative.softwareciooperative.utils.crypto.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +35,22 @@ public class TeacherServiceImpl implements TeacherService {
             throw new IllegalOperationException(StringConstant.ILLEGAL_OPERATION);
 
         teacherMapper.update(bTeacher);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+        Integer teacherId = Integer.parseInt(BaseContext.getCurrentId());
+        BTeacher teacher = teacherMapper.selectOne(BTeacher.builder().teacherId(teacherId).build());
+
+        String oldPasswordMD5 = MD5Util.encrypt(changePasswordDTO.getOldPassword());
+        if (!oldPasswordMD5.equals(teacher.getPassword()))
+            throw new ModifyPasswordException(StringConstant.MODIFY_PASSWORD_FAILED);
+
+        BTeacher newTeacher = BTeacher.builder()
+                        .teacherId(teacherId)
+                        .password(MD5Util.encrypt(changePasswordDTO.getNewPassword()))
+                        .build();
+
+        teacherMapper.update(newTeacher);
     }
 }

@@ -3,6 +3,7 @@ package com.softwarecooperative.softwareciooperative.controller.teacher;
 import com.softwarecooperative.softwareciooperative.framework.annotation.AccessWithoutVerification;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.LoginFailedException;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
+import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.LoginService;
 import com.softwarecooperative.softwareciooperative.service.TeacherService;
@@ -54,5 +55,12 @@ public class TeacherController {
     public AjaxResult getById(@PathVariable Integer teacherId) {
         BTeacher teacher = teacherService.getTeacherById(teacherId);
         return AjaxResult.success(teacher);
+    }
+
+    @PostMapping("/changePassword")
+    @Operation(summary = "修改密码")
+    public AjaxResult changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        teacherService.changePassword(changePasswordDTO);
+        return AjaxResult.success();
     }
 }
