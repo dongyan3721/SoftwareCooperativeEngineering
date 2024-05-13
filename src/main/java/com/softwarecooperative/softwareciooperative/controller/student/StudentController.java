@@ -4,7 +4,6 @@ import com.softwarecooperative.softwareciooperative.framework.annotation.AccessW
 import com.softwarecooperative.softwareciooperative.framework.exception.service.LoginFailedException;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
-import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.LoginService;
 import com.softwarecooperative.softwareciooperative.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/student")
-@Tag(name = "学生登录相关接口")
+@Tag(name = "学生相关接口")
 @Slf4j
-public class StudentLoginController {
+public class StudentController {
 
     @Autowired
     private LoginService loginService;
