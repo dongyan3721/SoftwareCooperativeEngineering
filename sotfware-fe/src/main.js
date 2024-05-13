@@ -11,6 +11,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import '../tail.main.scss'
 import pinia from "@/store/index.js";
+import 'vue-cropper/dist/index.css'
 // 全局样式引入
 // import '@/assets/style/typesetting.scss'
 
