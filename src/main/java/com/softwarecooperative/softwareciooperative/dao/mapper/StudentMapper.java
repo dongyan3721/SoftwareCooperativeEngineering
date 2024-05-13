@@ -11,4 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface StudentMapper {
     BStudent selectOne(BStudent student);
+    void update(BStudent student);
 }

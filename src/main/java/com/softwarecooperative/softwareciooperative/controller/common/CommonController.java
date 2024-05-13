@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/common")
 @Tag(name = "公共接口")
 @Slf4j
-public class DictController {
+public class CommonController {
 
     @Autowired
     private CommonService commonService;

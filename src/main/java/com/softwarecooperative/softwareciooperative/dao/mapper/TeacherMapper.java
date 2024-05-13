@@ -2,6 +2,7 @@ package com.softwarecooperative.softwareciooperative.dao.mapper;
 
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @Description
@@ -11,4 +12,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface TeacherMapper {
     BTeacher selectOne(BTeacher teacher);
+
+    void update(BTeacher bTeacher);
 }
