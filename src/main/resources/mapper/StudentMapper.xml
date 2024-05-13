@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.StudentMapper">
+    <update id="update">
+        UPDATE b_student
+        <set>
+            <if test="studentName != null and studentName != ''"> student_name = #{studentName}, </if>
+            <if test="password != null and password != ''"> `password` = #{password}, </if>
+            <if test="avatar != null and avatar != ''"> avatar = #{avatar} </if>
+        </set>
+        WHERE student_id = #{studentId}
+    </update>
     <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudent">
         SELECT * FROM b_student
         <where>
