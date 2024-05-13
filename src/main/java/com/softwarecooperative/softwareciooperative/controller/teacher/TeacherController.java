@@ -5,6 +5,7 @@ import com.softwarecooperative.softwareciooperative.framework.exception.service.
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.LoginService;
+import com.softwarecooperative.softwareciooperative.service.TeacherService;
 import com.softwarecooperative.softwareciooperative.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,9 @@ public class TeacherController {
     @Autowired
     private LoginService loginService;
 
+    @Autowired
+    private TeacherService teacherService;
+
     @PostMapping("/login")
     @Operation(summary = "教师登录")
     @AccessWithoutVerification
@@ -36,5 +40,19 @@ public class TeacherController {
         AjaxResult body = AjaxResult.success(res);
         body.put("token", token);
         return body;
+    }
+
+    @PutMapping("")
+    @Operation(summary = "教师修改个人信息")
+    public AjaxResult modifyTeacher(@RequestBody BTeacher bTeacher) {
+        teacherService.modifyTeacher(bTeacher);
+        return AjaxResult.success();
+    }
+
+    @GetMapping("/{teacherId}")
+    @Operation(summary = "按id查询教师")
+    public AjaxResult getById(@PathVariable Integer teacherId) {
+        BTeacher teacher = teacherService.getTeacherById(teacherId);
+        return AjaxResult.success(teacher);
     }
 }
