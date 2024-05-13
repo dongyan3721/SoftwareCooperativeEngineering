@@ -39,6 +39,7 @@ public class CommonController {
 
     @PostMapping("/upload")
     @Operation(summary = "上传文件")
+    @AccessWithoutVerification
     public AjaxResult uploadFile(@RequestBody MultipartFile file) throws IOException {
         String url = commonService.uploadFile(file.getBytes(), file.getOriginalFilename());
         return AjaxResult.success(url);

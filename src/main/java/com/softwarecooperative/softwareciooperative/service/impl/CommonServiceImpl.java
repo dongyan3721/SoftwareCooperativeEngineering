@@ -35,7 +35,7 @@ public class CommonServiceImpl implements CommonService {
         try {
             ext = originalFilename.substring(originalFilename.lastIndexOf("."));
         }catch (StringIndexOutOfBoundsException e){
-            ext = "png";
+            ext = ".png";
         }
         String storageFileName = UUID.randomUUID() + ext;
         return aliOssUtil.upload(bytes, storageFileName);
