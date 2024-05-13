@@ -7,17 +7,24 @@ import AutoImport from 'unplugin-auto-import/dist/vite.js'
 // https://vitejs.dev/config/
 export default defineConfig(({command, mode})=>{
   const env = loadEnv(mode, './')
+  const PORT= env.VITE_APP_PORT || 80
   return {
     base: './',
     server: {
       host: '0.0.0.0',
-      port: 5173,
+      port: PORT,
+      // 需要前后端部署在同一台机器上
       proxy: {
         [env.VITE_APP_BASE_API]: {
           target: 'http://localhost:8080',
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp(`^${env.VITE_APP_BASE_API}`), ''),
         },
+        // 需要访问后端以获取的文件资源
+        '/static': {
+          target: 'http://localhost:8080',
+          changeOrigin: true
+        }
       }
     },
     plugins: [
