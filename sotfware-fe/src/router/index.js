@@ -57,7 +57,22 @@ const routes = [
     {
         path: '/preview',
         name: 'preview',
-        component: ()=>import('@/components/general/progress-bar.vue')
+        component: ()=>import('@/components/student/student-group-description.vue')
+    },
+    {
+        path: '/teacher-notice',
+        name: 'teacher-notice',
+        component: ()=>import('@/view/teacher/teacher-notice.vue')
+    },
+    {
+        path: '/student-group-apply',
+        name: 'student-group-apply',
+        component: ()=>import('@/view/student/student-group-apply.vue')
+    },
+    {
+        path: '/student-notice',
+        name: 'student-notice',
+        component: ()=>import('@/view/student/student-notice.vue')
     }
 ];
 

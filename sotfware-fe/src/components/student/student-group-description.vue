@@ -10,7 +10,6 @@ import {genFileId} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
 import {base64ToBlob, compressImage} from "@/util/dongyan.js";
 import {VueCropper} from 'vue-cropper'
-import {resetForm} from "@/util/ruoyi.js";
 import {generalValidatorJudgeIfEmpty} from "@/util/common.js";
 import upload from "@/web-api/upload.js";
 
@@ -301,7 +300,7 @@ const handleModifySubmit = ()=>{
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleModifySubmit">提交</el-button>
-        <el-button type="warning" @click="resetForm">重置</el-button>
+        <el-button type="warning" @click="formRest">重置</el-button>
       </el-form-item>
     </el-form>
     <!--一个表格，有本组每个人上传的东西-->
