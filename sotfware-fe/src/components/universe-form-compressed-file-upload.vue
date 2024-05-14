@@ -1,70 +1,40 @@
 <!--
 -- @author Santa Antilles
--- @description 学生小组信息展示组件
--- @date 2024/5/12-23:46:32
+-- @description 基于element-plus上传框封装一个支持、VueCropper裁剪框，用于表单内的文件上传
+-- @date 2024/5/14-21:20:36
+-- 封装上传的文件大小不超过10KB
 -->
 
 <script setup>
-import {Edit, Scissors} from "@icon-park/vue-next";
-import {genFileId} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
+import {VueCropper} from "vue-cropper";
 import {base64ToBlob, compressImage} from "@/util/dongyan.js";
-import {VueCropper} from 'vue-cropper'
-import {generalValidatorJudgeIfEmpty} from "@/util/common.js";
-import upload from "@/web-api/upload.js";
+import {Scissors} from "@icon-park/vue-next";
+import {genFileId} from "element-plus";
 
 const props = defineProps({
-  groupName: String,
-  groupAvatar: String,
-  groupIntroduction: String,
-  groupLeaderName: String,
-  groupLeaderAvatar: String,
-  editVis: Boolean
+  initialPicture: String,
+  universeUploadFunction: Function,
+  callbackVisitUrlAttribute: String,
+  modelValue: String
 })
 
-const form = reactive({
-  groupName: props.groupName,
-  groupAvatar: props.groupAvatar,
-  groupIntroduction: props.groupIntroduction
-})
+const emit = defineEmits(['update:modelValue'])
 
-const formRef = ref()
-
-const formRest = (fRef)=>{
-  if(!fRef) return
-  fRef.resetFields()
-  form.groupAvatar = props.groupAvatar
-  form.groupName = props.groupName
-  form.groupIntroduction = props.groupIntroduction
-  dialogUploadFileList.value = [{
-    name: 'test',
-    url: props.groupAvatar
-  }]
-}
-
-// 控制提交详情对话窗口的可见性
-const dialogVis = ref(false)
-// 关闭对话窗口
-const closeSubmitDialog = ()=>{
-  dialogVis.value = false
-}
-// 打开对话窗口
-const openSubmitDialog = ()=>{
-  dialogVis.value = true
-}
-
+let dialogUploadFileList = ref([{
+  name: 'test',
+  url: props.initialPicture
+}])
 const recordWhetherAvatarHadBeenModified = ref(false)
 const dialogImageHeight = ref('50px')
 const dialogImageWidth = ref()
 const bodyPreviewDialogWidth = ref()
-
-// 动态调整图像预览框的大小
 function adjustDialogImageWidthAndHeight() {
   // console.log(fileList.value[0])
   let imageUrl = dialogUploadFileList.value[0].url;
   let image = new Image();
   image.src = imageUrl;
-  // TODO 有坑
+  // 有坑，最好延迟1s
   setTimeout(()=>{
     dialogImageWidth.value = `${50 * image.width / image.height}px`;
     bodyPreviewDialogWidth.value = `${50 * image.width / image.height + 50}px`
@@ -116,7 +86,6 @@ const handleAvatarRemove = ()=>{
   recordWhetherAvatarHadBeenModified.value = false
 }
 
-
 // 裁剪框的配置
 let cropOptions = reactive({
   img: '', // 裁剪图片的地址 url 地址, base64, blob
@@ -139,7 +108,6 @@ let cropOptions = reactive({
   enlarge: '1', // 图片根据截图框输出比例倍数
   mode: 'contain' // 图片默认渲染方式 contain , cover, 100px, 100% auto
 })
-let cnt = ref(0)
 // 打开头像裁剪对话框
 const openCropDialog = ()=>{
   cropVis.value = true
@@ -147,17 +115,11 @@ const openCropDialog = ()=>{
 
 const handleCloseCropDialog = ()=>{
   cropVis.value = false
-  cnt = ref(++cnt.value)
 }
 // 裁剪框可见性
 let cropVis = ref(false);
 // 裁剪框引用
 let cropperRef = ref()
-// 裁剪框上传部分图片列表，限一张
-let dialogUploadFileList = ref([{
-  name: 'test',
-  url: props.groupAvatar
-}])
 const rotateLeft = () => {
   // 这个默认是旋转90度的，官网有说明
   // 后面会完善不要让这个一下子旋转90度的代码
@@ -203,29 +165,15 @@ const transferUploadedToBuffer = ()=>{
       url: previewUrl.value
     }
   ]
-  upload(avatarBlob).then(res=>{
-    form.groupAvatar = res.msg
+  props.universeUploadFunction(avatarBlob).then(res=>{
+    emit('update:modelValue', res[props.callbackVisitUrlAttribute])
     cropVis.value = false;
   })
 }
 
-const modifyFormRules = reactive({
-  groupName: [{validator: generalValidatorJudgeIfEmpty('小组名称'), trigger: 'blur'}],
-  groupAvatar: [{validator: generalValidatorJudgeIfEmpty('小组头像'), trigger: 'blur'}],
-  groupIntroduction: [{validator: generalValidatorJudgeIfEmpty('小组介绍'), trigger: 'blur'}]
-})
-
-const handleModifySubmit = ()=>{
-  console.log(form)
-}
-
-
-
-
 </script>
 
 <template>
-  <!-- 二层对话框，裁剪上传图像-->
   <el-dialog v-model="cropVis" @close="handleCloseCropDialog" width="600px">
     <template #header>
       <div class="flex flex-row items-center">
@@ -239,9 +187,9 @@ const handleModifySubmit = ()=>{
                   :autoCropWidth="cropOptions.autoCropWidth" :autoCropHeight="cropOptions.autoCropHeight" :fixedBox="cropOptions.fixedBox"
                   :fixed="cropOptions.fixed" :fixedNumber="cropOptions.fixedNumber" :canMove="cropOptions.canMove" :canMoveBox="cropOptions.canMoveBox"
                   :original="cropOptions.original" :centerBox="cropOptions.centerBox" :infoTrue="cropOptions.infoTrue" :full="cropOptions.full"
-                  :enlarge="cropOptions.enlarge" :mode="cropOptions.mode" :key="cnt"/>
+                  :enlarge="cropOptions.enlarge" :mode="cropOptions.mode"/>
     </el-row>
-    <el-row style="width: 100%; height: 60px; margin-top: 10px;">
+    <el-row class="w-100 h-14 mt-2.5">
       <el-button type="primary" plain @click="rotateLeft">←向左旋转图片</el-button>
       <el-button type="primary" plain @click="rotateRight">向右旋转图片→</el-button>
       <el-button type="primary" @click="getCropDataBase64">获取截取的图片</el-button>
@@ -250,7 +198,7 @@ const handleModifySubmit = ()=>{
     <div>
       头像预览
     </div>
-    <div style="width: 600px; height: auto; display: flex; align-items: center; justify-content: center">
+    <div style="width: 600px" class="flex items-center justify-center">
       <!-- 若图片只设置宽度，可以保持等比例展示图片 -->
       <img :src="previewUrl" style="width: 50px; height: 50px" alt="preview" v-show="showPreview">
       <div v-show="!showPreview">
@@ -267,69 +215,22 @@ const handleModifySubmit = ()=>{
     <img :src="dialogUploadFileList[0].url" alt="preview" :height="dialogImageHeight" :width="dialogImageWidth"/>
     <template #header><span>头像预览</span></template>
   </el-dialog>
-  <!-- 一层对话框，修改小组信息 -->
-  <el-dialog v-model="dialogVis" @close="closeSubmitDialog">
-    <template #header>
-      <div class="flex items-center justify-start">
-        <edit theme="outline" size="18" fill="#2a3f67" class="inline"/>
-        <span class="ml-1 text-base">修改小组信息</span>
-      </div>
+
+  <el-upload
+      v-model:file-list="dialogUploadFileList"
+      ref="bodyUploadRef"
+      list-type="picture-card"
+      :on-preview="handlePictureCardPreview"
+      :on-exceed="handleExceed"
+      :on-remove="handleAvatarRemove"
+      :on-change="handleAvatarInitialUpload"
+      :before-remove="handleRejectRemove"
+      :auto-upload="false"
+      :limit="1">
+    <template #default>
+      <el-icon><Plus/></el-icon>
     </template>
-    <el-form :model="form" :inline="false" ref="formRef" :rules="modifyFormRules">
-      <el-form-item label="小组名称" prop="groupName">
-        <el-input clearable v-model="form.groupName"/>
-      </el-form-item>
-      <el-form-item label="小组头像" prop="groupAvatar">
-        <el-upload
-            v-model:file-list="dialogUploadFileList"
-            ref="bodyUploadRef"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :on-exceed="handleExceed"
-            :on-remove="handleAvatarRemove"
-            :on-change="handleAvatarInitialUpload"
-            :before-remove="handleRejectRemove"
-            :auto-upload="false"
-            :limit="1">
-          <template #default>
-            <el-icon><Plus/></el-icon>
-          </template>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="小组简介" prop="groupIntroduction">
-        <el-input type="textarea" clearable v-model="form.groupIntroduction"/>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="handleModifySubmit">提交</el-button>
-        <el-button type="warning" @click="formRest(formRef)">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <!--一个表格，有本组每个人上传的东西-->
-  </el-dialog>
-  <n-thing content-indented>
-    <template #avatar>
-      <n-avatar :src="props.groupAvatar" :size="105"/>
-    </template>
-    <template #header>
-      <span class="text-2xl">{{props.groupName}}</span>
-    </template>
-    <template #header-extra>
-      <n-button size="medium" circle v-if="props.editVis" @click="openSubmitDialog">
-        <template #icon>
-          <edit theme="outline" size="18" fill="#2a3f67"/>
-        </template>
-      </n-button>
-    </template>
-    <p class="text-clip opacity-50">
-      {{props.groupIntroduction}}
-    </p>
-    <template #footer>
-      <div class="flex flex-row items-center">
-        <n-avatar :src="props.groupLeaderAvatar" circle size="small"/>
-        <span class="ml-2">{{props.groupLeaderName}}</span>
-      </div>
-    </template>
-  </n-thing>
+  </el-upload>
 </template>
 
 <style scoped>

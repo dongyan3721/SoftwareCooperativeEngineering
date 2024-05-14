@@ -13,3 +13,5 @@ pinia.use(persist)
 export default pinia
 
 export * from "./useUserStore.js"
+export * from './useStudentClassStore.js'
+export * from './useStudentGroupStore.js'

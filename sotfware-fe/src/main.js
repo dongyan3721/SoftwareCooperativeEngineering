@@ -12,6 +12,7 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import '../tail.main.scss'
 import pinia from "@/store/index.js";
 import 'vue-cropper/dist/index.css'
+import '@/assets/style/style.scss'
 // 全局样式引入
 // import '@/assets/style/typesetting.scss'
 

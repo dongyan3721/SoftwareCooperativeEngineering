@@ -1,5 +1,11 @@
 // 如果某些样式特别常用，就放在这里
 // （如果用的话）
 
+@import "./custom_variables";
 
+@each $tkey, $tval in $tailwind-metric-extend {
+  .h-#{$tkey}{
+    height: #{$tval}rem;
+  }
+}
 
