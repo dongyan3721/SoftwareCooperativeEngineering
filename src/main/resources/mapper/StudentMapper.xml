@@ -5,8 +5,11 @@
         UPDATE b_student
         <set>
             <if test="studentName != null and studentName != ''"> student_name = #{studentName}, </if>
+            <if test="studentClass != null"> student_class = #{studentClass}, </if>
+            <if test="studentRole != null and studentRole != ''"> student_role = #{studentRole}, </if>
+            <if test="studentGroup != null"> student_group = #{studentGroup}, </if>
             <if test="password != null and password != ''"> `password` = #{password}, </if>
-            <if test="avatar != null and avatar != ''"> avatar = #{avatar} </if>
+            <if test="avatar != null and avatar != ''"> avatar = #{avatar}, </if>
         </set>
         WHERE student_id = #{studentId}
     </update>

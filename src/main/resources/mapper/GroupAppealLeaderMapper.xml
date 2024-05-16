@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.GroupAppealLeaderMapper">
+    <delete id="delete">
+        DELETE FROM b_group_appeal_leader WHERE appeal_id = #{appealId}
+    </delete>
+    <select id="selectById"
+            resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader">
+        SELECT * FROM b_group_appeal_leader WHERE appeal_id = #{appealId}
+    </select>
+    <select id="selectAppealLeaderVOByClass"
+            resultType="com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO">
+        SELECT bgal.appeal_id, bgal.student_id, bgal.group_name, bs.student_name, bs.avatar AS student_avatar, bgal.appeal_date
+        FROM b_group_appeal_leader bgal
+                 LEFT OUTER JOIN b_student bs ON bgal.student_id = bs.student_id
+        WHERE bgal.class_id = #{classId}
+    </select>
+</mapper>

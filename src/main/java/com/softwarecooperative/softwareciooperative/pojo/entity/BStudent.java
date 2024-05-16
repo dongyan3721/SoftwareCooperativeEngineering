@@ -22,4 +22,11 @@ public class BStudent implements Serializable {
   private String password;
   private String avatar;
 
+  public static final String NO_ROLE = "0";
+  public static final String DEVELOPMENT_MANAGER = "1";
+  public static final String PRODUCT_MANAGER = "2";
+  public static final String PLANNING_MANAGER = "3";
+  public static final String TEST_MANAGER = "4";
+  public static final String QUALITY_MANAGER = "5";
+
 }
