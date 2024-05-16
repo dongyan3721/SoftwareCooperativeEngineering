@@ -10,6 +10,8 @@ import {useUserStore, useStudentClassStore} from "@/store";
 import {PeoplesTwo} from "@icon-park/vue-next";
 import UniverseFormCompressedFileUpload from "@/components/universe-form-compressed-file-upload.vue";
 import upload from "@/web-api/upload.js";
+import {queryExistingStudentGroups} from "@/web-api/student/studentGroupApply.js";
+import {downToGetInt, generateSequence, upToGetInt} from "@/util/dongyan.js";
 
 const userStore = useUserStore();
 const studentClassStore = useStudentClassStore();
@@ -39,6 +41,34 @@ const resetApplyForm = (fRef)=>{
 const handOnApply = ()=>{
 
 }
+
+const existingGroups = ref([
+    {groupId: 114514, groupName: '下北泽软件研发部', classId: 142543296, groupIntroduction: '（技术）非常的先进，（效率）非常的快速',
+    groupAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
+    groupLeaderId: '114154191', groupLeaderAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
+    groupLeaderName: '李田所'},
+])
+const exitGroupsRowCount = computed(()=>{
+  return generateSequence(0, upToGetInt(existingGroups.value.length, existGroupCol))
+})
+// 每行4列
+const existGroupCol = 4
+
+function requestExistingGroups(){
+  queryExistingStudentGroups({}).then(res=>{
+
+  })
+}
+
+const resolveJoinGroup = (groupId)=>{
+  console.log(groupId)
+}
+
+onBeforeMount(function (){
+  // requestExistingGroups();
+})
+
+
 </script>
 
 <template>
@@ -49,15 +79,16 @@ const handOnApply = ()=>{
         <span class="inline-block ml-1">创建小组</span>
       </div>
     </template>
+    <!--    坑! 不指定prop无法reset表单-->
     <el-form :model="applyForm" ref="applyFormRef" size="large">
-      <el-form-item label="小组名称">
+      <el-form-item label="小组名称" prop="groupName">
         <el-input v-model="applyForm.groupName" clearable/>
       </el-form-item>
-      <el-form-item label="小组头像">
+      <el-form-item label="小组头像" prop="groupAvatar">
         <universe-form-compressed-file-upload :initial-picture="''" :universe-upload-function="upload"
                                               :callback-visit-url-attribute="'msg'" v-model="applyForm.groupAvatar"/>
       </el-form-item>
-      <el-form-item label="小组介绍">
+      <el-form-item label="小组介绍" prop="groupIntroduction">
         <el-input type="textarea" clearable v-model="applyForm.groupIntroduction"/>
       </el-form-item>
       <el-form-item>
@@ -79,9 +110,29 @@ const handOnApply = ()=>{
 <!--      加入已有小组-->
       <div class="w-100 h-2/3 mt-3">
         <span class="text-2xl font-semibold">加入队伍</span>
-        <n-card v-for="group in existedGroups" :key="group.groupId">
-
-        </n-card>
+        <el-row v-for="count in exitGroupsRowCount" :key="count" :gutter="20" class="my-4">
+          <el-col :span="downToGetInt(24, existGroupCol)" :key="i"
+              v-for="i in generateSequence(count*4, (count+1)*4>existingGroups.length?existingGroups.length:(count+1)*4)">
+            <n-card hoverable class="rounded-xl">
+              <div class="w-100 h-100">
+                <div class="flex flex-row items-center">
+                  <n-avatar :src="existingGroups[i].groupAvatar" :size="80"/>
+                  <div class="flex flex-col ml-3 justify-between">
+                    <span class="my-1 block text-xl" style="font-family: alibaba-inclusive">{{existingGroups[i].groupName}}</span>
+                    <div class="flex flex-row">
+                      <n-avatar :src="existingGroups[i].groupLeaderAvatar" round size="small"/>
+                      <span class="text-gray-400 my-1 ml-1" style="font-family: alibaba-inclusive">{{existingGroups[i].groupLeaderName}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <template #action>
+                <el-button size="small" type="warning" @click="resolveViewGroupDetail(existingGroups[i].groupId)">让我看看！</el-button>
+                <el-button size="small" type="primary" @click="resolveJoinGroup(existingGroups[i].groupId)">我汤姆来辣</el-button>
+              </template>
+            </n-card>
+          </el-col>
+        </el-row>
       </div>
     </div>
   </student-menu>

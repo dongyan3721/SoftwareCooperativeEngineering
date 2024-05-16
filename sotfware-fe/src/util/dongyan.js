@@ -75,3 +75,22 @@ export function base64ToFile(base64String, filename, mimeType = 'image/png') {
     const blob = new Blob(byteArrays, { type: mimeType });
     return new File([blob], filename, { type: mimeType });
 }
+
+// 向上取整函数
+export const upToGetInt = (i, f)=>{
+    return i%f?Math.floor(i/f)+1:Math.floor(i/f)
+}
+
+// 向下取整函数
+export const downToGetInt = (i, f)=>{
+    return Math.floor(i/f)
+}
+
+export function generateSequence(begin, end) {
+    let l = []
+    for (let i = begin; i < end; i++) {
+        l.push(i);
+    }
+    return l;
+}
+
