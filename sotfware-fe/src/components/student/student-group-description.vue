@@ -31,8 +31,11 @@ const form = reactive({
 const formRef = ref()
 
 const formRest = (fRef)=>{
-  if(!fRef.value) return
-  fRef.value.resetFields()
+  if(!fRef) return
+  fRef.resetFields()
+  form.groupAvatar = props.groupAvatar
+  form.groupName = props.groupName
+  form.groupIntroduction = props.groupIntroduction
   dialogUploadFileList.value = [{
     name: 'test',
     url: props.groupAvatar
@@ -202,8 +205,6 @@ const transferUploadedToBuffer = ()=>{
   ]
   upload(avatarBlob).then(res=>{
     form.groupAvatar = res.msg
-    console.log('aaa', res)
-    console.log('bbb', res.msg)
     cropVis.value = false;
   })
 }
@@ -215,7 +216,7 @@ const modifyFormRules = reactive({
 })
 
 const handleModifySubmit = ()=>{
-
+  console.log(form)
 }
 
 
@@ -274,11 +275,11 @@ const handleModifySubmit = ()=>{
         <span class="ml-1 text-base">修改小组信息</span>
       </div>
     </template>
-    <el-form v-model="form" :inline="false" ref="formRef" :rules="modifyFormRules">
-      <el-form-item label="小组名称" required prop="groupName">
+    <el-form :model="form" :inline="false" ref="formRef" :rules="modifyFormRules">
+      <el-form-item label="小组名称" prop="groupName">
         <el-input clearable v-model="form.groupName"/>
       </el-form-item>
-      <el-form-item label="小组头像" required prop="groupAvatar">
+      <el-form-item label="小组头像" prop="groupAvatar">
         <el-upload
             v-model:file-list="dialogUploadFileList"
             ref="bodyUploadRef"
@@ -295,12 +296,12 @@ const handleModifySubmit = ()=>{
           </template>
         </el-upload>
       </el-form-item>
-      <el-form-item label="小组简介" required prop="groupIntroduction">
+      <el-form-item label="小组简介" prop="groupIntroduction">
         <el-input type="textarea" clearable v-model="form.groupIntroduction"/>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleModifySubmit">提交</el-button>
-        <el-button type="warning" @click="formRest">重置</el-button>
+        <el-button type="warning" @click="formRest(formRef)">重置</el-button>
       </el-form-item>
     </el-form>
     <!--一个表格，有本组每个人上传的东西-->

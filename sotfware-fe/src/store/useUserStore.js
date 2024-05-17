@@ -26,6 +26,7 @@ userStore.$patch((state) => {
 
 
  */
+const _undefined = void 0
 export const useUserStore = defineStore(
     'user',
     ()=>{
@@ -54,14 +55,14 @@ export const useUserStore = defineStore(
         }
 
         const clearLoginInFo = ()=>{
-            token.value = undefined
-            userRole.value = undefined
-            userId.value = undefined
-            userName.value = undefined
-            avatar.value = undefined
-            studentRole.value = undefined
-            studentGroup.value = undefined
-            studentClass.value = undefined
+            token.value = _undefined
+            userRole.value = _undefined
+            userId.value = _undefined
+            userName.value = _undefined
+            avatar.value = _undefined
+            studentRole.value = _undefined
+            studentGroup.value = _undefined
+            studentClass.value = _undefined
         }
 
         const token = ref()
