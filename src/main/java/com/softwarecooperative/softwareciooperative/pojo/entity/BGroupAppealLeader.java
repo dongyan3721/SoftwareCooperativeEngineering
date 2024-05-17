@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.pojo.entity;
 
+import com.softwarecooperative.softwareciooperative.framework.annotation.PrimaryKey;
 import lombok.*;
 
 import java.io.Serializable;
@@ -16,6 +17,8 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 public class BGroupAppealLeader implements Serializable {
+
+    @PrimaryKey
     private Integer appealId;
     private Integer studentId;
     private String groupName;

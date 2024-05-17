@@ -6,19 +6,23 @@ import com.softwarecooperative.softwareciooperative.dao.mapper.GroupAppealLeader
 import com.softwarecooperative.softwareciooperative.dao.mapper.GroupMapper;
 import com.softwarecooperative.softwareciooperative.dao.mapper.StudentMapper;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.GroupException;
+import com.softwarecooperative.softwareciooperative.framework.net.NotificationTemplate;
 import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.framework.net.StringConstant;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 import com.softwarecooperative.softwareciooperative.service.GroupService;
+import com.softwarecooperative.softwareciooperative.service.NotificationService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,6 +42,9 @@ public class GroupServiceImpl implements GroupService {
     @Autowired
     private GroupMapper groupMapper;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public List<BGroup> getGroupByClass(Integer classId) {
         return groupMapper.selectByCond(BGroup.builder().classId(classId).build());
@@ -45,17 +52,18 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = {GroupException.class})
-    public void approveLeader(Integer appealId, Boolean isAccept) {
+    public void approveLeader(Integer appealId, Boolean isAccept) throws IOException {
+        BGroupAppealLeader appealInfo = groupAppealLeaderMapper.selectById(appealId);
+        if (appealInfo == null)
+            throw new GroupException(StringConstant.NO_APPEAL);
+        Integer studentId = appealInfo.getStudentId();
+        BStudent bStudent = studentMapper.selectOne(BStudent.builder().studentId(studentId).build());
+
         if (isAccept) {
             // 删除申请条目
-            BGroupAppealLeader appealInfo = groupAppealLeaderMapper.selectById(appealId);
-            if (appealInfo == null)
-                throw new GroupException(StringConstant.NO_APPEAL);
             groupAppealLeaderMapper.delete(appealId);
 
             // 检查学生是否已经加入团队
-            Integer studentId = appealInfo.getStudentId();
-            BStudent bStudent = studentMapper.selectOne(BStudent.builder().studentId(studentId).build());
             if (bStudent.getStudentGroup() != null || !BStudent.NO_ROLE.equals(bStudent.getStudentRole()))
                 throw new GroupException(StringConstant.STUDENT_ALREADY_IN_GROUP);
 
@@ -75,10 +83,14 @@ public class GroupServiceImpl implements GroupService {
                     .studentGroup(group.getGroupId())
                     .build());
 
-            // TODO 向组长通知组长申请已通过
+            // 向组长通知组长申请已通过
+            notificationService.sendNotifToOneStudent(BClass.SYSTEM, studentId,
+                    NotificationTemplate.LEADER_APPROVE(bStudent.getStudentName(), group.getGroupName()));
         } else {
-            // TODO 向组长通知组长申请未通过
             groupAppealLeaderMapper.delete(appealId);
+            // 向学生通知组长申请未通过
+            notificationService.sendNotifToOneStudent(BClass.SYSTEM, studentId,
+                    NotificationTemplate.LEADER_DENY(bStudent.getStudentName()));
         }
     }
 

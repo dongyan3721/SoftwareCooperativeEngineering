@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class GroupController {
 
     @PostMapping("/approveLeader")
     @Operation(summary = "教师批准学生成为组长")
-    public AjaxResult approveLeader(Integer appealId, Boolean isAccept) {
+    public AjaxResult approveLeader(Integer appealId, Boolean isAccept) throws IOException {
         groupService.approveLeader(appealId, isAccept);
         return AjaxResult.success();
     }

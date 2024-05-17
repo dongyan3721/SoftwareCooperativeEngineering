@@ -4,6 +4,7 @@ import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public interface GroupService {
      */
     List<BGroup> getGroupByClass(Integer classId);
 
-    void approveLeader(Integer appealId, Boolean isAccept);
+    void approveLeader(Integer appealId, Boolean isAccept) throws IOException;
 
     PageResult<AppealLeaderVO> getAppealLeaderByClass(Integer page, Integer pageSize, Integer classId);
 }
