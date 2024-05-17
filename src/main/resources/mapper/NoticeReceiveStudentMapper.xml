@@ -7,9 +7,10 @@
         VALUES
             (#{noticeId}, #{noticeReceiverId}, #{noticeStatus})
     </insert>
-    <insert id="insertBatch">
+    <insert id="insertBatch" parameterType="java.util.List">
         INSERT INTO b_notice_receive_student
             (notice_id, notice_receiver_id, notice_status)
+        VALUES
         <foreach collection="stus" separator=", " item="item">
             (#{item.noticeId}, #{item.noticeReceiverId}, #{item.noticeStatus})
         </foreach>

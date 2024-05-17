@@ -61,6 +61,8 @@ mybatis:
   configuration:
     #开启驼峰命名
     map-underscore-to-camel-case: true
+    #开启sql语句logback
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 backend:
   # 名称

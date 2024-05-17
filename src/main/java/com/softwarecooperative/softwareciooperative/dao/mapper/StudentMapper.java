@@ -2,6 +2,9 @@ package com.softwarecooperative.softwareciooperative.dao.mapper;
 
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Description
@@ -12,4 +15,8 @@ import org.apache.ibatis.annotations.Mapper;
 public interface StudentMapper {
     BStudent selectOne(BStudent student);
     void update(BStudent student);
+
+    List<BStudent> selectByCond(BStudent student);
+
+    void exitGroup(@Param("groupId") Integer groupId);
 }

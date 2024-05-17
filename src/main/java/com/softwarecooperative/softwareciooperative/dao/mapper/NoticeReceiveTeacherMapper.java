@@ -15,9 +15,7 @@ import java.util.List;
 @Mapper
 public interface NoticeReceiveTeacherMapper {
 
-    @InjectSnowFlakeId
     void insertOne(BNoticeReceiveTeacher noticeReceiveTeacher);
 
-    @InjectSnowFlakeId
     void insertBatch(List<BNoticeReceiveTeacher> teas);
 }

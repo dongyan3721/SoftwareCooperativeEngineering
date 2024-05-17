@@ -22,4 +22,8 @@ public class NotificationTemplate {
     public static String LEADER_DENY(String studentName) {
         return studentName + "同学您好，很遗憾您的组长申请未通过审核";
     }
+    public static String GROUP_DISBAND(String groupName) {
+        return groupName + "团队已解散";
+    }
+
 }

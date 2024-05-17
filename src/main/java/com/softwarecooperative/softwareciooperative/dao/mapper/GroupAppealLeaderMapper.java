@@ -1,6 +1,7 @@
 package com.softwarecooperative.softwareciooperative.dao.mapper;
 
 import com.github.pagehelper.Page;
+import com.softwarecooperative.softwareciooperative.framework.annotation.InjectSnowFlakeId;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,4 +21,7 @@ public interface GroupAppealLeaderMapper {
     BGroupAppealLeader selectById(@Param("appealId") Integer appealId);
 
     Page<AppealLeaderVO> selectAppealLeaderVOByClass(@Param("classId") Integer classId);
+
+    @InjectSnowFlakeId
+    void insert(BGroupAppealLeader bGroupAppealLeader);
 }

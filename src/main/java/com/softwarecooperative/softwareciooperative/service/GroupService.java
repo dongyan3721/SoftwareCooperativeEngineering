@@ -2,6 +2,7 @@ package com.softwarecooperative.softwareciooperative.service;
 
 import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 
 import java.io.IOException;
@@ -24,4 +25,10 @@ public interface GroupService {
     void approveLeader(Integer appealId, Boolean isAccept) throws IOException;
 
     PageResult<AppealLeaderVO> getAppealLeaderByClass(Integer page, Integer pageSize, Integer classId);
+
+    void appealLeader(BGroupAppealLeader bGroupAppealLeader) throws IOException;
+
+    void disbandGroup(Integer groupId) throws IOException;
+
+    void editGroupInfo(BGroup bGroup);
 }
