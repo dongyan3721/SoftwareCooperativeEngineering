@@ -1,6 +1,7 @@
 package com.softwarecooperative.softwareciooperative.pojo.entity;
 
 
+import com.softwarecooperative.softwareciooperative.framework.annotation.PrimaryKey;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 public class BNoticeStudent implements Serializable {
 
+  @PrimaryKey
   private Integer noticeId;
   private String noticeContent;
   private String noticePublisher;

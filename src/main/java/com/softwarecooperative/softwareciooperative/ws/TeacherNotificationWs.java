@@ -3,7 +3,6 @@ package com.softwarecooperative.softwareciooperative.ws;
 import jakarta.websocket.*;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +12,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@ServerEndpoint("/test/{cid}")
+@ServerEndpoint("/teacher/notice/{cid}")
 @Slf4j
-public class WsTest {
+public class TeacherNotificationWs {
 
     //存放会话对象
     private static final Map<String, Session> sessionMap = new ConcurrentHashMap<>();
@@ -49,7 +48,7 @@ public class WsTest {
         log.info("傻逼{}客户端又出错", cid);
     }
 
-    public void sendToAllClient(String message) {
+    public static void sendToAllClient(String message) {
         Collection<Session> sessions = sessionMap.values();
         for (Session session : sessions) {
             try {
@@ -59,6 +58,13 @@ public class WsTest {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void sendToOneClient(Integer cid, String message) throws IOException {
+        Session session = sessionMap.get(cid.toString());
+        if (session == null)
+            return;
+        session.getBasicRemote().sendText(message);
     }
 
 }

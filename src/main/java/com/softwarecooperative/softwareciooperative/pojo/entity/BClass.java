@@ -21,4 +21,8 @@ public class BClass implements Serializable {
   private String courseName;
   private String classTerm;
 
+  public static final int STUDENT = 0;
+  public static final int TEACHER = 1;
+  public static final int SYSTEM = 2;
+
 }
