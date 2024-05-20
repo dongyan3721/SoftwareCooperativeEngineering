@@ -32,15 +32,10 @@ public class TeacherOnlyAspect {
 
     @Before("teacherOnly()")
     public void checkPermission(JoinPoint joinPoint) {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        assert attributes != null;
-
-        HttpServletRequest request = attributes.getRequest();
-        String permission = request.getHeader("permission");
         Integer id = Integer.parseInt(BaseContext.getCurrentId());
 
         // 数据库中查询
-        if (!String.valueOf(BClass.TEACHER).equals(permission) || teacherMapper.ifExist(id))
+        if (teacherMapper.ifExist(id))
             throw new IllegalOperationException(StringConstant.ILLEGAL_OPERATION);
     }
 
