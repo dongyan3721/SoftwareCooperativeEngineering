@@ -1,7 +1,7 @@
 const routes = [
     {
         path: '/',
-        redirect: '/preview'
+        redirect: '/student-group-apply'
     },
     {
         path: '/test',

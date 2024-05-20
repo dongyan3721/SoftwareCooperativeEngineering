@@ -2,6 +2,7 @@
 import ProgressBar from "@/components/general/progress-bar.vue";
 import {sys_task_submit_status} from "@/configuration/dictionary.js";
 import StudentGroupDescription from "@/components/student/student-group-description.vue";
+import {stringToPngBase64} from "@/util/cv.js";
 
 const testData = ref([
   {
@@ -35,6 +36,17 @@ const testData = ref([
     deadline: '2024-05-20 18:00:00'
   }
 ])
+
+onMounted(()=>{
+  const inputStr = '董岩';
+  const base64Image = stringToPngBase64(inputStr);
+  console.log(base64Image);
+
+  // 可选：在页面上显示图像
+  const img = new Image();
+  img.src = base64Image;
+  document.body.appendChild(img);
+})
 
 </script>
 

@@ -8,7 +8,7 @@
 import {useRoute} from "vue-router";
 const route = useRoute()
 import {ArrowRight, EditPen, Notebook} from "@element-plus/icons-vue";
-import {Peoples} from "@icon-park/vue-next";
+import {Peoples, Hands} from "@icon-park/vue-next";
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
 import {studentLogin} from "@/web-api/general/login.js";
@@ -30,13 +30,19 @@ const quitLogin = ()=>{
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside width="200px" style="min-height: 100vh; background-color: rgb(22,46,86)">
+      <el-aside width="200px" style="min-height: 100vh; background:#bbbbbb;">
         <div class="aside-head-info"
-             style="width: 200px; height: 80px; align-items: center; justify-items: center; display: flex">
+             style="width: 200px; height: 80px; align-items: center; justify-items: center; display: flex; background: rgb(248,245,243);">
           <span
-              style="color: #f9f9f9; display: flex; align-items: center; justify-content: center; width: 200px">软件协同设计</span>
+              style="display: flex; align-items: center; justify-content: center; width: 200px">软件协同设计</span>
         </div>
-        <el-menu style="border: none" :default-active="currentUrl" router background-color="#162E56" text-color="#f9f9f9">
+        <el-menu style="border: none" :default-active="currentUrl" router background-color="bbb" text-color="#f9f9f9">
+          <el-menu-item index="/student-group-apply">
+            <template #title>
+              <el-icon><hands theme="outline" size="18" fill="#fff"/></el-icon>
+              加入小组
+            </template>
+          </el-menu-item>
           <el-menu-item index="/student-main">
             <template #title>
               <el-icon><EditPen /></el-icon>
@@ -85,6 +91,8 @@ const quitLogin = ()=>{
   </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+:deep(.is-active){
+  color: #171823;
+}
 </style>
