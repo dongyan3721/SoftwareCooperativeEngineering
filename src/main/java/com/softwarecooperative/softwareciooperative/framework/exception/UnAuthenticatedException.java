@@ -1,5 +1,7 @@
 package com.softwarecooperative.softwareciooperative.framework.exception;
 
+import com.softwarecooperative.softwareciooperative.framework.net.HttpStatus;
+
 import java.io.PrintStream;
 
 /**
@@ -7,9 +9,9 @@ import java.io.PrintStream;
  * @description
  * @date 2024/2/29-16:28:05
  */
-public class UnAuthenticatedException extends Exception{
-    public UnAuthenticatedException(final String msg){
-        super(msg);
+public class UnAuthenticatedException extends GeneralServiceException {
+    public UnAuthenticatedException(final String msg) {
+        super(msg, HttpStatus.FORBIDDEN);
     }
 
     @Override

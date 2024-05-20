@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
 import com.softwarecooperative.softwareciooperative.framework.interceptor.JWTInterceptor;
+import com.softwarecooperative.softwareciooperative.framework.interceptor.TeacherRoleInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -35,13 +35,25 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         return new JWTInterceptor();
     }
 
+    @Bean
+    public TeacherRoleInterceptor teacherRoleInterceptor() {
+        return new TeacherRoleInterceptor();
+    }
+
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("注册jwt拦截器");
         registry.addInterceptor(jwtInterceptor())
                 .addPathPatterns("/teacher/**")
                 .addPathPatterns("/student/**")
-                .addPathPatterns("/common/**");
+                .addPathPatterns("/common/**")
+                .order(1);
+
+        log.info("注册教师权限权限拦截器");
+        registry.addInterceptor(teacherRoleInterceptor())
+                .addPathPatterns("/teacher/**")
+                .order(2);
+
         super.addInterceptors(registry);
     }
 

@@ -14,4 +14,6 @@ public interface TeacherMapper {
     BTeacher selectOne(BTeacher teacher);
 
     void update(BTeacher bTeacher);
+
+    Boolean ifExist(@Param("teacherId") Integer teacherId);
 }
