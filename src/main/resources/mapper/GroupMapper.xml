@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.GroupMapper">
+    <insert id="insert">
+        INSERT INTO b_group
+            (group_id, group_name, class_id, group_avatar, group_introduction, group_leader_id, group_leader_name, group_leader_avatar)
+        VALUES
+            (#{groupId}, #{groupName}, #{classId}, #{groupAvatar}, #{groupIntroduction}, #{groupLeaderId}, #{groupLeaderName}, #{groupLeaderAvatar})
+    </insert>
+    <update id="update">
+        UPDATE b_group
+            <set>
+                <if test="groupName != null and groupName != ''"> group_name = #{groupName}, </if>
+                <if test="groupAvatar != null and groupAvatar != ''"> group_avatar = #{groupAvatar}, </if>
+                <if test="groupIntroduction != null"> group_introduction = #{groupIntroduction}, </if>
+                <if test="groupLeaderName != null"> group_leader_name = #{groupLeaderName} </if>
+                <if test="groupLeaderAvatar != null"> group_leader_avatar = #{groupLeaderAvatar} </if>
+            </set>
+        WHERE group_id = #{groupId}
+    </update>
+    <delete id="delete">
+        DELETE FROM b_group WHERE group_id = #{groupId};
+    </delete>
+    <select id="selectByCond" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BGroup">
+        SELECT * FROM b_group
+            <where>
+                <if test="groupId != null"> AND group_id = #{groupId} </if>
+                <if test="groupName != null and groupName != ''"> AND group_name LIKE CONCAT('%', #{name}, '%') </if>
+                <if test="classId != null"> AND class_id = #{classId} </if>
+                <if test="groupLeaderId != null"> AND group_leader_id = #{groupLeaderId} </if>
+                <if test="groupLeaderName != null and groupLeaderName != ''"> AND group_leader_name LIKE CONCAT('%', #{name}, '%') </if>
+            </where>
+    </select>
+    <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BGroup">
+        SELECT * FROM b_group
+        <where>
+            <if test="groupId != null"> AND group_id = #{groupId} </if>
+            <if test="groupName != null and groupName != ''"> AND group_name LIKE CONCAT('%', #{name}, '%') </if>
+            <if test="classId != null"> AND class_id = #{classId} </if>
+            <if test="groupLeaderId != null"> AND group_leader_id = #{groupLeaderId} </if>
+            <if test="groupLeaderName != null and groupLeaderName != ''"> AND group_leader_name LIKE CONCAT('%', #{name}, '%') </if>
+        </where>
+    </select>
+</mapper>

@@ -1,6 +1,8 @@
 package com.softwarecooperative.softwareciooperative.framework.net;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.List;
  * @date 2024/2/28-19:36:42
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TableDataInfo implements Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -28,7 +32,7 @@ public class TableDataInfo implements Serializable
     /** 消息内容 */
     private String msg;
 
-    public static TableDataInfo success(List<?> data, int total){
+    public static TableDataInfo success(List<?> data, long total){
         TableDataInfo ret = new TableDataInfo();
         ret.setCode(HttpStatus.SUCCESS);
         ret.setMsg("success");

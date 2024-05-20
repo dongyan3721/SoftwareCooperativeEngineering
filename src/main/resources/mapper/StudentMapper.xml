@@ -5,10 +5,16 @@
         UPDATE b_student
         <set>
             <if test="studentName != null and studentName != ''"> student_name = #{studentName}, </if>
+            <if test="studentClass != null"> student_class = #{studentClass}, </if>
+            <if test="studentRole != null and studentRole != ''"> student_role = #{studentRole}, </if>
+            <if test="studentGroup != null"> student_group = #{studentGroup}, </if>
             <if test="password != null and password != ''"> `password` = #{password}, </if>
-            <if test="avatar != null and avatar != ''"> avatar = #{avatar} </if>
+            <if test="avatar != null and avatar != ''"> avatar = #{avatar}, </if>
         </set>
         WHERE student_id = #{studentId}
+    </update>
+    <update id="exitGroup">
+        UPDATE b_student SET student_role = '0', student_group = null WHERE student_group = #{groupId}
     </update>
     <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudent">
         SELECT * FROM b_student
@@ -18,7 +24,16 @@
             <if test="studentClass != null"> AND student_class = #{studentClass} </if>
             <if test="studentRole != null"> AND student_role = #{studentRole} </if>
             <if test="studentGroup != null"> AND student_group = #{studentGroup} </if>
-            <if test="password != null"> AND `password` = #{password} </if>
+        </where>
+    </select>
+    <select id="selectByCond" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudent">
+        SELECT * FROM b_student
+        <where>
+            <if test="studentId != null"> AND student_id = #{studentId} </if>
+            <if test="studentName != null"> AND student_name = #{studentName} </if>
+            <if test="studentClass != null"> AND student_class = #{studentClass} </if>
+            <if test="studentRole != null"> AND student_role = #{studentRole} </if>
+            <if test="studentGroup != null"> AND student_group = #{studentGroup} </if>
         </where>
     </select>
 </mapper>
