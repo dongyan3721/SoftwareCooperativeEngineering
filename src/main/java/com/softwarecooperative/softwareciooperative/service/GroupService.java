@@ -3,6 +3,7 @@ package com.softwarecooperative.softwareciooperative.service;
 import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 
@@ -35,4 +36,6 @@ public interface GroupService {
     void appoint(Integer studentId, Integer role) throws IOException;
 
     PageResult<AppealInVO> pageGetAppealIn(Integer groupId, Integer page, Integer pageSize);
+
+    List<BStudent> getAllMemberInGroup(Integer groupId);
 }

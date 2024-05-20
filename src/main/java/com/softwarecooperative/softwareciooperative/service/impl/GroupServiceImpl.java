@@ -259,4 +259,12 @@ public class GroupServiceImpl implements GroupService {
         Page<AppealInVO> res = groupAppealInMapper.selectAppealInVOByGroupId(groupId);
         return new PageResult<>(res.getTotal(), res.getResult());
     }
+
+    @Override
+    public List<BStudent> getAllMemberInGroup(Integer groupId) {
+        BStudent query = BStudent.builder()
+                .studentGroup(groupId)
+                .build();
+        return studentMapper.selectByCond(query);
+    }
 }
