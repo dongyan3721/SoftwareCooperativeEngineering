@@ -12,10 +12,10 @@ import UniverseFormCompressedFileUpload from "@/components/universe-form-compres
 import upload from "@/web-api/upload.js";
 import {queryExistingStudentGroups} from "@/web-api/student/studentGroupApply.js";
 import {downToGetInt, generateSequence, upToGetInt} from "@/util/dongyan.js";
+import UniverseSection from "@/components/universe-section.vue";
 
 const userStore = useUserStore();
 const studentClassStore = useStudentClassStore();
-const existedGroups = ref([])
 const applyForNewGroupVis = ref(false)
 const openApplyForNewTeamDialog = ()=>{
   applyForNewGroupVis.value = true
@@ -101,15 +101,15 @@ onBeforeMount(function (){
     <div class="w-100 h-100">
 <!--      建立新的小组-->
       <div class="w-100">
-        <span class="text-2xl font-semibold block my-1">申请组建队伍</span>
+        <universe-section title="申请创建小组"/>
         <n-button class="my-1" type="error" size="large" @click="openApplyForNewTeamDialog">点我新建</n-button>
       </div>
 
-      <div class="w-100 h-single bg-black opacity-50 my-1"/>
+<!--      <div class="w-100 h-single bg-black opacity-50 my-1"/>-->
 
 <!--      加入已有小组-->
       <div class="w-100 h-2/3 mt-3">
-        <span class="text-2xl font-semibold">加入队伍</span>
+        <universe-section title="加入队伍"  />
         <el-row v-for="count in exitGroupsRowCount" :key="count" :gutter="20" class="my-4">
           <el-col :span="downToGetInt(24, existGroupCol)" :key="i"
               v-for="i in generateSequence(count*4, (count+1)*4>existingGroups.length?existingGroups.length:(count+1)*4)">

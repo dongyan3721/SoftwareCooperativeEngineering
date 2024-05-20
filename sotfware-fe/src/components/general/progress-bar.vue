@@ -18,7 +18,7 @@ const rate = computed(()=>{
 
 
 const props = defineProps({
-  progressItems: Array
+  progressItems: Array,
   /**
    * {
    *   deadline: 截止时间,
@@ -37,6 +37,7 @@ const props = defineProps({
    */
   // 最后加上固定的开始结束
   // 任务开始时，系统自动创建小组b_student_task_submit模板，任务让阶段负责人去分配
+  separatorWidth: String
 })
 
 const emit = defineEmits(['gotoHandOn'])
@@ -114,6 +115,8 @@ const closeSubmitDialog = ()=>{
   </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+:deep(.n-timeline-item){
+  width: v-bind('props.separatorWidth')
+}
 </style>
