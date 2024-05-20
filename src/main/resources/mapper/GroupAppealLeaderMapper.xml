@@ -20,5 +20,15 @@
         FROM b_group_appeal_leader bgal
                  LEFT OUTER JOIN b_student bs ON bgal.student_id = bs.student_id
         WHERE bgal.class_id = #{classId}
+        ORDER BY appeal_date DESC
+    </select>
+    <select id="selectOne"
+            resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader">
+        SELECT * FROM b_group_appeal_leader
+        <where>
+            <if test="appealId != null"> AND appeal_id = #{appealId} </if>
+            <if test="studentId != null"> AND student_id = #{studentId} </if>
+            <if test="classId != null"> AND class_id = #{classId} </if>
+        </where>
     </select>
 </mapper>

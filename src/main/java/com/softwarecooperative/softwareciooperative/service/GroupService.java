@@ -3,6 +3,7 @@ package com.softwarecooperative.softwareciooperative.service;
 import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader;
+import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 
 import java.io.IOException;
@@ -15,11 +16,6 @@ import java.util.List;
  */
 public interface GroupService {
 
-    /**
-     * 获取
-     * @param classId
-     * @return
-     */
     List<BGroup> getGroupByClass(Integer classId);
 
     void approveLeader(Integer appealId, Boolean isAccept) throws IOException;
@@ -31,4 +27,12 @@ public interface GroupService {
     void disbandGroup(Integer groupId) throws IOException;
 
     void editGroupInfo(BGroup bGroup);
+
+    void appealIn(Integer groupId) throws IOException;
+
+    void approveIn(Integer appealId, Boolean isAccept) throws IOException;
+
+    void appoint(Integer studentId, Integer role) throws IOException;
+
+    PageResult<AppealInVO> pageGetAppealIn(Integer groupId, Integer page, Integer pageSize);
 }

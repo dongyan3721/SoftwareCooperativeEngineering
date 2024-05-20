@@ -2,6 +2,7 @@ package com.softwarecooperative.softwareciooperative.dao.mapper;
 
 import com.softwarecooperative.softwareciooperative.framework.annotation.InjectSnowFlakeId;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -17,6 +18,8 @@ public interface GroupMapper {
     List<BGroup> selectByCond(BGroup bGroup);
 
     BGroup selectOne(BGroup bGroup);
+
+    BStudent selectLeaderByGroupId(@Param("groupId") Integer groupId);
 
     @InjectSnowFlakeId
     void insert(BGroup bGroup);

@@ -1,5 +1,7 @@
 package com.softwarecooperative.softwareciooperative.framework.net;
 
+import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
+
 /**
  * @Description
  * @Author 嘉然今天吃向晚
@@ -24,6 +26,17 @@ public class NotificationTemplate {
     }
     public static String GROUP_DISBAND(String groupName) {
         return groupName + "团队已解散";
+    }
+
+    public static String IN_APPROVE(String studentName, String groupName) {
+        return studentName + "同学您好，您的加入申请已通过，您现在是" + groupName + "的组员";
+    }
+    public static String IN_DENY(String studentName) {
+        return studentName + "同学您好，很遗憾您的加入申请未通过审核";
+    }
+
+    public static String ROLE_CHANGED(String studentName, Integer newRole) {
+        return studentName + "同学，您的角色已被更改为" + BStudent.roleCode2String(newRole.toString());
     }
 
 }

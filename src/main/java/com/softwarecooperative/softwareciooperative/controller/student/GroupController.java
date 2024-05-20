@@ -1,8 +1,12 @@
 package com.softwarecooperative.softwareciooperative.controller.student;
 
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
+import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
+import com.softwarecooperative.softwareciooperative.framework.net.TableDataInfo;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader;
+import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
+import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 import com.softwarecooperative.softwareciooperative.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,6 +58,35 @@ public class GroupController {
     public AjaxResult listAllGroup(@PathVariable Integer classId) {
         List<BGroup> res = groupService.getGroupByClass(classId);
         return AjaxResult.success(res);
+    }
+
+    @PostMapping("/appealIn")
+    @Operation(summary = "申请加入团队")
+    public AjaxResult appealIn(Integer groupId) throws IOException {
+        groupService.appealIn(groupId);
+        return AjaxResult.success();
+    }
+
+    @PostMapping("/approveIn")
+    @Operation(summary = "批准加入团队")
+    public AjaxResult approveIn(Integer appealId, Boolean isAccept) throws IOException {
+        groupService.approveIn(appealId, isAccept);
+        return AjaxResult.success();
+    }
+
+    @PostMapping("/appoint")
+    @Operation(summary = "指派成员角色")
+    public AjaxResult appoint(Integer studentId, Integer role) throws IOException {
+        groupService.appoint(studentId, role);
+        return AjaxResult.success();
+    }
+
+
+    @GetMapping("/appeal/{groupId}")
+    @Operation(summary = "分页查询团队所有加入申请")
+    public TableDataInfo pageGetAppealIn(@PathVariable Integer groupId, Integer page, Integer pageSize) {
+        PageResult<AppealInVO> res = groupService.pageGetAppealIn(groupId, page, pageSize);
+        return TableDataInfo.success(res.getRecords(), res.getTotal());
     }
 
 }

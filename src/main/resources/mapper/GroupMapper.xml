@@ -41,4 +41,9 @@
             <if test="groupLeaderName != null and groupLeaderName != ''"> AND group_leader_name LIKE CONCAT('%', #{name}, '%') </if>
         </where>
     </select>
+    <select id="selectLeaderByGroupId"
+            resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudent">
+        SELECT * FROM b_student WHERE student_id =
+                                      (SELECT group_leader_id FROM b_group WHERE group_id = #{groupId})
+    </select>
 </mapper>

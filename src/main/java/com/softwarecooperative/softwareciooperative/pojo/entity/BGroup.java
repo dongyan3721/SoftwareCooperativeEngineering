@@ -23,4 +23,9 @@ public class BGroup implements Serializable {
   private String groupLeaderName;
   private String groupLeaderAvatar;
 
+  public static BGroup createIdQuery(Integer groupId) {
+    return BGroup.builder()
+            .groupId(groupId)
+            .build();
+  }
 }

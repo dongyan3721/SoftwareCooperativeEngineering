@@ -23,4 +23,10 @@ public class BGroupAppealIn implements Serializable {
     private Integer groupId;
     private Integer studentId;
     private LocalDateTime appealDate;
+
+    public static BGroupAppealIn createIdQuery(Integer appealId) {
+        return BGroupAppealIn.builder()
+                .appealId(appealId)
+                .build();
+    }
 }

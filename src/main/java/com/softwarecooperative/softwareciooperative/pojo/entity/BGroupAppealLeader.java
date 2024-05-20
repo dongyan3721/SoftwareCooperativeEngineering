@@ -26,4 +26,10 @@ public class BGroupAppealLeader implements Serializable {
     private String groupAvatar;
     private String groupIntroduction;
     private LocalDateTime appealDate;
+
+    public static BGroupAppealLeader createIdQuery(Integer appealId) {
+        return BGroupAppealLeader.builder()
+                .appealId(appealId)
+                .build();
+    }
 }

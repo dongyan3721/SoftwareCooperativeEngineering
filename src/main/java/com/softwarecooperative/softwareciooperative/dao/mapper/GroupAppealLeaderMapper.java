@@ -24,4 +24,6 @@ public interface GroupAppealLeaderMapper {
 
     @InjectSnowFlakeId
     void insert(BGroupAppealLeader bGroupAppealLeader);
+
+    BGroupAppealLeader selectOne(BGroupAppealLeader appealQuery);
 }

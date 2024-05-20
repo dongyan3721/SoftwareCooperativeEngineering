@@ -2,19 +2,14 @@ package com.softwarecooperative.softwareciooperative.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.softwarecooperative.softwareciooperative.dao.mapper.ClassMapper;
-import com.softwarecooperative.softwareciooperative.dao.mapper.GroupAppealLeaderMapper;
-import com.softwarecooperative.softwareciooperative.dao.mapper.GroupMapper;
-import com.softwarecooperative.softwareciooperative.dao.mapper.StudentMapper;
+import com.softwarecooperative.softwareciooperative.dao.mapper.*;
 import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.GroupException;
 import com.softwarecooperative.softwareciooperative.framework.net.NotificationTemplate;
 import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.framework.net.StringConstant;
-import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
-import com.softwarecooperative.softwareciooperative.pojo.entity.BGroup;
-import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLeader;
-import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
+import com.softwarecooperative.softwareciooperative.pojo.entity.*;
+import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
 import com.softwarecooperative.softwareciooperative.service.GroupService;
 import com.softwarecooperative.softwareciooperative.service.NotificationService;
@@ -38,6 +33,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     private GroupAppealLeaderMapper groupAppealLeaderMapper;
+
+    @Autowired
+    private GroupAppealInMapper groupAppealInMapper;
 
     @Autowired
     private StudentMapper studentMapper;
@@ -154,5 +152,111 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void editGroupInfo(BGroup bGroup) {
         groupMapper.update(bGroup);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = GroupException.class)
+    public void appealIn(Integer groupId) throws IOException {
+        Integer curId = Integer.parseInt(BaseContext.getCurrentId());
+        // 检查是否已加入其他团队
+        BStudent stu = studentMapper.selectOne(BStudent.createIdQuery(curId));
+        if (stu.getStudentGroup() != null)
+            throw new GroupException(StringConstant.STUDENT_ALREADY_IN_GROUP);
+        // 检查是否已有组长申请
+        BGroupAppealLeader appealQuery = BGroupAppealLeader.builder().studentId(curId).build();
+        BGroupAppealLeader appeal = groupAppealLeaderMapper.selectOne(appealQuery);
+        if (appeal != null)
+            throw new GroupException(StringConstant.STUDENT_ALREADY_APPEAL_LEADER);
+
+        // 添加申请
+        groupAppealInMapper.insert(BGroupAppealIn.builder()
+                .groupId(groupId)
+                .studentId(curId)
+                .appealDate(LocalDateTime.now())
+                .build());
+
+        // 向组长通知
+        BStudent leader = groupMapper.selectLeaderByGroupId(groupId);
+        notificationService.sendNotifToOneStudent(
+                BClass.SYSTEM,
+                leader.getStudentId(),
+                NotificationTemplate.NEW_MEMBER_APPEAL(curId.toString())
+        );
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = GroupException.class)
+    public void approveIn(Integer appealId, Boolean isAccept) throws IOException {
+        // 获取申请
+        BGroupAppealIn appealInfo = groupAppealInMapper.selectOne(BGroupAppealIn.createIdQuery(appealId));
+        if (appealInfo == null)
+            throw new GroupException(StringConstant.NO_APPEAL);
+        Integer studentId = appealInfo.getStudentId();
+        Integer groupId = appealInfo.getGroupId();
+        BStudent bStudent = studentMapper.selectOne(BStudent.createIdQuery(studentId));
+
+        // 删除申请条目
+        groupAppealInMapper.delete(appealId);
+        if (isAccept) {
+            // 检查学生是否已经加入团队
+            if (bStudent.getStudentGroup() != null)
+                throw new GroupException(StringConstant.STUDENT_ALREADY_IN_GROUP);
+
+            // 修改学生角色
+            BStudent newStudent = BStudent.builder()
+                    .studentId(studentId)
+                    .studentGroup(groupId)
+                    .build();
+            studentMapper.update(newStudent);
+
+            BGroup group = groupMapper.selectOne(BGroup.createIdQuery(groupId));
+            // 向组长通知加入申请已通过
+            notificationService.sendNotifToOneStudent(
+                    BClass.SYSTEM,
+                    studentId,
+                    NotificationTemplate.IN_APPROVE(bStudent.getStudentName(), group.getGroupName())
+            );
+
+        } else {
+            // 向学生通知加入申请未通过
+            notificationService.sendNotifToOneStudent(
+                    BClass.SYSTEM,
+                    studentId,
+                    NotificationTemplate.IN_DENY(bStudent.getStudentName())
+            );
+        }
+    }
+
+    @Override
+    public void appoint(Integer studentId, Integer role) throws IOException {
+        // 检查studentId和组长id是否相等
+        Integer leaderId = Integer.parseInt(BaseContext.getCurrentId());
+        if (studentId.equals(leaderId))
+            throw new GroupException(StringConstant.LEADER_ROLE_CANT_BE_CHANGED);
+        // 检查目标学生是否是本组组员
+        BStudent leader = studentMapper.selectOne(BStudent.createIdQuery(leaderId));
+        BStudent targetStudent = studentMapper.selectOne(BStudent.createIdQuery(studentId));
+        if (targetStudent.getStudentGroup() == null || !targetStudent.getStudentGroup().equals(leader.getStudentGroup()))
+            throw new GroupException(StringConstant.STUDENT_NOT_IN_GROUP);
+
+        // 修改成员角色
+        studentMapper.update(BStudent.builder()
+                .studentId(targetStudent.getStudentId())
+                .studentRole(role.toString())
+                .build());
+
+        // 通知目标学生已更改角色
+        notificationService.sendNotifToOneStudent(
+                BClass.SYSTEM,
+                studentId,
+                NotificationTemplate.ROLE_CHANGED(targetStudent.getStudentName(), role)
+        );
+    }
+
+    @Override
+    public PageResult<AppealInVO> pageGetAppealIn(Integer groupId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        Page<AppealInVO> res = groupAppealInMapper.selectAppealInVOByGroupId(groupId);
+        return new PageResult<>(res.getTotal(), res.getResult());
     }
 }
