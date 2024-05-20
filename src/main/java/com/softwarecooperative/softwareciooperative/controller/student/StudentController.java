@@ -4,6 +4,7 @@ import com.softwarecooperative.softwareciooperative.framework.annotation.AccessW
 import com.softwarecooperative.softwareciooperative.framework.exception.service.LoginFailedException;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
 import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
+import com.softwarecooperative.softwareciooperative.pojo.dto.StudentLoginDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.LoginService;
@@ -12,6 +13,7 @@ import com.softwarecooperative.softwareciooperative.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +37,9 @@ public class StudentController {
     @PostMapping("/login")
     @Operation(summary = "学生登录")
     @AccessWithoutVerification
-    public AjaxResult teacherLogin(@RequestBody BStudent student) throws LoginFailedException {
+    public AjaxResult teacherLogin(@RequestBody StudentLoginDTO studentLoginDTO) throws LoginFailedException {
+        BStudent student = new BStudent();
+        BeanUtils.copyProperties(studentLoginDTO, student);
         BStudent res = loginService.studentLogin(student);
         // 获取token
         String token = JwtUtils.sign(String.valueOf(res.getStudentId()));
