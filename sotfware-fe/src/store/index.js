@@ -15,3 +15,4 @@ export default pinia
 export * from "./useUserStore.js"
 export * from './useStudentClassStore.js'
 export * from './useStudentGroupStore.js'
+export * from './useTeacherClassStore.js'

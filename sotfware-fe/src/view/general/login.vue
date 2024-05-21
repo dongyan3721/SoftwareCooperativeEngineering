@@ -133,7 +133,7 @@ const submitForm = ()=>{
             setUserStore(res)
             setUserRole(form.role)
             ElMessage.success("登录成功！")
-            router.push('/student-amin')
+            router.push('/student-main')
           }else{
             ElMessage.error("账号或密码错误！")
           }

@@ -6,6 +6,8 @@ import { tansParams, blobValidate } from "@/util/ruoyi";
 import CustomHttpStatus from "@/util/CustomHttpStatus";
 import context from "@/configuration/context.js";
 // import {saveAs} from 'file-saver'
+import {useUserStore} from "@/store/index.js";
+const userStore = useUserStore()
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
@@ -25,12 +27,16 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(config => {
   // 是否需要设置 token
-  const isToken = (config.headers || {}).isToken === false
+  const isToken = (config || {}).token
+  // 没有传需要token或者写明需要token
+  if(isToken===(void 0)||isToken){
+    config.headers['token'] = userStore.token
+  }
   // 是否需要防止数据重复提交
   // const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
-  if (getToken() && !isToken) {
-    config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
-  }
+  // if (getToken() && !isToken) {
+  //   config.headers['token'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+  // }
   // get请求映射params参数
   if (config.method === 'get' && config.params) {
     let url = config.url + '?' + tansParams(config.params);
