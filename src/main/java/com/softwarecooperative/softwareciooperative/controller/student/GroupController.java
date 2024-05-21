@@ -97,4 +97,11 @@ public class GroupController {
         return TableDataInfo.success(res.getRecords(), res.getTotal());
     }
 
+    @GetMapping("/allMember")
+    @Operation(summary = "查看团队内所有成员")
+    public AjaxResult getAllMemberInGroup(Integer groupId) {
+        List<BStudent> res = groupService.getAllMemberInGroup(groupId);
+        return AjaxResult.success(res);
+    }
+
 }
