@@ -16,18 +16,21 @@ export function applyToBeLeader(group){
     })
 }
 
-export function queryExistingStudentGroups(classId){
+export function queryExistingStudentGroups(classId, params){
     return request({
         url: '/student/group/'+classId,
-        method: 'GET'
+        method: 'GET',
+        params
     })
 }
 
 export function applyToBeGroupMember(groupId){
+    const fomData = new FormData()
+    fomData.append('groupId', groupId)
     return request({
         url: '/student/group/appealIn',
         method: 'POST',
-        data: {groupId}
+        data: fomData
     })
 }
 
@@ -39,7 +42,7 @@ export function checkStudentHasPermissionToCreateTeam(studentId, classId){
             // 检查这个人有没有正在申请的条目
             listAllGroupLeaderApply(classId).then(res=>{
                 res.rows.forEach(apply=>{
-                    if(apply.stduentId===studentId) resolve(false)
+                    if(apply.studentId===studentId) resolve(false)
                 })
                 resolve(true)
             })
