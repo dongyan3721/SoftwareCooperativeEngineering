@@ -11,6 +11,7 @@ import com.softwarecooperative.softwareciooperative.framework.net.StringConstant
 import com.softwarecooperative.softwareciooperative.pojo.entity.*;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
+import com.softwarecooperative.softwareciooperative.pojo.vo.GroupVO;
 import com.softwarecooperative.softwareciooperative.service.GroupService;
 import com.softwarecooperative.softwareciooperative.service.NotificationService;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -195,9 +197,9 @@ public class GroupServiceImpl implements GroupService {
         Integer groupId = appealInfo.getGroupId();
         BStudent bStudent = studentMapper.selectOne(BStudent.createIdQuery(studentId));
 
-        // 删除申请条目
-        groupAppealInMapper.delete(appealId);
         if (isAccept) {
+            // 删除这个学生的所有申请项
+            groupAppealInMapper.deleteByStuId(studentId);
             // 检查学生是否已经加入团队
             if (bStudent.getStudentGroup() != null)
                 throw new GroupException(StringConstant.STUDENT_ALREADY_IN_GROUP);
@@ -218,6 +220,8 @@ public class GroupServiceImpl implements GroupService {
             );
 
         } else {
+            // 删除申请条目
+            groupAppealInMapper.delete(appealId);
             // 向学生通知加入申请未通过
             notificationService.sendNotifToOneStudent(
                     BClass.SYSTEM,
@@ -360,5 +364,21 @@ public class GroupServiceImpl implements GroupService {
                 leader.getStudentId(),
                 NotificationTemplate.EXIT_GROUP(curStu.getStudentName())
         );
+    }
+
+    @Override
+    public List<GroupVO> getGroupByClassWithHasAppeal(Integer classId) {
+        List<BGroup> groups = getGroupByClass(classId);
+        List<GroupVO> res = new ArrayList<>();
+        Integer curId = Integer.parseInt(BaseContext.getCurrentId());
+        List<Integer> allAppealInGroupId = groupAppealInMapper.selectGrpIdByStuId(curId);
+        groups.forEach(e -> {
+            GroupVO groupVO = new GroupVO();
+            BeanUtils.copyProperties(e, groupVO);
+            groupVO.setHasAppeal(allAppealInGroupId.contains(e.getGroupId()));
+            res.add(groupVO);
+        });
+
+        return res;
     }
 }

@@ -9,6 +9,7 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLead
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
+import com.softwarecooperative.softwareciooperative.pojo.vo.GroupVO;
 import com.softwarecooperative.softwareciooperative.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,7 +61,7 @@ public class GroupController {
     @GetMapping("/{classId}")
     @Operation(summary = "学生端获取团队列表")
     public AjaxResult listAllGroup(@PathVariable Integer classId) {
-        List<BGroup> res = groupService.getGroupByClass(classId);
+        List<GroupVO> res = groupService.getGroupByClassWithHasAppeal(classId);
         return AjaxResult.success(res);
     }
 

@@ -6,6 +6,7 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealLead
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
 import com.softwarecooperative.softwareciooperative.pojo.vo.AppealLeaderVO;
+import com.softwarecooperative.softwareciooperative.pojo.vo.GroupVO;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,4 +45,6 @@ public interface GroupService {
     void deleteMember(Integer targetStuId) throws IOException;
 
     void exitGroup(Integer groupId) throws IOException;
+
+    List<GroupVO> getGroupByClassWithHasAppeal(Integer classId);
 }

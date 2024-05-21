@@ -7,6 +7,8 @@ import com.softwarecooperative.softwareciooperative.pojo.vo.AppealInVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * @Description
  * @Author 嘉然今天吃向晚
@@ -22,5 +24,9 @@ public interface GroupAppealInMapper {
 
     void delete(@Param("appealId") Integer appealId);
 
+    void deleteByStuId(@Param("studentId") Integer studentId);
+
     Page<AppealInVO> selectAppealInVOByGroupId(@Param("groupId") Integer groupId);
+
+    List<Integer> selectGrpIdByStuId(@Param("studentId") Integer studentId);
 }

@@ -10,6 +10,9 @@
     <delete id="delete">
         DELETE FROM b_group_appeal_in WHERE appeal_id = #{appealId}
     </delete>
+    <delete id="deleteByStuId">
+        DELETE FROM b_group_appeal_in WHERE student_id = #{studentId}
+    </delete>
     <select id="selectOne"
             resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BGroupAppealIn">
         SELECT * FROM b_group_appeal_in
@@ -26,5 +29,8 @@
                 LEFT OUTER JOIN b_student bs ON bgai.student_id = bs.student_id
         WHERE bgai.group_id = #{groupId}
         ORDER BY appeal_date DESC
+    </select>
+    <select id="selectGrpIdByStuId" resultType="java.lang.Integer">
+        SELECT group_id FROM b_group_appeal_in WHERE student_id = #{studentId}
     </select>
 </mapper>

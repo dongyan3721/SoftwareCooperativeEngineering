@@ -10,6 +10,7 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -27,8 +28,9 @@ public class TeacherRoleInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (handler instanceof HandlerMethod){
-            AccessWithoutVerification annotation = ((HandlerMethod) handler).getMethodAnnotation(AccessWithoutVerification.class);
-            if(annotation != null)
+            GetMapping getAnno = ((HandlerMethod) handler).getMethodAnnotation(GetMapping.class);
+            AccessWithoutVerification aWVAnno = ((HandlerMethod) handler).getMethodAnnotation(AccessWithoutVerification.class);
+            if(aWVAnno != null || getAnno != null)
                 return true;
         }
 
