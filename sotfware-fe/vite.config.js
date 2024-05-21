@@ -16,7 +16,7 @@ export default defineConfig(({command, mode})=>{
       // 需要前后端部署在同一台机器上
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: 'http://localhost:8080',
+          target: env.VITE_APP_BACKEND,
           changeOrigin: true,
           rewrite: (path) => path.replace(new RegExp(`^${env.VITE_APP_BASE_API}`), ''),
         },

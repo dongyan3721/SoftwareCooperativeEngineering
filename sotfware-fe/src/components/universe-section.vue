@@ -11,7 +11,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="w-100 my-3 flex items-center" style="font-family: alibaba-inclusive">
+  <div class="w-100 my-3 flex items-center alibaba-font">
     <div class="h-4 w-1.5 rounded bg-blue-400 mr-1.5"/>
     <span class="text-2xl">{{props.title}}</span>
     <!--    <div class="h-2 w-2 rounded bg-green-500"/>-->

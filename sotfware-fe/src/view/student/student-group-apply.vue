@@ -6,23 +6,29 @@
 
 <script setup>
 import StudentMenu from "@/components/student/student-menu.vue";
-import {useUserStore, useStudentClassStore} from "@/store";
+import {useUserStore} from "@/store";
 import {PeoplesTwo} from "@icon-park/vue-next";
 import UniverseFormCompressedFileUpload from "@/components/universe-form-compressed-file-upload.vue";
 import upload from "@/web-api/upload.js";
-import {queryExistingStudentGroups} from "@/web-api/student/studentGroupApply.js";
+import {
+  applyToBeGroupMember, applyToBeLeader,
+  checkStudentHasPermissionToCreateTeam,
+  queryExistingStudentGroups
+} from "@/web-api/student/studentGroupApply.js";
 import {downToGetInt, generateSequence, upToGetInt} from "@/util/dongyan.js";
 import UniverseSection from "@/components/universe-section.vue";
+import {ElMessage} from "element-plus";
 
 const userStore = useUserStore();
-const studentClassStore = useStudentClassStore();
 const applyForNewGroupVis = ref(false)
-const openApplyForNewTeamDialog = ()=>{
-  applyForNewGroupVis.value = true
+const openApplyForNewTeamDialog = async ()=>{
+  const permission = await checkStudentHasPermissionToCreateTeam(userStore.userId, userStore.studentClass)
+  if(permission) applyForNewGroupVis.value = true
+  else ElMessage.error("您已经归属于一个小组或有小组申请在审核中，不满足申请条件")
 }
 const applyForm = reactive({
   groupName: null,
-  classId: studentClassStore.classId,
+  classId: userStore.studentClass,
   groupAvatar: null,
   groupIntroduction: null,
   groupLeaderId: userStore.userId,
@@ -31,41 +37,64 @@ const applyForm = reactive({
 })
 const applyFormRef = ref()
 const resetApplyForm = (fRef)=>{
+  applyForNewGroupVis.value = false
   if(!fRef) return
   fRef.resetFields();
-  applyForm.classId = studentClassStore.classId
-  applyForm.groupLeaderId = userStore.userId
-  applyForm.groupLeaderName = userStore.userName
-  applyForm.groupLeaderAvatar = userStore.avatar
+  applyForm.classId = userStore.studentClass;
+  applyForm.groupLeaderId = userStore.userId;
+  applyForm.groupLeaderName = userStore.userName;
+  applyForm.groupLeaderAvatar = userStore.avatar;
 }
 const handOnApply = ()=>{
-
+  applyToBeLeader(applyForm).then(res=>{
+    ElMessage.success('成功递交申请，等待教师审批中...')
+    applyForNewGroupVis.value = false
+    requestExistingGroups()
+  }).catch(err=>{
+    ElMessage.error('创建小组失败！');
+    applyForNewGroupVis.value = false
+  })
 }
 
-const existingGroups = ref([
-    {groupId: 114514, groupName: '下北泽软件研发部', classId: 142543296, groupIntroduction: '（技术）非常的先进，（效率）非常的快速',
-    groupAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
-    groupLeaderId: '114154191', groupLeaderAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
-    groupLeaderName: '李田所'},
-])
+const existingGroups = ref([]
+//     [
+//     {groupId: 114514, groupName: '下北泽软件研发部', classId: 142543296, groupIntroduction: '（技术）非常的先进，（效率）非常的快速',
+//     groupAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
+//     groupLeaderId: '114154191', groupLeaderAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
+//     groupLeaderName: '李田所'},
+// ]
+)
 const exitGroupsRowCount = computed(()=>{
   return generateSequence(0, upToGetInt(existingGroups.value.length, existGroupCol))
 })
 // 每行4列
 const existGroupCol = 4
 
+const queryParams = {
+  page: 1,
+  pageSize: 16
+}
 function requestExistingGroups(){
-  queryExistingStudentGroups({}).then(res=>{
-
+  queryExistingStudentGroups(userStore.studentClass, queryParams).then(res=>{
+    existingGroups.value = res.data
   })
 }
 
 const resolveJoinGroup = (groupId)=>{
-  console.log(groupId)
+  applyToBeGroupMember(groupId).then(res=>{
+    ElMessage.success('申请成功~')
+  }).catch(err=>{
+    ElMessage.error("不满足申请加入小组条件！")
+  })
 }
 
+const resolveViewGroupDetail = (groupId)=>{
+
+}
+// 新建点击按钮的时候查一下这个学生有没有正在申请的小组或者已经有组了
+
 onBeforeMount(function (){
-  // requestExistingGroups();
+  requestExistingGroups();
 })
 
 
@@ -118,10 +147,10 @@ onBeforeMount(function (){
                 <div class="flex flex-row items-center">
                   <n-avatar :src="existingGroups[i].groupAvatar" :size="80"/>
                   <div class="flex flex-col ml-3 justify-between">
-                    <span class="my-1 block text-xl" style="font-family: alibaba-inclusive">{{existingGroups[i].groupName}}</span>
+                    <span class="my-1 block text-xl alibaba-font">{{existingGroups[i].groupName}}</span>
                     <div class="flex flex-row">
                       <n-avatar :src="existingGroups[i].groupLeaderAvatar" round size="small"/>
-                      <span class="text-gray-400 my-1 ml-1" style="font-family: alibaba-inclusive">{{existingGroups[i].groupLeaderName}}</span>
+                      <span class="text-gray-400 my-1 ml-1 alibaba-font">{{existingGroups[i].groupLeaderName}}</span>
                     </div>
                   </div>
                 </div>

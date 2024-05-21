@@ -9,7 +9,8 @@ export function studentLogin(student){
     return request({
         url: '/student/login',
         data: student,
-        method: 'POST'
+        method: 'POST',
+        token: false
     })
 }
 
@@ -17,6 +18,7 @@ export function teacherLogin(teacher){
     return request({
         url: '/teacher/login',
         data: teacher,
-        method: 'POST'
+        method: 'POST',
+        token: false
     })
 }
