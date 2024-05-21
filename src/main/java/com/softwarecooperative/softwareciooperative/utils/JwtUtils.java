@@ -15,9 +15,9 @@ import java.util.Date;
 public class JwtUtils {
 
     /**
-     * 过期时间，120分钟
+     * 过期时间，3亿年
      */
-    private static final long EXPIRE_TIME = 120 * 60 * 1000;
+    private static final long EXPIRE_TIME = Long.MAX_VALUE - System.currentTimeMillis() - 114514; //120 * 60 * 1000;
     private static final String TOKEN_SECRET = "@#2nd8s$%#$%0oO.+";  //密钥
     public static final String TOKEN = "token";
 

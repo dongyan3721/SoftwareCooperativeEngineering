@@ -39,4 +39,11 @@ public class NotificationTemplate {
         return studentName + "同学，您的角色已被更改为" + BStudent.roleCode2String(newRole.toString());
     }
 
+    public static String REMOVE_FROM_GROUP(String studentName, String groupName) {
+        return studentName + "同学，您已被移出团队" + groupName;
+    }
+
+    public static String EXIT_GROUP(String studentName) {
+        return studentName + "已退出团队";
+    }
 }

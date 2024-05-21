@@ -13,8 +13,11 @@
         </set>
         WHERE student_id = #{studentId}
     </update>
-    <update id="exitGroup">
+    <update id="deleteGroup">
         UPDATE b_student SET student_role = '0', student_group = null WHERE student_group = #{groupId}
+    </update>
+    <update id="exitGroup">
+        UPDATE b_student SET student_role = '0', student_group = null WHERE student_id = #{targetStuId}
     </update>
     <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudent">
         SELECT * FROM b_student

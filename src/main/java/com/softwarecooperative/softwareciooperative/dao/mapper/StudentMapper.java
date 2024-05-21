@@ -18,5 +18,7 @@ public interface StudentMapper {
 
     List<BStudent> selectByCond(BStudent student);
 
-    void exitGroup(@Param("groupId") Integer groupId);
+    void deleteGroup(@Param("groupId") Integer groupId);
+
+    void exitGroup(@Param("targetStuId") Integer targetStuId);
 }

@@ -16,5 +16,6 @@ public class StringConstant {
     public static final String STUDENT_ALREADY_APPEAL_LEADER = "学生已经申请了组长，不能同时申请加入其他团队";
     public static final String NO_GROUP = "该团队不存在或已解散";
     public static final String LEADER_ROLE_CANT_BE_CHANGED = "组长不能更换角色";
-
+    public static final String LEADER_ROLE_CANT_BE_REMOVED = "组长不能被删除";
+    public static final String LEADER_ROLE_CANT_EXIT = "组长不能退出，如需退出请解散团队";
 }

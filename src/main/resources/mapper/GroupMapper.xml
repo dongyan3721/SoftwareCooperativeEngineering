@@ -13,8 +13,8 @@
                 <if test="groupName != null and groupName != ''"> group_name = #{groupName}, </if>
                 <if test="groupAvatar != null and groupAvatar != ''"> group_avatar = #{groupAvatar}, </if>
                 <if test="groupIntroduction != null"> group_introduction = #{groupIntroduction}, </if>
-                <if test="groupLeaderName != null"> group_leader_name = #{groupLeaderName} </if>
-                <if test="groupLeaderAvatar != null"> group_leader_avatar = #{groupLeaderAvatar} </if>
+                <if test="groupLeaderName != null"> group_leader_name = #{groupLeaderName}, </if>
+                <if test="groupLeaderAvatar != null"> group_leader_avatar = #{groupLeaderAvatar}, </if>
             </set>
         WHERE group_id = #{groupId}
     </update>

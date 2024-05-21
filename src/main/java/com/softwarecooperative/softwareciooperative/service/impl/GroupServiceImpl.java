@@ -144,7 +144,7 @@ public class GroupServiceImpl implements GroupService {
         notificationService.sendNotifToStudents(BClass.SYSTEM, ids, NotificationTemplate.GROUP_DISBAND(group.getGroupName()));
 
         // 修改所有id为groupId的学生
-        studentMapper.exitGroup(groupId);
+        studentMapper.deleteGroup(groupId);
         // 删除id为groupId的团队
         groupMapper.delete(groupId);
     }
@@ -228,6 +228,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = GroupException.class)
     public void appoint(Integer studentId, Integer role) throws IOException {
         // 检查studentId和组长id是否相等
         Integer leaderId = Integer.parseInt(BaseContext.getCurrentId());
@@ -266,5 +267,98 @@ public class GroupServiceImpl implements GroupService {
                 .studentGroup(groupId)
                 .build();
         return studentMapper.selectByCond(query);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = GroupException.class)
+    public void transferLeader(Integer targetStuId) throws IOException {
+        // 判断目标学生是否是本组组员
+        Integer sourceStuId = Integer.parseInt(BaseContext.getCurrentId());
+        BStudent sourceStu = studentMapper.selectOne(BStudent.createIdQuery(sourceStuId));
+        BStudent targetStu = studentMapper.selectOne(BStudent.createIdQuery(targetStuId));
+        if (!sourceStu.getStudentGroup().equals(targetStu.getStudentGroup()))
+            throw new GroupException(StringConstant.STUDENT_NOT_IN_GROUP);
+
+        // 修改原组长角色
+        BStudent newSourceStu = BStudent.builder()
+                .studentId(sourceStuId)
+                .studentRole(BStudent.NO_ROLE)
+                .build();
+        studentMapper.update(newSourceStu);
+
+        // 修改目标组员角色
+        BStudent newTargetStu = BStudent.builder()
+                .studentId(targetStuId)
+                .studentRole(BStudent.DEVELOPMENT_MANAGER)
+                .build();
+        studentMapper.update(newTargetStu);
+
+        // 修改团队表冗余字段
+        BGroup newGroup = BGroup.builder()
+                .groupId(targetStu.getStudentGroup())
+                .groupLeaderId(targetStuId)
+                .groupLeaderName(targetStu.getStudentName())
+                .groupLeaderAvatar(targetStu.getAvatar())
+                .build();
+        groupMapper.update(newGroup);
+
+        // 向原组长、现组长发通知
+        notificationService.sendNotifToOneStudent(
+                BClass.SYSTEM,
+                sourceStuId,
+                NotificationTemplate.ROLE_CHANGED(sourceStu.getStudentName(), Integer.parseInt(BStudent.NO_ROLE))
+        );
+        notificationService.sendNotifToOneStudent(
+                BClass.SYSTEM,
+                targetStuId,
+                NotificationTemplate.ROLE_CHANGED(targetStu.getStudentName(), Integer.parseInt(BStudent.DEVELOPMENT_MANAGER))
+        );
+
+
+    }
+
+    @Override
+    public void deleteMember(Integer targetStuId) throws IOException {
+        // 检查删除目标是否为自己
+        Integer sourceStuId = Integer.parseInt(BaseContext.getCurrentId());
+        if (sourceStuId.equals(targetStuId))
+            throw new GroupException(StringConstant.LEADER_ROLE_CANT_BE_REMOVED);
+
+        // 保存字段
+        BStudent targetStu = studentMapper.selectOne(BStudent.createIdQuery(targetStuId));
+        BGroup group = groupMapper.selectOne(BGroup.createIdQuery(targetStu.getStudentGroup()));
+
+        // 执行删除操作
+        studentMapper.exitGroup(targetStuId);
+
+        // 向被删除学生通知
+        notificationService.sendNotifToOneStudent(
+                BClass.SYSTEM,
+                targetStuId,
+                NotificationTemplate.REMOVE_FROM_GROUP(targetStu.getStudentName(), group.getGroupName())
+        );
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = GroupException.class)
+    public void exitGroup(Integer groupId) throws IOException {
+        // 检查是否为组长
+        Integer curStuId = Integer.parseInt(BaseContext.getCurrentId());
+        BStudent leader = groupMapper.selectLeaderByGroupId(groupId);
+        if (leader == null)
+            throw new GroupException(StringConstant.NO_GROUP);
+        if (leader.getStudentId().equals(curStuId))
+            throw new GroupException(StringConstant.LEADER_ROLE_CANT_EXIT);
+
+        // 执行退出操作
+        studentMapper.exitGroup(curStuId);
+
+        // 向组长发送通知
+        BStudent curStu = studentMapper.selectOne(BStudent.createIdQuery(curStuId));
+        notificationService.sendNotifToOneStudent(
+                BClass.SYSTEM,
+                leader.getStudentId(),
+                NotificationTemplate.EXIT_GROUP(curStu.getStudentName())
+        );
     }
 }

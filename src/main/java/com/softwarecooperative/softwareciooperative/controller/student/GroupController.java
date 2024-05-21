@@ -65,7 +65,6 @@ public class GroupController {
     }
 
     @PostMapping("/appealIn")
-    @SpecificRoleOnly(role = BStudent.DEVELOPMENT_MANAGER)
     @Operation(summary = "申请加入团队")
     public AjaxResult appealIn(Integer groupId) throws IOException {
         groupService.appealIn(groupId);
@@ -102,6 +101,28 @@ public class GroupController {
     public AjaxResult getAllMemberInGroup(Integer groupId) {
         List<BStudent> res = groupService.getAllMemberInGroup(groupId);
         return AjaxResult.success(res);
+    }
+
+    @PostMapping("/transferLeader")
+    @SpecificRoleOnly(role = BStudent.DEVELOPMENT_MANAGER)
+    @Operation(summary = "转让组长")
+    public AjaxResult transferLeader(Integer studentId) throws IOException {
+        groupService.transferLeader(studentId);
+        return AjaxResult.success();
+    }
+
+    @DeleteMapping("/deleteMember")
+    @Operation(summary = "删除团队成员")
+    public AjaxResult deleteMember(Integer studentId) throws IOException {
+        groupService.deleteMember(studentId);
+        return AjaxResult.success();
+    }
+
+    @DeleteMapping("/exit")
+    @Operation(summary = "退出团队")
+    public AjaxResult exitGroup(Integer groupId) throws IOException {
+        groupService.exitGroup(groupId);
+        return AjaxResult.success();
     }
 
 }

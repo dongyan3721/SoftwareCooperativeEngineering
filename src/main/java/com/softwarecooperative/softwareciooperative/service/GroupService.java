@@ -38,4 +38,10 @@ public interface GroupService {
     PageResult<AppealInVO> pageGetAppealIn(Integer groupId, Integer page, Integer pageSize);
 
     List<BStudent> getAllMemberInGroup(Integer groupId);
+
+    void transferLeader(Integer targetStuId) throws IOException;
+
+    void deleteMember(Integer targetStuId) throws IOException;
+
+    void exitGroup(Integer groupId) throws IOException;
 }
