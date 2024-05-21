@@ -10,15 +10,23 @@ import {useUserStore, useStudentClassStore} from "@/store";
 import {PeoplesTwo} from "@icon-park/vue-next";
 import UniverseFormCompressedFileUpload from "@/components/universe-form-compressed-file-upload.vue";
 import upload from "@/web-api/upload.js";
-import {queryExistingStudentGroups} from "@/web-api/student/studentGroupApply.js";
+import {
+  applyToBeGroupMember, applyToBeLeader,
+  checkStudentHasPermissionToCreateTeam,
+  queryExistingStudentGroups
+} from "@/web-api/student/studentGroupApply.js";
 import {downToGetInt, generateSequence, upToGetInt} from "@/util/dongyan.js";
 import UniverseSection from "@/components/universe-section.vue";
+import {ElMessage} from "element-plus";
+import CustomHttpStatus from "@/util/CustomHttpStatus.js";
 
 const userStore = useUserStore();
 const studentClassStore = useStudentClassStore();
 const applyForNewGroupVis = ref(false)
-const openApplyForNewTeamDialog = ()=>{
-  applyForNewGroupVis.value = true
+const openApplyForNewTeamDialog = async ()=>{
+  const permission = await checkStudentHasPermissionToCreateTeam(userStore.userId, userStore.studentClass)
+  if(permission) applyForNewGroupVis.value = true
+  else ElMessage.error("您已经归属于一个小组或有小组申请在审核中，不满足申请条件")
 }
 const applyForm = reactive({
   groupName: null,
@@ -39,7 +47,9 @@ const resetApplyForm = (fRef)=>{
   applyForm.groupLeaderAvatar = userStore.avatar
 }
 const handOnApply = ()=>{
-
+  applyToBeLeader(applyForm).then(res=>{
+    ElMessage.success('成功递交申请，等待教师审批中...')
+  }).catch(err=>ElMessage.error('创建小组失败！'))
 }
 
 const existingGroups = ref([
@@ -61,8 +71,17 @@ function requestExistingGroups(){
 }
 
 const resolveJoinGroup = (groupId)=>{
-  console.log(groupId)
+  applyToBeGroupMember(groupId).then(res=>{
+    ElMessage.success('申请成功~')
+  }).catch(err=>{
+    ElMessage.error("不满足申请加入小组条件！")
+  })
 }
+
+const resolveViewGroupDetail = (groupId)=>{
+
+}
+// 新建点击按钮的时候查一下这个学生有没有正在申请的小组或者已经有组了
 
 onBeforeMount(function (){
   // requestExistingGroups();

@@ -10,7 +10,14 @@ import TeacherMenu from "@/components/teacher/teacher-menu.vue";
 import UniverseSection from "@/components/universe-section.vue";
 
 const groupPermission = ref(false)
+const swLoading = ref(false);
 const handleChangeGroupStatus = (val)=>{
+  groupPermission.value = !val
+  swLoading.value = true
+  setTimeout(function (){
+    groupPermission.value = val
+    swLoading.value = false
+  }, 2000)
   if(val){
     // 学生可以看到组队菜单
   }else{
@@ -22,7 +29,7 @@ const handleChangeGroupStatus = (val)=>{
 <template>
   <teacher-menu>
     <universe-section title="组队控制"/>
-    <el-switch size="large" v-model="groupPermission" inactive-text="！闭关，队组"
+    <el-switch size="large" v-model="groupPermission" :loading="swLoading" inactive-text="！闭关，队组"
                active-text="组队，启动！" @change="handleChangeGroupStatus"/>
     <universe-section title="申请审批"/>
 

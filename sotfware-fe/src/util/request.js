@@ -90,7 +90,7 @@ service.interceptors.response.use(res => {
       return Promise.reject('error')
     }else if(code===CustomHttpStatus.SERVICE_ERROR){
       // ElMessage({ message: '账号或密码错误！', type: 'error' })
-      console.log('账号或密码错误！')
+      // console.log('账号或密码错误！')
       return Promise.reject('error')
     }
     else {
