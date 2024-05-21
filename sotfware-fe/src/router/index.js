@@ -73,6 +73,16 @@ const routes = [
         path: '/student-notice',
         name: 'student-notice',
         component: ()=>import('@/view/student/student-notice.vue')
+    },
+    {
+        path: '/teacher-student-import',
+        name: 'teacher-student-import',
+        component: ()=>import('@/view/teacher/teacher-import-students.vue')
+    },
+    {
+        path: '/teacher-manage-group',
+        name: 'teacher-manage-group',
+        component: () => import('@/view/teacher/teacher-manage-student-group.vue')
     }
 ];
 

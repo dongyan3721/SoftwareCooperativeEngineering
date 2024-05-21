@@ -21,7 +21,7 @@
         </rollingPolicy>
     </appender>
     <!--指定只打印这个路径下的为debug级别，否则日志打印太多不好看-->
-    <logger name="com.softwarecooperative.softwareciooperative.repository" level="DEBUG" />
+    <logger name="com.softwarecooperative.softwareciooperative.dao" level="DEBUG" />
 
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
