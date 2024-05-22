@@ -36,7 +36,7 @@ public class TeacherRoleInterceptor implements HandlerInterceptor {
 
         Integer id = Integer.parseInt(BaseContext.getCurrentId());
         // 数据库中查询
-        if (teacherMapper.ifExist(id))
+        if (!teacherMapper.ifExist(id))
             throw new IllegalOperationException(StringConstant.ILLEGAL_OPERATION);
 
         return true;
