@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS = 0;
 -- 就设置一个ccp
 create table b_teacher
 (
@@ -6,6 +7,26 @@ create table b_teacher
     password     varchar(512) not null comment '加密的密码',
     avatar       varchar(512) not null comment '头像链接'
 ) comment '教师表';
+
+-- 就放一节课
+create table b_course
+(
+    course_id   int(15) not null primary key comment '课程id',
+    course_name varchar(64) not null comment '课程名'
+) comment '课程表';
+
+-- 老师和课程一起构成教学班，可能会有带多个班情况
+create table b_class
+(
+    class_id     int(15) not null comment '教学班代号',
+    teacher_id   int(15) not null comment '开课教师id',
+    teacher_name varchar(36) not null comment '教师姓名', -- 浅做个冗余减少查询次数
+    course_id    int(15) not null comment '课程代号',
+    course_name  varchar(64) not null comment '课程名',   -- 浅做个冗余减少查询次数
+    class_term   varchar(36) null comment '开课学期',
+    foreign key (teacher_id) references b_teacher (teacher_id),
+    foreign key (course_id) references b_course (course_id)
+) comment '教学班表';
 
 -- 只考虑软件协同这一门课，学生只会出现在一个班级内
 create table b_student
@@ -20,26 +41,6 @@ create table b_student
     foreign key (student_class) references b_class (class_id),
     foreign key (student_group) references b_group (group_id)
 ) comment '学生表';
-
--- 就放一节课
-create table b_course
-(
-    course_id   int(15) not null primary key comment '课程id',
-    course_name varchar(64) not null comment '课程名'
-) comment '课程表';
-
--- 老师和课程一起构成教学班，可能会有带多个班情况
-create table b_class
-(
-    class_id     varchar(36) not null comment '教学班代号',
-    teacher_id   int(15) not null comment '开课教师id',
-    teacher_name varchar(36) not null comment '教师姓名', -- 浅做个冗余减少查询次数
-    course_id    int(15) not null comment '课程代号',
-    course_name  varchar(64) not null comment '课程名',   -- 浅做个冗余减少查询次数
-    class_term   varchar(36) null comment '开课学期',
-    foreign key (teacher_id) references b_teacher (teacher_id),
-    foreign key (course_id) references b_course (course_id)
-) comment '教学班表';
 
 -- 一个学生一个组，一个组多个学生
 create table b_group
@@ -70,7 +71,7 @@ create table b_course_basic_settings
 create table b_class_chapter_settings
 (
     chapter_id   int(15) not null primary key comment '章节id',
-    class_id     varchar(36) not null comment '课程id',
+    class_id     int(15) not null comment '课程id',
     chapter_name varchar(512) comment '章节标题',
     foreign key (class_id) references b_class (class_id)
 ) comment '课程章节设置';
@@ -209,4 +210,28 @@ create table b_notice_receive_teacher
     foreign key (notice_receiver_id) references b_teacher (teacher_id)
 ) comment '老师消息提醒分送表';
 
+-- 学生申请加入
+CREATE TABLE `b_group_appeal_in`  (
+    `appeal_id` int NOT NULL COMMENT '主键',
+    `group_id` int NOT NULL COMMENT '申请加入的组id',
+    `student_id` int NOT NULL COMMENT '申请人id',
+    `appeal_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '申请时间',
+    PRIMARY KEY (`appeal_id`) USING BTREE,
+    FOREIGN KEY (group_id) REFERENCES b_group (group_id),
+    FOREIGN KEY (student_id) REFERENCES b_student (student_id)
+) COMMENT '学生申请加入';
+
+-- 学生申请成为组长
+CREATE TABLE `b_group_appeal_leader`  (
+    `appeal_id` int NOT NULL,
+    `student_id` int NOT NULL COMMENT '申请人id',
+    `group_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '团队名（由申请人填写）',
+    `class_id` int NOT NULL COMMENT '班级（自动补全）',
+    `group_avatar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '团队头像（由申请人填写）',
+    `group_introduction` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '团队介绍（由申请人填写）',
+    PRIMARY KEY (`appeal_id`) USING BTREE,
+    FOREIGN KEY (student_id) REFERENCES b_student (student_id),
+    FOREIGN KEY (class_id) REFERENCES b_class (class_id)
+) COMMENT '学生申请成为组长';
+SET FOREIGN_KEY_CHECKS = 1;
 -- 剩下聊天记录表要做，放下一次迭代再说

@@ -1,9 +1,13 @@
 package com.softwarecooperative.softwareciooperative.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.softwarecooperative.softwareciooperative.dao.mapper.*;
 import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
 import com.softwarecooperative.softwareciooperative.framework.net.NotificationTemplate;
+import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.*;
+import com.softwarecooperative.softwareciooperative.pojo.vo.NotificationVO;
 import com.softwarecooperative.softwareciooperative.service.NotificationService;
 import com.softwarecooperative.softwareciooperative.ws.StudentNotificationWs;
 import com.softwarecooperative.softwareciooperative.ws.TeacherNotificationWs;
@@ -124,6 +128,55 @@ public class NotificationServiceImpl implements NotificationService {
         // 向前端发送提醒消息
         for (Integer id : ids)
             StudentNotificationWs.sendToOneClient(id, NotificationTemplate.NEW_NOTICE);
+    }
+
+    @Override
+    public void confirm(Integer noticeId, Integer role) {
+        if (role.equals(BClass.TEACHER)) {
+            BNoticeReceiveTeacher newEntity = BNoticeReceiveTeacher.builder()
+                    .noticeId(noticeId)
+                    .noticeStatus(BNoticeReceiveStudent.ALREADY_READ.toString())
+                    .build();
+            noticeReceiveTeacherMapper.update(newEntity);
+        } else if (role.equals(BClass.STUDENT)) {
+            BNoticeReceiveStudent newEntity = BNoticeReceiveStudent.builder()
+                    .noticeId(noticeId)
+                    .noticeStatus(BNoticeReceiveStudent.ALREADY_READ.toString())
+                    .build();
+            noticeReceiveStudentMapper.update(newEntity);
+        }
+    }
+
+    @Override
+    public void allRead(Integer role) {
+        Integer id = Integer.parseInt(BaseContext.getCurrentId());
+        if (role.equals(BClass.TEACHER)) {
+            BNoticeReceiveTeacher newEntity = BNoticeReceiveTeacher.builder()
+                    .noticeReceiverId(id)
+                    .noticeStatus(BNoticeReceiveStudent.ALREADY_READ.toString())
+                    .build();
+            noticeReceiveTeacherMapper.update(newEntity);
+        } else if (role.equals(BClass.STUDENT)) {
+            BNoticeReceiveStudent newEntity = BNoticeReceiveStudent.builder()
+                    .noticeReceiverId(id)
+                    .noticeStatus(BNoticeReceiveStudent.ALREADY_READ.toString())
+                    .build();
+            noticeReceiveStudentMapper.update(newEntity);
+        }
+    }
+
+    @Override
+    public PageResult<NotificationVO> pageSelect(Integer page, Integer pageSize, Integer role) {
+        Integer id = Integer.parseInt(BaseContext.getCurrentId());
+        PageHelper.startPage(page, pageSize);
+        if (role.equals(BClass.TEACHER)) {
+            Page<NotificationVO> res = noticeTeacherMapper.pageSelect(id);
+            return new PageResult<>(res.getTotal(), res.getResult());
+        } else if (role.equals(BClass.STUDENT)) {
+            Page<NotificationVO> res = noticeStudentMapper.pageSelect(id);
+            return new PageResult<>(res.getTotal(), res.getResult());
+        }
+        return null;
     }
 
     private Publisher getPublisher(Integer sourceRole) {

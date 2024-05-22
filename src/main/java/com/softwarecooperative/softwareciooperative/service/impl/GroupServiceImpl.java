@@ -161,8 +161,8 @@ public class GroupServiceImpl implements GroupService {
     public void appealIn(Integer groupId) throws IOException {
         Integer curId = Integer.parseInt(BaseContext.getCurrentId());
         // 检查是否已加入其他团队
-        BStudent stu = studentMapper.selectOne(BStudent.createIdQuery(curId));
-        if (stu.getStudentGroup() != null)
+        BStudent curStu = studentMapper.selectOne(BStudent.createIdQuery(curId));
+        if (curStu.getStudentGroup() != null)
             throw new GroupException(StringConstant.STUDENT_ALREADY_IN_GROUP);
         // 检查是否已有组长申请
         BGroupAppealLeader appealQuery = BGroupAppealLeader.builder().studentId(curId).build();
@@ -182,7 +182,7 @@ public class GroupServiceImpl implements GroupService {
         notificationService.sendNotifToOneStudent(
                 BClass.SYSTEM,
                 leader.getStudentId(),
-                NotificationTemplate.NEW_MEMBER_APPEAL(curId.toString())
+                NotificationTemplate.NEW_MEMBER_APPEAL(curStu.getStudentName())
         );
     }
 

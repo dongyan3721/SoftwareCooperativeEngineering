@@ -1,5 +1,8 @@
 package com.softwarecooperative.softwareciooperative.service;
 
+import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
+import com.softwarecooperative.softwareciooperative.pojo.vo.NotificationVO;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -16,4 +19,9 @@ public interface NotificationService {
 
     void sendNotifToStudents(Integer sourceRole, List<Integer> ids, String message) throws IOException;
 
+    void confirm(Integer noticeId, Integer role);
+
+    void allRead(Integer role);
+
+    PageResult<NotificationVO> pageSelect(Integer page, Integer pageSize, Integer role);
 }

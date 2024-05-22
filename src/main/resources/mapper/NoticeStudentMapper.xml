@@ -7,4 +7,13 @@
         VALUES
             (#{noticeId}, #{noticeContent}, #{noticePublisher}, #{noticePublisherAvatar}, #{noticePublishSnapshot})
     </insert>
+    <select id="pageSelect" resultType="com.softwarecooperative.softwareciooperative.pojo.vo.NotificationVO">
+        SELECT
+            bnt.*,
+            (CASE WHEN bnrt.notice_status = '1' THEN TRUE ELSE FALSE END) AS hasRead
+        FROM b_notice_student bnt
+                 LEFT OUTER JOIN b_notice_receive_student bnrt ON bnt.notice_id = bnrt.notice_id
+        WHERE bnrt.notice_receiver_id = #{studentId}
+        ORDER BY bnt.notice_publish_snapshot DESC
+    </select>
 </mapper>

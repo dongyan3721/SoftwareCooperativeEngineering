@@ -14,4 +14,12 @@
             (#{item.noticeId}, #{item.noticeReceiverId}, #{item.noticeStatus})
         </foreach>
     </insert>
+    <update id="update">
+        UPDATE b_notice_receive_teacher SET notice_status = #{noticeStatus}
+        <where>
+            <if test="noticeId != null"> AND notice_id = #{noticeId} </if>
+            <if test="noticeReceiverId != null"> AND notice_receiver_id = #{noticeReceiverId} </if>
+            <if test="noticeId == null and noticeReceiverId == null"> AND 1=0 </if>
+        </where>
+    </update>
 </mapper>

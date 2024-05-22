@@ -17,4 +17,6 @@ public interface NoticeReceiveStudentMapper {
     void insertOne(BNoticeReceiveStudent noticeReceiveStudent);
 
     void insertBatch(List<BNoticeReceiveStudent> stus);
+
+    void update(BNoticeReceiveStudent newEntity);
 }

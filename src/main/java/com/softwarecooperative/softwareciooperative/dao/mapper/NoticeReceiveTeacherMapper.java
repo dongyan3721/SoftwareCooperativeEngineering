@@ -18,4 +18,6 @@ public interface NoticeReceiveTeacherMapper {
     void insertOne(BNoticeReceiveTeacher noticeReceiveTeacher);
 
     void insertBatch(List<BNoticeReceiveTeacher> teas);
+
+    void update(BNoticeReceiveTeacher newEntity);
 }
