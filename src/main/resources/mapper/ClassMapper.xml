@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.ClassMapper">
     <insert id="insert">
-        INSERT INTO b_class(class_id, teacher_id, teacher_name, course_id, course_name, class_term)
-            VALUES (#{classId}, #{teacherId}, #{teacherName}, #{courseId}, #{courseName}, #{classTerm})
+        INSERT INTO b_class(class_id, teacher_id, teacher_name, course_id, course_name, class_picture)
+            VALUES (#{classId}, #{teacherId}, #{teacherName}, #{courseId}, #{courseName}, #{classTerm}, #{classPicture})
     </insert>
     <update id="update">
         UPDATE b_class

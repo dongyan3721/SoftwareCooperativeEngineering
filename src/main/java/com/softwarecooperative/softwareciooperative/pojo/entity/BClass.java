@@ -20,6 +20,7 @@ public class BClass implements Serializable {
   private Integer courseId;
   private String courseName;
   private String classTerm;
+  private String classPicture;
 
   public static final int STUDENT = 0;
   public static final int TEACHER = 1;
