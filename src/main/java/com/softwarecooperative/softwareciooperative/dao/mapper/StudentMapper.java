@@ -22,7 +22,6 @@ public interface StudentMapper {
     void deleteGroup(@Param("groupId") Integer groupId);
 
     void exitGroup(@Param("targetStuId") Integer targetStuId);
-    void exitGroup(@Param("groupId") Integer groupId);
     @InjectSnowFlakeId
     void insertOne(BStudent student);
 
