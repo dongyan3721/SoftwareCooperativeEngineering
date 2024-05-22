@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.StudentMapper">
+    <insert id="insertOne">
+        INSERT INTO b_student
+        (student_id, student_name, student_class, student_role, student_group, password, avatar)
+        VALUES (#{studentId}, #{studentName}, #{studentClass},#{studentRole},#{studentGroup},#{password},#{avatar})
+    </insert>
     <update id="update">
         UPDATE b_student
         <set>
@@ -16,6 +21,11 @@
     <update id="exitGroup">
         UPDATE b_student SET student_role = '0', student_group = null WHERE student_group = #{groupId}
     </update>
+    <delete id="deleteOne">
+        DELETE
+        FROM b_student
+        WHERE student_id = #{studentId}
+    </delete>
     <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudent">
         SELECT * FROM b_student
         <where>
@@ -36,4 +46,6 @@
             <if test="studentGroup != null"> AND student_group = #{studentGroup} </if>
         </where>
     </select>
+
+
 </mapper>

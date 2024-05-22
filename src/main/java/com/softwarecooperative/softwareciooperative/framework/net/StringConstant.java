@@ -14,4 +14,5 @@ public class StringConstant {
     public static final String STUDENT_ALREADY_IN_GROUP = "学生已经加入团队，不能重复加入或创建团队";
     public static final String NO_GROUP = "该团队不存在或已解散";
 
+    public static final String DEFAULT_PASSWORD = "114514";
 }

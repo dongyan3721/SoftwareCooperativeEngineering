@@ -4,6 +4,7 @@ import com.softwarecooperative.softwareciooperative.framework.annotation.AccessW
 import com.softwarecooperative.softwareciooperative.framework.exception.service.LoginFailedException;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
 import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.LoginService;
 import com.softwarecooperative.softwareciooperative.service.TeacherService;
@@ -61,6 +62,26 @@ public class TeacherController {
     @Operation(summary = "修改密码")
     public AjaxResult changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
         teacherService.changePassword(changePasswordDTO);
+        return AjaxResult.success();
+    }
+
+    @PostMapping("/student")
+    @Operation(summary = "教师添加单个学生")
+    public AjaxResult addOneStudent(@RequestBody BStudent student){
+        teacherService.addOneStudent(student);
+        return AjaxResult.success();
+    }
+    @DeleteMapping("/student/{studentId}")
+    @Operation(summary = "教师删除单个学生")
+    public AjaxResult deleteOneStudent(@PathVariable Integer studentId){
+        teacherService.deleteOneStudent(studentId);
+        return AjaxResult.success();
+    }
+
+    @PutMapping("/student")
+    @Operation(summary = "教师修改学生信息")
+    public AjaxResult modifyStudent(@RequestBody BStudent student){
+        teacherService.modifyStudent(student);
         return AjaxResult.success();
     }
 }
