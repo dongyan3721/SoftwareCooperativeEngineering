@@ -1,11 +1,13 @@
 package com.softwarecooperative.softwareciooperative.service.impl;
 
+import com.softwarecooperative.softwareciooperative.dao.mapper.StudentMapper;
 import com.softwarecooperative.softwareciooperative.dao.mapper.TeacherMapper;
 import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.IllegalOperationException;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.ModifyPasswordException;
 import com.softwarecooperative.softwareciooperative.framework.net.StringConstant;
 import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.TeacherService;
 import com.softwarecooperative.softwareciooperative.utils.crypto.MD5Util;
@@ -23,6 +25,9 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private TeacherMapper teacherMapper;
 
+    @Autowired
+    private StudentMapper studentMapper;
+
     @Override
     public BTeacher getTeacherById(Integer id) {
         return teacherMapper.selectOne(BTeacher.builder().teacherId(id).build());
@@ -33,7 +38,6 @@ public class TeacherServiceImpl implements TeacherService {
         Integer id = Integer.parseInt(BaseContext.getCurrentId());
         if (!id.equals(bTeacher.getTeacherId()))
             throw new IllegalOperationException(StringConstant.ILLEGAL_OPERATION);
-
         teacherMapper.update(bTeacher);
     }
 
@@ -52,5 +56,27 @@ public class TeacherServiceImpl implements TeacherService {
                         .build();
 
         teacherMapper.update(newTeacher);
+    }
+
+    @Override
+    public void addOneStudent(BStudent student) {
+        //学生姓名，学生班级，头像链接
+        student.setStudentRole(BStudent.NO_ROLE);
+        student.setPassword(MD5Util.encrypt(StringConstant.DEFAULT_PASSWORD));
+        student.setStudentGroup(null);
+        studentMapper.insertOne(student);
+    }
+
+    @Override
+    public void deleteOneStudent(Integer studentId) {
+        studentMapper.deleteOne(studentId);
+    }
+
+    @Override
+    public void modifyStudent(BStudent student) {
+        if(student.getPassword()!=null){
+            student.setPassword(MD5Util.encrypt(student.getPassword()));
+        }
+        studentMapper.update(student);
     }
 }
