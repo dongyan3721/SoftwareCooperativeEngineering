@@ -54,4 +54,8 @@ public class NotificationTemplate {
     public static String SUBTASK_CHANGED(String taskHandlerName) {
         return taskHandlerName + "同学，您的阶段任务已修改，请及时查收";
     }
+
+    public static String STUDENT_HAS_MARKED(String studentName, Integer performance) {
+        return studentName + "同学，根据您在任务中的表现，组员给您打了" + performance + "分";
+    }
 }
