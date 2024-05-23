@@ -8,15 +8,17 @@ import OtherComponent from '../../components/teacher/teacher-menu.vue';
 import router from "@/router/index.js";
 import {ref} from 'vue';
 import {ListAllTeacherCourses} from "@/web-api/teacher/teacherCourseSelection.js";
-import {useUserStore} from "@/store";
+import {useUserStore, useTeacherClassStore} from "@/store";
 
 const tabPosition = ref('left')
 const imageUrl = ref('https://p.ananas.chaoxing.com/star3/240_130c/6ce77a10dd3268daa7ba6c93e5e76459.jpg')
 const courses = ref([]);
 const userStore = useUserStore();
+const {setClassId} = useTeacherClassStore()
 
 const handleCourseClick =(courseUrl) => {
-    router.push({name: 'teacher-main', query: {classId: courseUrl}});
+    router.push({name: 'teacher-main'});
+    setClassId(courseUrl)
 };
 
 onMounted(async () => {
