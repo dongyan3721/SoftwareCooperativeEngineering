@@ -91,7 +91,10 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public PageResult<BStudent> pageSelect(Integer page, Integer pageSize, Integer classId) {
         PageHelper.startPage(page,pageSize);
-        Page<BStudent> res = studentMapper.pageSelect(classId);
+        BStudent query = BStudent.builder()
+                .studentClass(classId)
+                .build();
+        Page<BStudent> res = studentMapper.pageSelect(query);
         return new PageResult<>(res.getTotal(), res.getResult());
     }
 }
