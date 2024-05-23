@@ -21,4 +21,5 @@ public class StringConstant {
     public static final String NOT_TASK_HANDLER = "不能提交任务，您不是任务的接收者";
     public static final String TASK_EXPIRED = "任务已过期";
     public static final String TASK_STATUS_ERROR = "任务状态错误";
+    public static final String DEFAULT_PASSWORD = "114514";
 }

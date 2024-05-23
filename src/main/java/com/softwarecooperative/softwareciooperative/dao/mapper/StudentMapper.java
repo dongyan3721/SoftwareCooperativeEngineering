@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.dao.mapper;
 
+import com.softwarecooperative.softwareciooperative.framework.annotation.InjectSnowFlakeId;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -23,4 +24,9 @@ public interface StudentMapper {
     void exitGroup(@Param("targetStuId") Integer targetStuId);
 
     List<Integer> selectIdByCond(BStudent student);
+
+    @InjectSnowFlakeId
+    void insertOne(BStudent student);
+
+    void deleteOne(Integer studentId);
 }
