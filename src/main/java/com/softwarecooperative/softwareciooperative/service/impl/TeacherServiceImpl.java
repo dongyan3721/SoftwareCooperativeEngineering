@@ -1,12 +1,17 @@
 package com.softwarecooperative.softwareciooperative.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.softwarecooperative.softwareciooperative.dao.mapper.ClassChapterSettingsMapper;
 import com.softwarecooperative.softwareciooperative.dao.mapper.StudentMapper;
 import com.softwarecooperative.softwareciooperative.dao.mapper.TeacherMapper;
 import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.IllegalOperationException;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.ModifyPasswordException;
+import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
 import com.softwarecooperative.softwareciooperative.framework.net.StringConstant;
 import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BClassChapterSettings;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.TeacherService;
@@ -27,6 +32,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
     private StudentMapper studentMapper;
+
+    @Autowired
+    private ClassChapterSettingsMapper classChapterSettingsMapper;
 
     @Override
     public BTeacher getTeacherById(Integer id) {
@@ -78,5 +86,12 @@ public class TeacherServiceImpl implements TeacherService {
             student.setPassword(MD5Util.encrypt(student.getPassword()));
         }
         studentMapper.update(student);
+    }
+
+    @Override
+    public PageResult<BStudent> pageSelect(Integer page, Integer pageSize, Integer classId) {
+        PageHelper.startPage(page,pageSize);
+        Page<BStudent> res = studentMapper.pageSelect(classId);
+        return new PageResult<>(res.getTotal(), res.getResult());
     }
 }

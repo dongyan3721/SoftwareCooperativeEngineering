@@ -56,14 +56,7 @@ const handOnApply = ()=>{
   })
 }
 
-const existingGroups = ref([]
-//     [
-//     {groupId: 114514, groupName: '下北泽软件研发部', classId: 142543296, groupIntroduction: '（技术）非常的先进，（效率）非常的快速',
-//     groupAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
-//     groupLeaderId: '114154191', groupLeaderAvatar: 'https://software-cooperative-engineering.oss-cn-hangzhou.aliyuncs.com/9bdef4d9d814b3720059b533c198055d.jpg',
-//     groupLeaderName: '李田所'},
-// ]
-)
+const existingGroups = ref([])
 const exitGroupsRowCount = computed(()=>{
   return generateSequence(0, upToGetInt(existingGroups.value.length, existGroupCol))
 })
@@ -157,7 +150,7 @@ onBeforeMount(function (){
               </div>
               <template #action>
                 <el-button size="small" type="warning" @click="resolveViewGroupDetail(existingGroups[i].groupId)">让我看看！</el-button>
-                <el-button size="small" type="primary" @click="resolveJoinGroup(existingGroups[i].groupId)">我汤姆来辣</el-button>
+                <el-button size="small" type="primary" @click="resolveJoinGroup(existingGroups[i].groupId)" :disabled="existingGroups[i].hasAppeal">我汤姆来辣</el-button>
               </template>
             </n-card>
           </el-col>

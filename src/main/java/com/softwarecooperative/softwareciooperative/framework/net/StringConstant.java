@@ -23,4 +23,5 @@ public class StringConstant {
     public static final String TASK_EXPIRED = "任务已过期";
     public static final String TASK_STATUS_ERROR = "任务状态错误";
     public static final String DEFAULT_PASSWORD = "114514";
+    public static final String DELETE_CHAPTER_FILE = "当前章节含有内容，无法删除";
 }

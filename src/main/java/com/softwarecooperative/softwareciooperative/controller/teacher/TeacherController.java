@@ -3,10 +3,15 @@ package com.softwarecooperative.softwareciooperative.controller.teacher;
 import com.softwarecooperative.softwareciooperative.framework.annotation.AccessWithoutVerification;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.LoginFailedException;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
+import com.softwarecooperative.softwareciooperative.framework.net.PageResult;
+import com.softwarecooperative.softwareciooperative.framework.net.TableDataInfo;
 import com.softwarecooperative.softwareciooperative.pojo.dto.ChangePasswordDTO;
 import com.softwarecooperative.softwareciooperative.pojo.dto.TeacherLoginDTO;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BClassChapterSettings;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
+import com.softwarecooperative.softwareciooperative.pojo.vo.NotificationVO;
 import com.softwarecooperative.softwareciooperative.service.LoginService;
 import com.softwarecooperative.softwareciooperative.service.TeacherService;
 import com.softwarecooperative.softwareciooperative.utils.JwtUtils;
@@ -88,4 +93,12 @@ public class TeacherController {
         teacherService.modifyStudent(student);
         return AjaxResult.success();
     }
+
+    @GetMapping("/student")
+    @Operation(summary = "教师分页查询学生")
+    public TableDataInfo pageSelect(Integer pageNum, Integer pageSize,Integer classId){
+        PageResult<BStudent> res =teacherService.pageSelect(pageNum,pageSize,classId);
+        return TableDataInfo.success(res.getRecords(), res.getTotal());
+    }
+
 }
