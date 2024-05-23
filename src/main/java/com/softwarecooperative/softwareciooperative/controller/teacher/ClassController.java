@@ -1,15 +1,14 @@
 package com.softwarecooperative.softwareciooperative.controller.teacher;
 
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
+import com.softwarecooperative.softwareciooperative.pojo.dto.UpdateClassPhaseDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
 import com.softwarecooperative.softwareciooperative.service.ClassService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,5 +31,12 @@ public class ClassController {
     public AjaxResult getTeacherClass() {
         List<BClass> res = classService.getTeacherClass();
         return AjaxResult.success(res);
+    }
+
+    @PutMapping("/phase")
+    @Operation(summary = "修改教学班阶段")
+    public AjaxResult updateClassPhase(@RequestBody UpdateClassPhaseDTO dto) {
+        classService.updateClassPhase(dto.getClassId(), dto.getPhase());
+        return AjaxResult.success();
     }
 }

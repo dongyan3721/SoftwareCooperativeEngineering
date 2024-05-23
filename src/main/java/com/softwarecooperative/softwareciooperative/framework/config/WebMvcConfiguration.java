@@ -3,6 +3,7 @@ package com.softwarecooperative.softwareciooperative.framework.config;
 import com.alibaba.fastjson2.JSONWriter;
 import com.alibaba.fastjson2.support.config.FastJsonConfig;
 import com.alibaba.fastjson2.support.spring6.http.converter.FastJsonHttpMessageConverter;
+import com.softwarecooperative.softwareciooperative.framework.interceptor.IntegratingInterceptor;
 import com.softwarecooperative.softwareciooperative.framework.interceptor.JWTInterceptor;
 import com.softwarecooperative.softwareciooperative.framework.interceptor.TeacherRoleInterceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         return new TeacherRoleInterceptor();
     }
 
+    @Bean
+    public IntegratingInterceptor integratingInterceptor() {
+        return new IntegratingInterceptor();
+    }
+
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("注册jwt拦截器");
@@ -53,6 +59,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(teacherRoleInterceptor())
                 .addPathPatterns("/teacher/**")
                 .order(2);
+
+        log.info("注册组队权限拦截器");
+        registry.addInterceptor(integratingInterceptor())
+                .addPathPatterns("/student/group/**")
+                .order(3);
 
         super.addInterceptors(registry);
     }

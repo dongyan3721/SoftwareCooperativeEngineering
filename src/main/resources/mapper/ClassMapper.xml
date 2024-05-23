@@ -44,4 +44,7 @@
     <select id="selectAll" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BClass">
         SELECT * FROM b_class
     </select>
+    <select id="selectClassStatus" resultType="java.lang.Integer">
+        SELECT phase FROM b_class WHERE class_id = #{classId}
+    </select>
 </mapper>

@@ -16,4 +16,6 @@ public interface ClassMapper {
     void insert(BClass bClass);
     void update(BClass bClass);
     void delete(@Param("id") Integer id);
+
+    Integer selectClassStatus(@Param("classId") Integer classId);
 }
