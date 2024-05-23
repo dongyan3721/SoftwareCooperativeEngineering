@@ -62,4 +62,18 @@ public class TaskController {
         return AjaxResult.success();
     }
 
+    @GetMapping("/subTask")
+    @Operation(summary = "查看分任务提交")
+    public AjaxResult getSubTaskSubmit(Integer recordId) {
+        BStudentTaskSubmit res = taskService.getSubtaskSubmit(recordId);
+        return AjaxResult.success(res);
+    }
+
+    @GetMapping("/mainTask")
+    @Operation(summary = "查看阶段总任务提交")
+    public AjaxResult getMainTaskSubmit(Integer groupId, Integer taskId) {
+        BStudentTaskSubmit res = taskService.getMainTaskSubmit(groupId, taskId);
+        return AjaxResult.success(res);
+    }
+
 }

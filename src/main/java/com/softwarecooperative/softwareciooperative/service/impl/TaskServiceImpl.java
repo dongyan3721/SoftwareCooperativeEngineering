@@ -155,4 +155,19 @@ public class TaskServiceImpl implements TaskService {
                     NotificationTemplate.SUBTASK_CHANGED(subtask.getTaskHandlerName())
             );
     }
+
+    @Override
+    public BStudentTaskSubmit getSubtaskSubmit(Integer recordId) {
+        return studentTaskSubmitMapper.selectOne(BStudentTaskSubmit.createIdQuery(recordId));
+    }
+
+    @Override
+    public BStudentTaskSubmit getMainTaskSubmit(Integer groupId, Integer taskId) {
+        BStudentTaskSubmit query = BStudentTaskSubmit.builder()
+                .taskHandlerGroupId(groupId)
+                .taskId(taskId)
+                .submitType(BStudentTaskSubmit.MAIN_TASK_SUBMIT)
+                .build();
+        return studentTaskSubmitMapper.selectOne(query);
+    }
 }
