@@ -17,6 +17,7 @@ import {handleAddStudent, handleUpdateStudent, handleDeleteStudent, queryStudent
 import {stringToPngBase64} from "@/util/cv.js";
 import {base64ToBlob} from "@/util/dongyan.js";
 const teacherClassStore = useTeacherClassStore();
+teacherClassStore.setClassId(142543296)
 const pageClass = teacherClassStore.classId;
 const classStudents = ref(
 //     [
@@ -26,12 +27,13 @@ const classStudents = ref(
 )
 
 onBeforeMount(function (){
-  // querySatisfiedStudents(queryParams)
+  querySatisfiedStudents(queryParams)
 })
 
 const queryParams = reactive({
   studentId: null,
   studentName: null,
+  classId: pageClass,
   pageNum: 1,
   pageSize: 20
 })
@@ -41,6 +43,7 @@ function resetQuery(){
   queryFormRef.value.resetFields()
   queryParams.studentId = null
   queryParams.studentName = null
+  queryParams.classId = pageClass
   queryParams.pageNum = 1
   queryParams.pageSize = 20
   querySatisfiedStudents(queryParams)
