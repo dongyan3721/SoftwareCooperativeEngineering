@@ -39,4 +39,14 @@
             <if test="studentGroup != null"> AND student_group = #{studentGroup} </if>
         </where>
     </select>
+    <select id="selectIdByCond" resultType="java.lang.Integer">
+        SELECT student_id FROM b_student
+        <where>
+            <if test="studentId != null"> AND student_id = #{studentId} </if>
+            <if test="studentName != null"> AND student_name = #{studentName} </if>
+            <if test="studentClass != null"> AND student_class = #{studentClass} </if>
+            <if test="studentRole != null"> AND student_role = #{studentRole} </if>
+            <if test="studentGroup != null"> AND student_group = #{studentGroup} </if>
+        </where>
+    </select>
 </mapper>
