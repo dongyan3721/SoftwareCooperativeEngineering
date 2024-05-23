@@ -49,4 +49,11 @@
             <if test="studentGroup != null"> AND student_group = #{studentGroup} </if>
         </where>
     </select>
+    <select id="pageSelect" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudent">
+        SELECT
+            *
+        FROM b_student
+        WHERE student_class=#{classId}
+        ORDER BY student_id DESC
+    </select>
 </mapper>

@@ -1,7 +1,9 @@
 package com.softwarecooperative.softwareciooperative.dao.mapper;
 
+import com.github.pagehelper.Page;
 import com.softwarecooperative.softwareciooperative.framework.annotation.InjectSnowFlakeId;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
+import com.softwarecooperative.softwareciooperative.pojo.vo.NotificationVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,4 +28,5 @@ public interface StudentMapper {
     void insertOne(BStudent student);
 
     void deleteOne(Integer studentId);
+    Page<BStudent> pageSelect(@Param("classId") Integer classId);
 }

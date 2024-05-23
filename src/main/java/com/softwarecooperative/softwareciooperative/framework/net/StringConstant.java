@@ -18,6 +18,6 @@ public class StringConstant {
     public static final String LEADER_ROLE_CANT_BE_CHANGED = "组长不能更换角色";
     public static final String LEADER_ROLE_CANT_BE_REMOVED = "组长不能被删除";
     public static final String LEADER_ROLE_CANT_EXIT = "组长不能退出，如需退出请解散团队";
-
     public static final String DEFAULT_PASSWORD = "114514";
+    public static final String DELETE_CHAPTER_FILE = "当前章节内存在内容，无法删除";
 }

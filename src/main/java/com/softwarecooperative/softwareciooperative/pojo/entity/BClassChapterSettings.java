@@ -17,5 +17,6 @@ public class BClassChapterSettings implements Serializable {
   private Integer chapterId;
   private String classId;
   private String chapterName;
+  private Integer order;
 
 }
