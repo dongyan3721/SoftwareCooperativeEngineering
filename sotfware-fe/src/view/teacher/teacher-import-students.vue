@@ -8,9 +8,9 @@
 
 import TeacherMenu from "@/components/teacher/teacher-menu.vue";
 import UniverseSection from "@/components/universe-section.vue";
-import {Plus, Upload, Search, Refresh} from "@element-plus/icons-vue";
+import {Plus, Upload, Search, Refresh, Edit} from "@element-plus/icons-vue";
 import {useTeacherClassStore} from "@/store/index.js";
-import {ElMessage, genFileId} from "element-plus";
+import {ElMessage, ElMessageBox, genFileId} from "element-plus";
 import upload from "@/web-api/upload.js";
 import {generalValidatorJudgeIfEmpty} from "@/util/common.js";
 import {handleAddStudent, handleUpdateStudent, handleDeleteStudent, queryStudents} from "@/web-api/teacher/teacherImportStudent.js";
@@ -25,6 +25,7 @@ const classStudents = ref(
 //   studentRole: '开发经理', studentGroup: 'AAA'}
 // ]
 )
+const total = ref()
 
 onBeforeMount(function (){
   querySatisfiedStudents(queryParams)
@@ -35,7 +36,7 @@ const queryParams = reactive({
   studentName: null,
   classId: pageClass,
   pageNum: 1,
-  pageSize: 20
+  pageSize: 10
 })
 const queryFormRef = ref()
 function resetQuery(){
@@ -45,13 +46,14 @@ function resetQuery(){
   queryParams.studentName = null
   queryParams.classId = pageClass
   queryParams.pageNum = 1
-  queryParams.pageSize = 20
+  queryParams.pageSize = 10
   querySatisfiedStudents(queryParams)
 }
 
 function querySatisfiedStudents(params){
   queryStudents(params).then(res=>{
     classStudents.value = res.rows
+    total.value = res.total
   })
 }
 
@@ -83,10 +85,21 @@ const handleOpenAddDialog = ()=>{
   modifyDialogVis.value = true
 }
 const deleteStudent = id=>{
+  ElMessageBox.confirm(
+      `确认删除学号为${id}的学生吗？`,
+      '警告',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(()=>{
+        handleDeleteStudent(id).then(()=>{
+            ElMessage.success('删除成功！')
+          querySatisfiedStudents(queryParams);
+        })
+  })
   // 确认一下
-  // handleDeleteStudent(id).then(res=>{
-  //
-  // })
+
 }
 // 打开批量上传窗口
 const handleOpenBatchAddDialog = ()=>{
@@ -100,7 +113,7 @@ const handleOpenUpdateDialog = (student)=>{
   form.avatar = student.avatar
   form.studentName = student.studentName
   form.studentClass = pageClass
-  fileList.value = [{name: 'aaa', url: student.avatar}]
+  fileList.value = [{name: '现有头像', url: student.avatar}]
   modifyDialogVis.value = true
 }
 
@@ -127,29 +140,38 @@ const handleSubmitForm = ()=>{
     if(valid){
       if(!useDefaultAvatar.value&&!form.avatar){
         ElMessage.error('请为学生选择头像')
+        modifyDialogVis.value = false
+        resetForm()
         return
       }
       if(form.studentId){
-        // handleUpdateStudent(form).then()
+        handleUpdateStudent(form).then(()=>{
+          ElMessage.success('修改成功！')
+          modifyDialogVis.value = false
+          resetForm()
+          querySatisfiedStudents(queryParams);
+        })
       }else{
         if(useDefaultAvatar.value){
           upload(base64ToBlob(stringToPngBase64(form.studentName))).then(res=>{
             form.avatar = res.msg
-            handleAddStudent(form).then(res=>{
+            handleAddStudent(form).then(()=>{
               ElMessage.success('添加成功！')
-              // querySatisfiedStudents(queryParams);
+              modifyDialogVis.value = false
+              resetForm()
+              querySatisfiedStudents(queryParams);
             })
           })
         }else{
-          handleAddStudent(form).then(res=>{
+          handleAddStudent(form).then(()=>{
+            modifyDialogVis.value = false
             ElMessage.success('添加成功！')
-            // querySatisfiedStudents(queryParams);
+            querySatisfiedStudents(queryParams);
+            resetForm()
           })
         }
       }
     }
-    modifyDialogVis.value = false
-    resetForm()
   })
 
 
@@ -164,6 +186,11 @@ const rules = {
   studentName: [{validator: generalValidatorJudgeIfEmpty('学生姓名'), trigger: 'blur'}]
 }
 
+const doPagination = (pageNum)=>{
+  queryParams.pageNum = pageNum
+  querySatisfiedStudents(queryParams)
+}
+
 </script>
 
 <template>
@@ -171,7 +198,8 @@ const rules = {
   <el-dialog append-to-body width="400px" v-model="modifyDialogVis">
     <template #header>
       <div class="w-100 h-100 flex flex-row items-center">
-        <el-icon size="16"><plus/></el-icon>
+        <el-icon size="16" v-if="!form.studentId"><plus/></el-icon>
+        <el-icon size="16" v-else><edit/></el-icon>
         <span class="inline-block ml-1">{{form.studentId?'修改':'添加'}}学生</span>
       </div>
     </template>
@@ -212,7 +240,7 @@ const rules = {
         <el-input v-model="queryParams.studentName" clearable/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="querySatisfiedStudents">
+        <el-button type="primary" @click="querySatisfiedStudents(queryParams)">
           <template #icon>
             <el-icon><Search/></el-icon>
           </template>
@@ -257,6 +285,12 @@ const rules = {
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="w-100 flex items-center justify-end my-2">
+      <el-pagination background layout="prev, pager, next" @change="doPagination"
+                     :total="total" :page-size="queryParams.pageSize"/>
+    </div>
+
   </teacher-menu>
 </template>
 
