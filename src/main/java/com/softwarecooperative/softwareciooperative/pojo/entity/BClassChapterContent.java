@@ -13,9 +13,11 @@ import java.io.Serializable;
 @ToString
 public class BClassChapterContent implements Serializable {
 
-  @PrimaryKey
-  private Integer contentId;
-  private Integer chapterId;
-  private String resourceLink;
+    @PrimaryKey
+    private Integer contentId;
+    private Integer chapterId;
+    private String resourceLink;
+    private String contentDescription;
+    private Integer resourceType;
 
 }
