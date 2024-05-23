@@ -46,4 +46,12 @@ public class NotificationTemplate {
     public static String EXIT_GROUP(String studentName) {
         return studentName + "已退出团队";
     }
+
+    public static String TASK_HANDED_ON(String studentName, String taskStudentRole) {
+        return studentName + "同学在" + BStudent.roleCode2String(taskStudentRole).substring(0, 2) + "阶段的任务已提交";
+    }
+
+    public static String SUBTASK_CHANGED(String taskHandlerName) {
+        return taskHandlerName + "同学，您的阶段任务已修改，请及时查收";
+    }
 }

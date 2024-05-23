@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.StudentTaskSubmitMapper">
+    <update id="update">
+        UPDATE b_student_task_submit
+        <set>
+            <if test="taskId != null"> task_id = #{taskId}, </if>
+            <if test="taskHandler != null"> task_handler = #{taskHandler}, </if>
+            <if test="taskHandlerGroupId != null"> task_handler_group_id = #{taskHandlerGroupId}, </if>
+            <if test="taskHandlerName != null"> task_handler_name = #{taskHandlerName}, </if>
+            <if test="taskHandlerWork != null"> task_handler_work = #{taskHandlerWork}, </if>
+            <if test="submitLink != null"> submit_link = #{submitLink}, </if>
+            <if test="submitStatus != null"> submit_status = #{submitStatus}, </if>
+            <if test="submitTime != null"> submit_time = #{submitTime}, </if>
+            <if test="submitType != null"> submit_type = #{submitType}, </if>
+        </set>
+        WHERE record_id = #{recordId}
+    </update>
+    <select id="selectGroupPhaseByGroupId" resultType="java.lang.Integer">
+        SELECT COUNT(record_id) FROM b_student_task_submit WHERE task_handler_group_id = #{groupId} AND submit_type = '1'
+    </select>
+    <select id="selectByCond"
+            resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudentTaskSubmit">
+        SELECT * FROM b_student_task_submit
+        <where>
+            <if test="recordId != null"> AND record_id = #{recordId} </if>
+            <if test="taskId != null"> AND task_id = #{taskId} </if>
+            <if test="taskHandler != null"> AND task_handler = #{taskHandler} </if>
+            <if test="taskHandlerGroupId != null"> AND task_handler_group_id = #{taskHandlerGroupId} </if>
+            <if test="submitStatus != null"> AND submit_status = #{submitStatus} </if>
+            <if test="submitType != null"> AND submit_type = #{submitType} </if>
+        </where>
+    </select>
+    <select id="selectOne"
+            resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudentTaskSubmit">
+        SELECT * FROM b_student_task_submit
+        <where>
+            <if test="recordId != null"> AND record_id = #{recordId} </if>
+            <if test="taskId != null"> AND task_id = #{taskId} </if>
+            <if test="taskHandler != null"> AND task_handler = #{taskHandler} </if>
+            <if test="taskHandlerGroupId != null"> AND task_handler_group_id = #{taskHandlerGroupId} </if>
+            <if test="submitStatus != null"> AND submit_status = #{submitStatus} </if>
+            <if test="submitType != null"> AND submit_type = #{submitType} </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.ClassTaskMapper">
+    <select id="selectByCond" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BClassTask">
+        SELECT * FROM b_class_task
+        <where>
+            <if test="taskId != null"> AND task_id = #{taskId} </if>
+            <if test="classId != null"> AND class_id = #{classId} </if>
+            <if test="taskStudentRole != null"> AND task_student_role = #{taskStudentRole} </if>
+        </where>
+    </select>
+    <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BClassTask">
+        SELECT * FROM b_class_task
+        <where>
+            <if test="taskId != null"> AND task_id = #{taskId} </if>
+            <if test="classId != null"> AND class_id = #{classId} </if>
+            <if test="taskStudentRole != null"> AND task_student_role = #{taskStudentRole} </if>
+        </where>
+    </select>
+</mapper>
