@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.StudentPerformanceStudentMapper">
+    <insert id="insert">
+        INSERT INTO b_student_performance_student
+            (performance, comment, performance_class, performance_receptor, performance_maker, performance_stage)
+        VALUES
+            (#{performance}, #{comment}, #{performanceClass}, #{performanceReceptor}, #{performanceMaker}, #{performanceStage})
+    </insert>
+</mapper>

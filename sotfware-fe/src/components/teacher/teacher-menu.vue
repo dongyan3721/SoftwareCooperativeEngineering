@@ -7,7 +7,7 @@
 <script setup>
 import {useRoute} from "vue-router";
 const route = useRoute()
-import {ArrowRight, Edit, ChatDotRound, Monitor, Setting} from "@element-plus/icons-vue";
+import {ArrowRight, Edit, ChatDotRound, Monitor, Setting, Operation, User} from "@element-plus/icons-vue";
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
 const userStore = useUserStore()
@@ -35,10 +35,22 @@ const quitLogin = ()=>{
               style="color: #f9f9f9; display: flex; align-items: center; justify-content: center; width: 200px">软件协同设计</span>
         </div>
         <el-menu style="border: none" :default-active="currentUrl" router background-color="#162E56" text-color="#f9f9f9">
+          <el-menu-item index="/teacher-student-import">
+            <template #title>
+              <el-icon><User /></el-icon>
+              班级成员
+            </template>
+          </el-menu-item>
           <el-menu-item index="/teacher-course-setting">
             <template #title>
               <el-icon><Setting /></el-icon>
               课程设置
+            </template>
+          </el-menu-item>
+          <el-menu-item index="/teacher-manage-group">
+            <template #title>
+              <el-icon><Operation/></el-icon>
+              进度控制
             </template>
           </el-menu-item>
           <el-menu-item index="/teacher-monitor">

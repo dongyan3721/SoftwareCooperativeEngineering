@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.controller.teacher;
 
+import com.github.pagehelper.PageHelper;
 import com.softwarecooperative.softwareciooperative.framework.annotation.AccessWithoutVerification;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.LoginFailedException;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;

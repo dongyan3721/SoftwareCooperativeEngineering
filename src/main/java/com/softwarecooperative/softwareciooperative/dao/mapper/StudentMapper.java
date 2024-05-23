@@ -31,5 +31,5 @@ public interface StudentMapper {
     void insertOne(BStudent student);
 
     void deleteOne(Integer studentId);
-    Page<BStudent> pageSelect(@Param("classId") Integer classId);
+    Page<BStudent> pageSelect(BStudent classId);
 }

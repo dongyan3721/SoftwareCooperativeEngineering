@@ -1,6 +1,7 @@
 package com.softwarecooperative.softwareciooperative.controller.student;
 
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
+import com.softwarecooperative.softwareciooperative.pojo.dto.MarkPerformanceDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BClassTask;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudentTaskSubmit;
 import com.softwarecooperative.softwareciooperative.service.TaskService;
@@ -59,6 +60,27 @@ public class TaskController {
     @Operation(summary = "当前阶段经理修改成员任务描述")
     public AjaxResult updateSubTaskDescription(@RequestBody BStudentTaskSubmit update) throws IOException {
         taskService.updateSubTaskDescription(update.getRecordId(), update.getTaskHandlerWork());
+        return AjaxResult.success();
+    }
+
+    @GetMapping("/subTask")
+    @Operation(summary = "查看分任务提交")
+    public AjaxResult getSubTaskSubmit(Integer recordId) {
+        BStudentTaskSubmit res = taskService.getSubtaskSubmit(recordId);
+        return AjaxResult.success(res);
+    }
+
+    @GetMapping("/mainTask")
+    @Operation(summary = "查看阶段总任务提交")
+    public AjaxResult getMainTaskSubmit(Integer groupId, Integer taskId) {
+        BStudentTaskSubmit res = taskService.getMainTaskSubmit(groupId, taskId);
+        return AjaxResult.success(res);
+    }
+
+    @PostMapping("/performance")
+    @Operation(summary = "组员给组员打分")
+    public AjaxResult markPerformance(@RequestBody MarkPerformanceDTO mark) throws IOException {
+        taskService.markPerformanceByStudent(mark);
         return AjaxResult.success();
     }
 

@@ -25,4 +25,13 @@ public class ClassServiceImpl implements ClassService {
         Integer teacherId = Integer.parseInt(BaseContext.getCurrentId());
         return classMapper.selectByCond(BClass.builder().teacherId(teacherId).build());
     }
+
+    @Override
+    public void updateClassPhase(Integer classId, Integer phase) {
+        BClass newBClass = BClass.builder()
+                .classId(classId)
+                .phase(phase)
+                .build();
+        classMapper.update(newBClass);
+    }
 }

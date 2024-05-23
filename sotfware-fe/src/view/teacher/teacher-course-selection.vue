@@ -8,15 +8,15 @@ import OtherComponent from '../../components/teacher/teacher-menu.vue';
 import router from "@/router/index.js";
 import {ref} from 'vue';
 import {ListAllTeacherCourses} from "@/web-api/teacher/teacherCourseSelection.js";
-import {useUserStore} from "@/store";
+import {useTeacherClassStore} from "@/store";
 
 const tabPosition = ref('left')
-const imageUrl = ref('https://p.ananas.chaoxing.com/star3/240_130c/6ce77a10dd3268daa7ba6c93e5e76459.jpg')
 const courses = ref([]);
-const userStore = useUserStore();
+const {setClassId} = useTeacherClassStore()
 
 const handleCourseClick =(courseUrl) => {
-    router.push({name: 'teacher-main', query: {classId: courseUrl}});
+    router.push({name: 'teacher-main'});
+    setClassId(courseUrl)
 };
 
 onMounted(async () => {
@@ -39,7 +39,6 @@ onMounted(async () => {
               <el-tab-pane style="font-weight: lighter; font-size: medium; color: #757474; margin: 0 auto;">本校课程
               </el-tab-pane>
             </el-tabs>
-            <el-button type="info" round size="small" style="margin-top:10px;margin-right: 20px">更多</el-button>
           </div>
           <el-row>
             <el-col :span="6" v-for="(course, index) in courses" :key="index">

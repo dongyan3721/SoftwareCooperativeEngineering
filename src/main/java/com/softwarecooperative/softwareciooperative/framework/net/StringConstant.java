@@ -18,8 +18,10 @@ public class StringConstant {
     public static final String LEADER_ROLE_CANT_BE_CHANGED = "组长不能更换角色";
     public static final String LEADER_ROLE_CANT_BE_REMOVED = "组长不能被删除";
     public static final String LEADER_ROLE_CANT_EXIT = "组长不能退出，如需退出请解散团队";
+    public static final String NOT_IN_INTEGRATING_PHASE = "当前不在组队阶段";
     public static final String NOT_TASK_HANDLER = "不能提交任务，您不是任务的接收者";
     public static final String TASK_EXPIRED = "任务已过期";
+    public static final String TASK_NOT_EXIST = "任务不存在";
     public static final String TASK_STATUS_ERROR = "任务状态错误";
     public static final String DEFAULT_PASSWORD = "114514";
     public static final String DELETE_CHAPTER_FILE = "当前章节含有内容，无法删除";

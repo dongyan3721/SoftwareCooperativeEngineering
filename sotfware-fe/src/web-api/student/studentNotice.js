@@ -1,8 +1,8 @@
 import request from "@/util/request.js";
 
-export function listAllTeacherNotice(params = {page: 1, pageSize: 10}) {
+export function listAllStudentNotice(params = {page: 1, pageSize: 10}) {
     return request({
-        url: '/teacher/notice',
+        url: '/student/notice',
         method: 'GET',
         params
     })
@@ -10,7 +10,7 @@ export function listAllTeacherNotice(params = {page: 1, pageSize: 10}) {
 
 export function readAllNotices() {
     return request({
-        url: '/teacher/notice/allRead',
+        url: '/student/notice/allRead',
         method: 'POST'
     })
 }
@@ -19,7 +19,7 @@ export function confirmNotice(noticeId) {
     const fomData = new FormData()
     fomData.append('noticeId', noticeId)
     return request({
-        url: '/teacher/notice/confirm',
+        url: '/student/notice/confirm',
         method: 'POST',
         data: fomData
     });

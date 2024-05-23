@@ -12,4 +12,6 @@ import java.util.List;
 public interface ClassService {
 
     List<BClass> getTeacherClass();
+
+    void updateClassPhase(Integer classId, Integer phase);
 }

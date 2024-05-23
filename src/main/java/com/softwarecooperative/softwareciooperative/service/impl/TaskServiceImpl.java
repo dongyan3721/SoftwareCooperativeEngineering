@@ -6,10 +6,12 @@ import com.softwarecooperative.softwareciooperative.framework.exception.service.
 import com.softwarecooperative.softwareciooperative.framework.exception.service.TaskException;
 import com.softwarecooperative.softwareciooperative.framework.net.NotificationTemplate;
 import com.softwarecooperative.softwareciooperative.framework.net.StringConstant;
+import com.softwarecooperative.softwareciooperative.pojo.dto.MarkPerformanceDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.*;
 import com.softwarecooperative.softwareciooperative.service.NotificationService;
 import com.softwarecooperative.softwareciooperative.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -44,6 +46,9 @@ public class TaskServiceImpl implements TaskService {
     private GroupMapper groupMapper;
 
     @Autowired
+    private StudentPerformanceStudentMapper studentPerformanceStudentMapper;
+
+    @Autowired
     private NotificationService notificationService;
 
     @Override
@@ -66,6 +71,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = TaskException.class)
     public void submitSubTask(Integer recordId, String submitLink) throws IOException {
+        // TODO 这里需要判断是否是主任务，如果是主任务需要在阶段任务全部提交后再提交
         // 判断是否是任务接收者
         BStudentTaskSubmit subTask = studentTaskSubmitMapper.selectOne(BStudentTaskSubmit.createIdQuery(recordId));
         Integer curId = Integer.parseInt(BaseContext.getCurrentId());
@@ -154,5 +160,60 @@ public class TaskServiceImpl implements TaskService {
                     subtask.getTaskHandler(),
                     NotificationTemplate.SUBTASK_CHANGED(subtask.getTaskHandlerName())
             );
+    }
+
+    @Override
+    public BStudentTaskSubmit getSubtaskSubmit(Integer recordId) {
+        return studentTaskSubmitMapper.selectOne(BStudentTaskSubmit.createIdQuery(recordId));
+    }
+
+    @Override
+    public BStudentTaskSubmit getMainTaskSubmit(Integer groupId, Integer taskId) {
+        BStudentTaskSubmit query = BStudentTaskSubmit.builder()
+                .taskHandlerGroupId(groupId)
+                .taskId(taskId)
+                .submitType(BStudentTaskSubmit.MAIN_TASK_SUBMIT)
+                .build();
+        return studentTaskSubmitMapper.selectOne(query);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = TaskException.class)
+    public void markPerformanceByStudent(MarkPerformanceDTO mark) throws IOException {
+        // 判断目标组员的任务是否已提交
+        BStudentTaskSubmit query = BStudentTaskSubmit.builder()
+                .taskHandler(mark.getTargetStuId())
+                .taskId(mark.getTaskId())
+                .taskHandlerGroupId(mark.getGroupId())
+                .build();
+        BStudentTaskSubmit submit = studentTaskSubmitMapper.selectOne(query);
+        if (submit == null)  // 未找到提交
+            throw new TaskException(StringConstant.TASK_NOT_EXIST);
+        if (BStudentTaskSubmit.WAIT_FOR_STUDENT_HAND_ON.toString().equals(submit.getSubmitStatus()) ||
+            BStudentTaskSubmit.UNASSIGNED.toString().equals(submit.getSubmitStatus()))  // 提交状态处于未提交或未配置
+            throw new TaskException(StringConstant.TASK_STATUS_ERROR);
+
+        // 打分
+        BStudent targetStu = studentMapper.selectOne(BStudent.createIdQuery(mark.getTargetStuId()));
+        Integer curStuId = Integer.parseInt(BaseContext.getCurrentId());
+
+        BStudentPerformanceStudent markEntity = BStudentPerformanceStudent.builder()
+                .performance(mark.getPerformance())
+                .comment(mark.getComment())
+                .performanceClass(targetStu.getStudentClass())
+                .performanceReceptor(mark.getTargetStuId())
+                .performanceMaker(curStuId)
+                .performanceStage(mark.getTaskId())
+                .build();
+        studentPerformanceStudentMapper.insert(markEntity);
+
+        // 通知被打分组员
+        notificationService.sendNotifToOneStudent(
+                BClass.SYSTEM,
+                mark.getTargetStuId(),
+                NotificationTemplate.STUDENT_HAS_MARKED(targetStu.getStudentName(), mark.getPerformance())
+        );
+
+
     }
 }

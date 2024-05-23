@@ -13,10 +13,10 @@ import java.io.Serializable;
 public class BStudentPerformanceStudent implements Serializable {
 
   private Integer performance;
-  private Integer performanceReceptor;
+  private String comment;
   private Integer performanceClass;
+  private Integer performanceReceptor;
   private Integer performanceMaker;
   private Integer performanceStage;
-  private String performanceTag;
 
 }

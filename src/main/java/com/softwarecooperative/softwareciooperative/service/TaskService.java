@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.service;
 
+import com.softwarecooperative.softwareciooperative.pojo.dto.MarkPerformanceDTO;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BClassTask;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BStudentTaskSubmit;
 
@@ -22,4 +23,10 @@ public interface TaskService {
     void updateSubTask(Integer recordId, String submitLink);
 
     void updateSubTaskDescription(Integer recordId, String description) throws IOException;
+
+    BStudentTaskSubmit getSubtaskSubmit(Integer recordId);
+
+    BStudentTaskSubmit getMainTaskSubmit(Integer groupId, Integer taskId);
+
+    void markPerformanceByStudent(MarkPerformanceDTO mark) throws IOException;
 }
