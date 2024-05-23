@@ -3,7 +3,6 @@ package com.softwarecooperative.softwareciooperative.controller.teacher;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BClassChapterSettings;
 import com.softwarecooperative.softwareciooperative.service.ChapterService;
-import com.softwarecooperative.softwareciooperative.service.TeacherService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
