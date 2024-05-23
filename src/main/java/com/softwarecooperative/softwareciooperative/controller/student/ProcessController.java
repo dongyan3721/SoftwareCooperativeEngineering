@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/student/process")
-@Tag(name = "团队进度相关接口")
+@Tag(name = "学生团队进度相关接口")
 @Slf4j
 public class ProcessController {
 

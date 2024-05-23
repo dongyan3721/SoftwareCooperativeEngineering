@@ -8,9 +8,6 @@ import {ref} from 'vue';
 import TeacherMenu from "@/components/teacher/teacher-menu.vue";
 import {ElMessage} from "element-plus";
 import {confirmNotice, listAllTeacherNotice, readAllNotices} from "@/web-api/teacher/teacherNotice.js";
-import {applyToBeLeader} from "@/web-api/student/studentGroupApply.js";
-
-// 模拟从后端获取的消息数据
 const notices = ref([]);
 const currentPage = ref(1); // 当前页数
 const pageSize = 5; // 每页显示条数
@@ -32,7 +29,6 @@ const readNotice = (index) => {
         ElMessage.success('确认成功！');
       })
       .catch(err => {
-        // 处理错误情况
         ElMessage.error('确认失败');
       });
 };
@@ -71,11 +67,10 @@ const handleCurrentChange = (page) => {
           <el-card class="notice-card">
             <div slot="header" class="clearfix" style="margin-bottom: 5px">
               <el-avatar :size="24" :src="notice.noticePublisherAvatar" style="margin: 0 5px"/>
-              <span style="font-size: larger;font-weight: bold;">小卡片</span>
+              <span style="font-size: larger;font-weight: bold;margin-left: 5px">{{ notice.noticePublisher }}</span>
             </div>
 
             <div>
-              <span>发送者：{{ notice.noticePublisher }}</span>
               <p>消息内容：{{ notice.noticeContent }}</p>
               <p>发布时间：{{ notice.noticePublishSnapshot }}</p>
             </div>
