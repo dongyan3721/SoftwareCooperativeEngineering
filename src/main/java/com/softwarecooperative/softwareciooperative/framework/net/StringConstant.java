@@ -25,4 +25,8 @@ public class StringConstant {
     public static final String TASK_STATUS_ERROR = "任务状态错误";
     public static final String DEFAULT_PASSWORD = "114514";
     public static final String DELETE_CHAPTER_FILE = "当前章节含有内容，无法删除";
+    public static final String CLASS_EXIST_STUDENT = "教学班中已有学生，不能删除";
+    public static final String SET_PHASE_FAILED = "修改阶段失败，不能越级修改";
+    public static final String ILLEGAL_PHASE = "阶段代码不合法";
+    public static final String NOT_MEET_REQUIREMENT_TO_NEXT_PHASE = "不满足进入下一阶段的要求";
 }

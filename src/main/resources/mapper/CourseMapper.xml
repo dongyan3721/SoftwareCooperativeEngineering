@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.CourseMapper">
+    <select id="selectById" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BCourse">
+        SELECT  * FROM b_course WHERE course_id = #{courseId}
+    </select>
+    <select id="selectAll" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BCourse">
+        SELECT * FROM b_course
+    </select>
+</mapper>

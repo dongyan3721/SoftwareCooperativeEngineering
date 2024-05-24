@@ -14,4 +14,10 @@ public interface ClassService {
     List<BClass> getTeacherClass();
 
     void updateClassPhase(Integer classId, Integer phase);
+
+    void newClass(BClass clazz);
+
+    void deleteClass(Integer classId);
+
+    void update(BClass clazz);
 }

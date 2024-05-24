@@ -19,4 +19,9 @@ public class BTeacher implements Serializable {
   private String password;
   private String avatar;
 
+  public static BTeacher createIdQuery(int teacherId) {
+    return BTeacher.builder()
+            .teacherId(teacherId)
+            .build();
+  }
 }

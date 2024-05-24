@@ -27,9 +27,10 @@ public class BClass implements Serializable {
   public static final int TEACHER = 1;
   public static final int SYSTEM = 2;
 
-  public static final Integer INTEGRATING = 0;
-  public static final Integer PROCESSING = 1;
-  public static final Integer FINISHED = 2;
+  public static final Integer ADDING_STUDENTS = 0;
+  public static final Integer INTEGRATING = 1;
+  public static final Integer PROCESSING = 2;
+  public static final Integer FINISHED = 3;
 
   public static BClass createIdQuery(Integer studentClass) {
     return BClass.builder()

@@ -26,6 +26,27 @@ public class ClassController {
     @Autowired
     private ClassService classService;
 
+    @PostMapping("")
+    @Operation(summary = "新增教学班")
+    public AjaxResult newClass(@RequestBody BClass clazz) {
+        classService.newClass(clazz);
+        return AjaxResult.success();
+    }
+
+    @DeleteMapping("/{classId}")
+    @Operation(summary = "删除教学班")
+    public AjaxResult deleteClass(@PathVariable Integer classId) {
+        classService.deleteClass(classId);
+        return AjaxResult.success();
+    }
+
+    @PutMapping("")
+    @Operation(summary = "修改教学班信息")
+    public AjaxResult updateClass(@RequestBody BClass clazz) {
+        classService.update(clazz);
+        return AjaxResult.success();
+    }
+
     @GetMapping("/teacherAll")
     @Operation(summary = "获取教师所有教学班")
     public AjaxResult getTeacherClass() {
