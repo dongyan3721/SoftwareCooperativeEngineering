@@ -48,4 +48,21 @@ public class RabbitMqConfiguration {
         return BindingBuilder.bind(dlQueue()).to(dlExchange()).with("114514");
     }
 
+
+    @Bean // 聊天记录批量插入业务交换机
+    public DirectExchange chatRecordExchange() {
+        return new DirectExchange("chatRecord.exchange", true, false, new HashMap<>());
+    }
+
+    @Bean // 聊天记录批量插入业务队列
+    public Queue chatRecordQueue() {
+        Map<String, Object> map = new HashMap<>();
+        return new Queue("chatRecord.queue", true, false, false, map);
+    }
+
+    @Bean // 绑定
+    public Binding bindingChatEx() {
+        return BindingBuilder.bind(chatRecordQueue()).to(chatRecordExchange()).with("114514");
+    }
+
 }

@@ -1,8 +1,12 @@
 package com.softwarecooperative.softwareciooperative.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.softwarecooperative.softwareciooperative.dao.repository.ChatRecordRepo;
 import com.softwarecooperative.softwareciooperative.pojo.entity.ChatRecord;
 import com.softwarecooperative.softwareciooperative.service.ChatRecordService;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -11,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -27,9 +32,17 @@ public class ChatRecordImpl implements ChatRecordService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
     @Override
     public void addOne(ChatRecord chatRecord) {
-        chatRecordRepo.insert(chatRecord);
+        String json = JSON.toJSONString(chatRecord);
+        Message message = MessageBuilder
+                .withBody(json.getBytes(StandardCharsets.UTF_8))
+                .build();
+
+        rabbitTemplate.convertAndSend("chatRecord.exchange", "114514", message);
     }
 
     @Override
