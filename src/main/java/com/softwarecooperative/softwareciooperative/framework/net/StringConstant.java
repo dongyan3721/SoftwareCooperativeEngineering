@@ -29,4 +29,10 @@ public class StringConstant {
     public static final String SET_PHASE_FAILED = "修改阶段失败，不能越级修改";
     public static final String ILLEGAL_PHASE = "阶段代码不合法";
     public static final String NOT_MEET_REQUIREMENT_TO_NEXT_PHASE = "不满足进入下一阶段的要求";
+    public static final String NOT_ASSIGNED = "未配置";
+    public static final String DEMAND_ANALYSE = "需求分析";
+    public static final String PROCESS_PLANNING = "进度计划";
+    public static final String QUALITY_PLANNING = "质量计划";
+    public static final String DEVELOPING = "开发实现";
+    public static final String TESTING = "测试验收";
 }

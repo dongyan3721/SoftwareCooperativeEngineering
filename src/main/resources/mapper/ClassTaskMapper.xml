@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.ClassTaskMapper">
+    <insert id="insert">
+        INSERT INTO b_class_task
+            (task_id, class_id, task_content, deadline, task_order, task_student_role)
+        VALUES
+            (#{taskId}, #{classId}, #{taskContent}, #{deadline}, #{taskOrder}, #{taskStudentRole})
+    </insert>
+    <update id="update">
+        UPDATE b_class_task
+        <set>
+            <if test="classId != null"> class_id = #{classId}, </if>
+            <if test="taskContent != null"> task_content = #{taskContent}, </if>
+            <if test="deadline != null"> deadline = #{deadline}, </if>
+            <if test="taskOrder != null"> task_order = #{taskOrder}, </if>
+            <if test="taskStudentRole != null"> task_student_role = #{taskStudentRole}, </if>
+        </set>
+        WHERE task_id = #{taskId};
+    </update>
     <select id="selectByCond" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BClassTask">
         SELECT * FROM b_class_task
         <where>
@@ -8,6 +25,7 @@
             <if test="classId != null"> AND class_id = #{classId} </if>
             <if test="taskStudentRole != null"> AND task_student_role = #{taskStudentRole} </if>
         </where>
+        ORDER BY task_order
     </select>
     <select id="selectOne" resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BClassTask">
         SELECT * FROM b_class_task

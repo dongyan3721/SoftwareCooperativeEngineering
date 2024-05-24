@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.dao.mapper;
 
+import com.softwarecooperative.softwareciooperative.framework.annotation.InjectSnowFlakeId;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BClassTask;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,4 +17,9 @@ public interface ClassTaskMapper {
     List<BClassTask> selectByCond(BClassTask classTask);
 
     BClassTask selectOne(BClassTask query);
+
+    @InjectSnowFlakeId
+    void insert(BClassTask task);
+
+    void update(BClassTask task);
 }

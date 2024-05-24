@@ -28,6 +28,13 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
+    @PutMapping("")
+    @Operation(summary = "修改阶段任务")
+    public AjaxResult updateTask(@RequestBody BClassTask task) {
+        taskService.updateTask(task);
+        return AjaxResult.success();
+    }
+
     @GetMapping("")
     @Operation(summary = "获取教学班所有任务")
     public AjaxResult getClassAllTask(Integer classId) {

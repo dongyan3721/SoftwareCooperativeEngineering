@@ -254,4 +254,9 @@ public class TaskServiceImpl implements TaskService {
                 NotificationTemplate.TEACHER_HAS_MARKED(mark.getPerformance())
         );
     }
+
+    @Override
+    public void updateTask(BClassTask task) {
+        classTaskMapper.update(task);
+    }
 }

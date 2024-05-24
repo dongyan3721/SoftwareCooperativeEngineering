@@ -31,4 +31,6 @@ public interface TaskService {
     void markPerformanceByStudent(MarkPerformanceDTO mark) throws IOException;
 
     void markPerformanceByTeacher(MarkPerformanceDTO mark) throws IOException;
+
+    void updateTask(BClassTask task);
 }

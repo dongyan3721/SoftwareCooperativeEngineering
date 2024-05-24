@@ -8,7 +8,10 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.*;
 import com.softwarecooperative.softwareciooperative.service.ClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -41,18 +44,17 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void updateClassPhase(Integer classId, Integer phase) {
         BClass clazz = classMapper.selectOne(BClass.createIdQuery(classId));
         if (phase - clazz.getPhase() != 1)
             throw new ClassException(StringConstant.SET_PHASE_FAILED);
 
         if (BClass.INTEGRATING.equals(phase)) {
-            // TODO 进入组队阶段自动执行的操作
+            // 初始化教学班任务
+            initializeClassTasks(classId);
         } else if (BClass.PROCESSING.equals(phase)) {
-            // 进入项目进行阶段自动执行的操作
-            List<BClassTask> tasks = classTaskMapper.selectByCond(BClassTask.builder().classId(classId).build());
-            if (tasks.size() != 5)
-                throw new ClassException(StringConstant.NOT_MEET_REQUIREMENT_TO_NEXT_PHASE);
+            // TODO 进入项目进行阶段自动执行的操作
         } else if (BClass.FINISHED.equals(phase)) {
             // TODO 进入结课状态自动执行的操作
         } else {
@@ -87,7 +89,7 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public void deleteClass(Integer classId) {
         List<Integer> stuIds = studentMapper.selectIdByCond(BStudent.builder().studentClass(classId).build());
-        if (stuIds.isEmpty())
+        if (!stuIds.isEmpty())
             throw new ClassException(StringConstant.CLASS_EXIST_STUDENT);
 
         classMapper.delete(classId);
@@ -96,5 +98,32 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public void update(BClass clazz) {
         classMapper.update(clazz);
+    }
+
+    private void initializeClassTasks(Integer classId) {
+        BClassTask task = BClassTask.builder()
+                .classId(classId)
+                .taskContent(StringConstant.DEMAND_ANALYSE)
+                .deadline(LocalDateTime.now())
+                .taskOrder(1)
+                .taskStudentRole(BStudent.PRODUCT_MANAGER)
+                .build();
+        classTaskMapper.insert(task);
+        task.setTaskContent(StringConstant.PROCESS_PLANNING);
+        task.setTaskOrder(2);
+        task.setTaskStudentRole(BStudent.PLANNING_MANAGER);
+        classTaskMapper.insert(task);
+        task.setTaskContent(StringConstant.QUALITY_PLANNING);
+        task.setTaskOrder(3);
+        task.setTaskStudentRole(BStudent.QUALITY_MANAGER);
+        classTaskMapper.insert(task);
+        task.setTaskContent(StringConstant.DEVELOPING);
+        task.setTaskOrder(4);
+        task.setTaskStudentRole(BStudent.DEVELOPMENT_MANAGER);
+        classTaskMapper.insert(task);
+        task.setTaskContent(StringConstant.TESTING);
+        task.setTaskOrder(5);
+        task.setTaskStudentRole(BStudent.TEST_MANAGER);
+        classTaskMapper.insert(task);
     }
 }

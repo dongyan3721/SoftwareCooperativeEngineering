@@ -13,6 +13,7 @@
                 <if test="courseId != null"> course_id = #{courseId}, </if>
                 <if test="courseName != null"> course_name = #{courseName}, </if>
                 <if test="classTerm != null"> class_term = #{classTerm}, </if>
+                <if test="phase != null"> `phase` = #{phase} </if>
             </set>
             WHERE #{classId} = class_id
     </update>
