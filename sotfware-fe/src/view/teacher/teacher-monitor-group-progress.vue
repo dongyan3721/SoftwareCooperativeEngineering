@@ -5,10 +5,13 @@
 
 <script setup>
 
+import TeacherMenu from "@/components/teacher/teacher-menu.vue";
 </script>
 
 <template>
+  <teacher-menu>
 
+  </teacher-menu>
 </template>
 
 <style scoped>
