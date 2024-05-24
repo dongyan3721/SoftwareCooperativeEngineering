@@ -33,5 +33,10 @@ export const sys_task_submit_status = {
     UNREACHED: '5'
 }
 
-
+export const sys_class_phase = {
+    INIT: 0,
+    TEAMING: 1,
+    TASKING: 2,
+    OVER: 3
+}
 

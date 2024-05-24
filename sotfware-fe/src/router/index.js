@@ -95,4 +95,18 @@ const router = createRouter({
     routes: routes
 })
 
+import {useUserStore} from "@/store/index.js";
+// 路由前置守卫
+// router.beforeEach(({ meta, name }, _, next) => {
+//     const { title, isLogin } = meta;
+//     if (title) document.title = title;
+//
+//     // token不存在时跳转非登录页，重定向到登录页
+//     if (!getToken() && name !== 'Login' && isLogin) next({ path: '/login' });
+//     // token存在时跳转登录页，重定向到首页
+//     else if (getToken() && name === 'Login') next({ path: '/home' });
+//     // 其他场景
+//     else next();
+// });
+
 export default router

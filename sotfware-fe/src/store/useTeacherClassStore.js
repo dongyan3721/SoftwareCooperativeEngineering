@@ -12,15 +12,19 @@ export const useTeacherClassStore = defineStore(
     ()=>{
 
         const classId = ref()
+        const bClass = ref()
 
         // 设置队伍id信息
         const setClassId = (class_id)=>{
             classId.value = class_id
         }
 
+        const setClass = (clazz)=>{
+            bClass.value = clazz
+        }
 
         return {
-            classId, setClassId
+            classId, setClassId, setClass, bClass
         }
     },
     // 通用持久化
