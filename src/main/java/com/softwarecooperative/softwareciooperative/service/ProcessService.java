@@ -1,5 +1,9 @@
 package com.softwarecooperative.softwareciooperative.service;
 
+import com.softwarecooperative.softwareciooperative.pojo.vo.GroupAndPhaseVO;
+
+import java.util.List;
+
 /**
  * @Description
  * @Author 嘉然今天吃向晚
@@ -8,4 +12,6 @@ package com.softwarecooperative.softwareciooperative.service;
 public interface ProcessService {
 
     Integer getGroupPhase(Integer groupId);
+
+    List<GroupAndPhaseVO> getClassGroupPhases(Integer classId);
 }

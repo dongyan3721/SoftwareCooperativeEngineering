@@ -47,7 +47,7 @@ onMounted(async () => {
                   <div class="course clearfix" @click="handleCourseClick(course.classId)">
                     <div class="course-cover">
                       <a target="_blank" style="outline: none;">
-                        <img :src="courses.imageUrl" style="width: 250px; height: 160px">
+                        <img :src="course.classPicture" style="width: 250px; height: 160px; ">
                       </a>
                     </div>
                     <div class="course-info">

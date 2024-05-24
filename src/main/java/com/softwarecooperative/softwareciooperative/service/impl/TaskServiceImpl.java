@@ -216,4 +216,42 @@ public class TaskServiceImpl implements TaskService {
 
 
     }
+
+    @Override
+    public void markPerformanceByTeacher(MarkPerformanceDTO mark) throws IOException {
+        // 判断目标组员的任务是否已提交
+        BStudentTaskSubmit query = BStudentTaskSubmit.builder()
+                .taskHandler(mark.getTargetStuId())
+                .taskId(mark.getTaskId())
+                .taskHandlerGroupId(mark.getGroupId())
+                .build();
+        BStudentTaskSubmit submit = studentTaskSubmitMapper.selectOne(query);
+        if (submit == null)  // 未找到提交
+            throw new TaskException(StringConstant.TASK_NOT_EXIST);
+        if (BStudentTaskSubmit.WAIT_FOR_STUDENT_HAND_ON.toString().equals(submit.getSubmitStatus()) ||
+                BStudentTaskSubmit.UNASSIGNED.toString().equals(submit.getSubmitStatus()))  // 提交状态处于未提交或未配置
+            throw new TaskException(StringConstant.TASK_STATUS_ERROR);
+
+        // 打分
+        BStudent targetStu = studentMapper.selectOne(BStudent.createIdQuery(mark.getTargetStuId()));
+        Integer curTeacherId = Integer.parseInt(BaseContext.getCurrentId());
+
+        BStudentPerformanceStudent markEntity = BStudentPerformanceStudent.builder()
+                .performance(mark.getPerformance())
+                .comment(mark.getComment())
+                .performanceClass(targetStu.getStudentClass())
+                .performanceReceptor(mark.getTargetStuId())
+                .performanceMaker(curTeacherId)
+                .performanceStage(mark.getTaskId())
+                .build();
+        studentPerformanceStudentMapper.insert(markEntity);
+
+        // 通知被所有组员
+        List<Integer> stuIds = studentMapper.selectIdByCond(BStudent.builder().studentGroup(mark.getGroupId()).build());
+        notificationService.sendNotifToStudents(
+                BClass.SYSTEM,
+                stuIds,
+                NotificationTemplate.TEACHER_HAS_MARKED(mark.getPerformance())
+        );
+    }
 }

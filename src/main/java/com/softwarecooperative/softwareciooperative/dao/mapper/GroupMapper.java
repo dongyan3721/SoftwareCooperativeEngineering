@@ -17,6 +17,8 @@ import java.util.List;
 public interface GroupMapper {
     List<BGroup> selectByCond(BGroup bGroup);
 
+    List<Integer> selectIdByCond(BGroup bGroup);
+
     BGroup selectOne(BGroup bGroup);
 
     BStudent selectLeaderByGroupId(@Param("groupId") Integer groupId);

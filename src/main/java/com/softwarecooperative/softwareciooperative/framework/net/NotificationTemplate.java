@@ -58,4 +58,8 @@ public class NotificationTemplate {
     public static String STUDENT_HAS_MARKED(String studentName, Integer performance) {
         return studentName + "同学，根据您在任务中的表现，组员给您打了" + performance + "分";
     }
+
+    public static String TEACHER_HAS_MARKED(Integer performance) {
+        return "根据任务中的表现，老师给您的团队打了" + performance + "分";
+    }
 }

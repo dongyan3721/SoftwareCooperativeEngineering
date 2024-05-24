@@ -46,4 +46,14 @@
         SELECT * FROM b_student WHERE student_id =
                                       (SELECT group_leader_id FROM b_group WHERE group_id = #{groupId})
     </select>
+    <select id="selectIdByCond" resultType="java.lang.Integer">
+        SELECT group_id FROM b_group
+        <where>
+            <if test="groupId != null"> AND group_id = #{groupId} </if>
+            <if test="groupName != null and groupName != ''"> AND group_name LIKE CONCAT('%', #{name}, '%') </if>
+            <if test="classId != null"> AND class_id = #{classId} </if>
+            <if test="groupLeaderId != null"> AND group_leader_id = #{groupLeaderId} </if>
+            <if test="groupLeaderName != null and groupLeaderName != ''"> AND group_leader_name LIKE CONCAT('%', #{name}, '%') </if>
+        </where>
+    </select>
 </mapper>
