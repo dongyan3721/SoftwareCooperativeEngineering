@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,6 +38,7 @@ public class CommonController {
     @GetMapping("/dict/{dictName}")
     @Operation(summary = "获取字典键值对")
     @AccessWithoutVerification
+    @Cacheable(cacheNames = "dict", key = "#dictName")
     public TableDataInfo getDictByDictName(@PathVariable String dictName) {
         List<BDict> res = commonService.getDictByName(dictName);
         return TableDataInfo.success(res, res.size());

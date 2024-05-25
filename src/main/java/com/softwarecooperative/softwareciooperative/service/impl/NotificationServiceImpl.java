@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -49,6 +51,8 @@ public class NotificationServiceImpl implements NotificationService {
     private NoticeReceiveTeacherMapper noticeReceiveTeacherMapper;
 
     @Override
+    @CacheEvict(cacheNames = "notificationCache",
+            key = "T(com.softwarecooperative.softwareciooperative.pojo.entity.BClass).TEACHER + '_' + T(com.softwarecooperative.softwareciooperative.framework.context.BaseContext).getCurrentId() + '*'")
     public void sendNotifToOneTeacher(Integer sourceRole, Integer teacherId, String message) throws IOException {
         Publisher publisher = getPublisher(sourceRole);
         if (publisher == null)
@@ -76,6 +80,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "notificationCache",
+            key = "T(com.softwarecooperative.softwareciooperative.pojo.entity.BClass).STUDENT + '_' + T(com.softwarecooperative.softwareciooperative.framework.context.BaseContext).getCurrentId() + '*'")
     public void sendNotifToOneStudent(Integer sourceRole, Integer studentId, String message) throws IOException {
         Publisher publisher = getPublisher(sourceRole);
         if (publisher == null)
@@ -102,6 +108,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "notificationCache",
+            key = "T(com.softwarecooperative.softwareciooperative.pojo.entity.BClass).STUDENT + '*'")
     public void sendNotifToStudents(Integer sourceRole, List<Integer> ids, String message) throws IOException {
         Publisher publisher = getPublisher(sourceRole);
         if (publisher == null)
@@ -131,6 +139,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "notificationCache",
+            key = "#role + '_' + T(com.softwarecooperative.softwareciooperative.framework.context.BaseContext).getCurrentId() + '*'")
     public void confirm(Integer noticeId, Integer role) {
         if (role.equals(BClass.TEACHER)) {
             BNoticeReceiveTeacher newEntity = BNoticeReceiveTeacher.builder()
@@ -148,6 +158,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "notificationCache",
+            key = "#role + '_' + T(com.softwarecooperative.softwareciooperative.framework.context.BaseContext).getCurrentId() + '*'")
     public void allRead(Integer role) {
         Integer id = Integer.parseInt(BaseContext.getCurrentId());
         if (role.equals(BClass.TEACHER)) {
@@ -166,6 +178,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    @Cacheable(cacheNames = "notificationCache",
+            key = "#role + '_' + T(com.softwarecooperative.softwareciooperative.framework.context.BaseContext).getCurrentId() + '_' + #page + '_' + #pageSize")
     public PageResult<NotificationVO> pageSelect(Integer page, Integer pageSize, Integer role) {
         Integer id = Integer.parseInt(BaseContext.getCurrentId());
         PageHelper.startPage(page, pageSize);

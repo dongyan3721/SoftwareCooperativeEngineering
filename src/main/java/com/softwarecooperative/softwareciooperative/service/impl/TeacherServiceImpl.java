@@ -17,6 +17,7 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.BTeacher;
 import com.softwarecooperative.softwareciooperative.service.TeacherService;
 import com.softwarecooperative.softwareciooperative.utils.crypto.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -89,6 +90,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    @Cacheable(cacheNames = "pageStudent", key = "#page + '_' + #pageSize + '_' + #classId")
     public PageResult<BStudent> pageSelect(Integer page, Integer pageSize, Integer classId) {
         PageHelper.startPage(page,pageSize);
         BStudent query = BStudent.builder()
