@@ -1,3 +1,5 @@
+import {sys_user_role} from "@/configuration/dictionary.js";
+
 const routes = [
     {
         path: '/',
@@ -83,6 +85,16 @@ const routes = [
         path: '/teacher-manage-group',
         name: 'teacher-manage-group',
         component: () => import('@/view/teacher/teacher-manage-student-group.vue')
+    },
+    {
+        path: '/403',
+        name: '403',
+        component: () => import('@/view/general/HttpStatus403.vue')
+    },
+    {
+        path: '/404',
+        name: '404',
+        component: () => import('@/view/general/HttpStatus404.vue')
     }
 ];
 
@@ -94,5 +106,32 @@ const router = createRouter({
     // history: createWebHashHistory(),
     routes: routes
 })
+
+import {useUserStore} from "@/store/index.js";
+// 路由前置守卫
+const whiteList = ['login', 'preview', '403', '404']
+router.beforeEach((to, from, next) => {
+    // console.log(to, from)
+
+    if(whiteList.includes(to.name)){
+        next(); return;
+    }
+    const userStore = useUserStore();
+    if(!userStore.token){
+        next('/login'); return;
+    }
+    // 带了token
+    // 学生尝试切换到老师的路由
+    if(to.name.indexOf('teacher')===0&&userStore.userRole===sys_user_role.STUDENT){
+        next('/403');
+        return;
+    }
+    if(to.name.indexOf('student')===0&&userStore.userRole===sys_user_role.TEACHER){
+        next('/403');
+        return;
+    }
+    // 其余情况均为合法，出事再说~
+    next()
+});
 
 export default router

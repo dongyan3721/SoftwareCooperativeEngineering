@@ -21,3 +21,19 @@ function dictDataExtract(dictName){
 }
 
 export default dictDataExtract
+
+export function dictDataExtractWidthReflection(dictName){
+    return new Promise((done, reject)=>{
+        request({
+            url: '/common/dict/'+dictName,
+            method: 'GET'
+        }).then(res=>{
+            const data = res.rows.map(dict=>{return {value: dict.value, label: dict.tag}})
+            const reflect = {}
+            data.forEach(select=>{
+                reflect[select.value] = select.label
+            })
+            done({data: data, reflect: reflect})
+        }).catch(err=>reject(err))
+    })
+}

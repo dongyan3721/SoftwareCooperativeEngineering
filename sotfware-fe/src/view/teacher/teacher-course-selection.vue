@@ -12,11 +12,12 @@ import {useTeacherClassStore} from "@/store";
 
 const tabPosition = ref('left')
 const courses = ref([]);
-const {setClassId} = useTeacherClassStore()
+const {setClassId, setClass} = useTeacherClassStore()
 
-const handleCourseClick =(courseUrl) => {
-    router.push({name: 'teacher-main'});
+const handleCourseClick =(courseUrl, clazz) => {
+    router.push('/teacher-student-import');
     setClassId(courseUrl)
+    setClass(clazz)
 };
 
 onMounted(async () => {
@@ -30,7 +31,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <OtherComponent>
+  <el-row>
+    <el-col :span="3"/>
+    <el-col :span="18">
     <div class="course-container">
       <div class="course-inner-container">
         <div class="course-inner1-container">
@@ -44,7 +47,7 @@ onMounted(async () => {
             <el-col :span="6" v-for="(course, index) in courses" :key="index">
               <div class="grid-row">
                 <div class="grid-col">
-                  <div class="course clearfix" @click="handleCourseClick(course.classId)">
+                  <div class="course clearfix cursor-pointer" @click="handleCourseClick(course.classId, course)">
                     <div class="course-cover">
                       <a target="_blank" style="outline: none;">
                         <img :src="course.classPicture" style="width: 250px; height: 160px; ">
@@ -67,7 +70,9 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-  </OtherComponent>
+    </el-col>
+    <el-col :span="3"/>
+  </el-row>
 </template>
 
 <style scoped>

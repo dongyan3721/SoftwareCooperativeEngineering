@@ -85,12 +85,11 @@ service.interceptors.response.use(res => {
       return Promise.reject('error')
     }else if (code === CustomHttpStatus.NO_NEED_TO_FLUSH_TOKEN) {
       return res.data;
-    }else if (code !== 200) {
+    }else if(code===CustomHttpStatus.SERVICE_ERROR){
       ElNotification.error({ title: msg })
       return Promise.reject('error')
-    }else if(code===CustomHttpStatus.SERVICE_ERROR){
-      // ElMessage({ message: '账号或密码错误！', type: 'error' })
-      // console.log('账号或密码错误！')
+    }else if (code !== 200) {
+      ElNotification.error({ title: msg })
       return Promise.reject('error')
     }
     else {
