@@ -54,3 +54,34 @@ export function auditApplication(appealId, isAccept){
         data: f
     })
 }
+
+export function studentBreakDownGroup(){
+    return request({
+
+    })
+}
+
+export function studentGetAwayFromGroup(){
+    return request({
+
+    })
+}
+
+export function queryGroupMembers(groupId){
+    return request({
+        url: '/student/group/allMember',
+        params: {groupId},
+        method: 'GET'
+    })
+}
+
+export function delegateGroupUser(studentId, role){
+    const formData = new FormData()
+    formData.append('studentId', studentId)
+    formData.append('role', role)
+    return request({
+        url: '/student/group/appoint',
+        data: formData,
+        method: 'POST'
+    })
+}

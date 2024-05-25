@@ -15,9 +15,9 @@ import {studentLogin} from "@/web-api/general/login.js";
 const userStore = useUserStore()
 const {avatar, userName} = storeToRefs(userStore)
 const {clearLoginInFo} = userStore
-
+import router from '@/router'
 const gotoIndex = ()=>{
-
+  router.push('/login')
 }
 
 const quitLogin = ()=>{
