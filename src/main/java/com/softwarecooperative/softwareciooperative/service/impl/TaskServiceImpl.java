@@ -1,6 +1,7 @@
 package com.softwarecooperative.softwareciooperative.service.impl;
 
 import com.softwarecooperative.softwareciooperative.dao.mapper.*;
+import com.softwarecooperative.softwareciooperative.framework.annotation.ClearAllCache;
 import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.GroupException;
 import com.softwarecooperative.softwareciooperative.framework.exception.service.TaskException;
@@ -13,6 +14,8 @@ import com.softwarecooperative.softwareciooperative.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +55,7 @@ public class TaskServiceImpl implements TaskService {
     private NotificationService notificationService;
 
     @Override
+    @Cacheable(cacheNames = "classTaskCache", key = "#classId")
     public List<BClassTask> getClassAllTask(Integer classId) {
         BClassTask query = BClassTask.builder()
                 .classId(classId)
@@ -60,6 +64,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Cacheable(cacheNames = "groupAllTask", key = "#groupId + '_' + #taskId")
     public List<BStudentTaskSubmit> getGroupAllTask(Integer groupId, Integer taskId) {
         BStudentTaskSubmit query = BStudentTaskSubmit.builder()
                 .taskHandlerGroupId(groupId)
@@ -69,7 +74,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = TaskException.class)
+    @Transactional(propagation = Propagation.REQUIRED)
+    @ClearAllCache({"groupAllTask"})
+    @CacheEvict(cacheNames = "subtaskCache", key = "#recordId")
     public void submitSubTask(Integer recordId, String submitLink) throws IOException {
         // TODO 这里需要判断是否是主任务，如果是主任务需要在阶段任务全部提交后再提交
         // 判断是否是任务接收者
@@ -107,7 +114,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = TaskException.class)
+    @Transactional(propagation = Propagation.REQUIRED)
+    @ClearAllCache({"groupAllTask"})
+    @CacheEvict(cacheNames = "subtaskCache", key = "#recordId")
     public void updateSubTask(Integer recordId, String submitLink) {
         // 判断是否是任务接收者
         BStudentTaskSubmit subTask = studentTaskSubmitMapper.selectOne(BStudentTaskSubmit.createIdQuery(recordId));
@@ -133,7 +142,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = TaskException.class)
+    @Transactional(propagation = Propagation.REQUIRED)
+    @ClearAllCache({"groupAllTask"})
+    @CacheEvict(cacheNames = "subtaskCache", key = "#recordId")
     public void updateSubTaskDescription(Integer recordId, String description) throws IOException {
         // 判断是否是当前阶段经理
         Integer curId = Integer.parseInt(BaseContext.getCurrentId());
@@ -163,6 +174,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Cacheable(cacheNames = "subtaskCache", key = "#recordId")
     public BStudentTaskSubmit getSubtaskSubmit(Integer recordId) {
         return studentTaskSubmitMapper.selectOne(BStudentTaskSubmit.createIdQuery(recordId));
     }
@@ -178,7 +190,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, noRollbackFor = TaskException.class)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void markPerformanceByStudent(MarkPerformanceDTO mark) throws IOException {
         // 判断目标组员的任务是否已提交
         BStudentTaskSubmit query = BStudentTaskSubmit.builder()
@@ -256,6 +268,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "classTaskCache", key = "#task.classId")
     public void updateTask(BClassTask task) {
         classTaskMapper.update(task);
     }

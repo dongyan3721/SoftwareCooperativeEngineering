@@ -12,6 +12,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PageResult<T> implements Serializable {
 
     private long total; //总记录数
