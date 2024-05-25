@@ -381,4 +381,9 @@ public class GroupServiceImpl implements GroupService {
 
         return res;
     }
+
+    @Override
+    public BGroup getGroupByGroupId(Integer groupId) {
+        return groupMapper.selectOne(BGroup.createIdQuery(groupId));
+    }
 }

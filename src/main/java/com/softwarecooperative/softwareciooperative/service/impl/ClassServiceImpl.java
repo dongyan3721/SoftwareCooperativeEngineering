@@ -100,6 +100,11 @@ public class ClassServiceImpl implements ClassService {
         classMapper.update(clazz);
     }
 
+    @Override
+    public BClass getClassByClassId(Integer classId) {
+        return classMapper.selectOne(BClass.createIdQuery(classId));
+    }
+
     private void initializeClassTasks(Integer classId) {
         BClassTask task = BClassTask.builder()
                 .classId(classId)

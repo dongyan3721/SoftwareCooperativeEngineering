@@ -20,4 +20,6 @@ public interface ClassService {
     void deleteClass(Integer classId);
 
     void update(BClass clazz);
+
+    BClass getClassByClassId(Integer classId);
 }
