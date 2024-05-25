@@ -24,7 +24,7 @@ public interface ClassMapper {
     @ClearAllCache({"teacherAllClass"})
     void insert(BClass bClass);
 
-    @CacheEvict(cacheNames = "clazz", key = "bClass.classId")
+    @CacheEvict(cacheNames = "clazz", key = "#bClass.classId")
     @ClearAllCache({"teacherAllClass"})
     void update(BClass bClass);
 
