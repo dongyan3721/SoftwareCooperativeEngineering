@@ -3,7 +3,7 @@ import {sys_user_role} from "@/configuration/dictionary.js";
 const routes = [
     {
         path: '/',
-        redirect: '/student-group-apply'
+        redirect: '/teacher-main'
     },
     {
         path: '/test',

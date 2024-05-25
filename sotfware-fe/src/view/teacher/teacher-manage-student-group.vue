@@ -15,10 +15,12 @@ import {
   audit,
   listAllGroupLeaderApply,
   teacherListClassTasks,
-  teacherModifyClassPhase
+  teacherModifyClassPhase, teacherUpdateClassTasks
 } from "@/web-api/teacher/teacherManageStudentGroup.js";
 import {sys_class_phase} from "@/configuration/dictionary.js";
 import {dictDataExtractWidthReflection} from "@/util/dictDataExtarct.js";
+import {Edit} from "@element-plus/icons-vue";
+import {generalValidatorJudgeIfEmpty} from "@/util/common.js";
 const teacherClassStore = useTeacherClassStore()
 const clazz = teacherClassStore.bClass
 
@@ -136,7 +138,11 @@ const requestClassTasksList = ()=>{
   teacherListClassTasks(clazz.classId).then(res=>{
     classTasks.value = res.data.map(task=>{
       // 转成中文
-      task.taskStudentRole = sys_student_role.value.reflect[task.taskStudentRole]
+      task.taskStudentRole = {
+        label: sys_student_role.value.reflect[task.taskStudentRole],
+        value: task.taskStudentRole
+      }
+      return task
     })
     taskTabLoading.value = false
   })
@@ -155,6 +161,40 @@ const modifyForm = reactive({
   taskOrder: null,
   taskStudentRole: null
 })
+const fillModifyForm = (row)=>{
+  resetModifyForm()
+  modifyForm.classId = clazz.classId
+  modifyForm.deadline = row.deadline
+  modifyForm.taskContent = row.taskContent
+  modifyForm.taskId = row.taskId
+  modifyForm.taskOrder = row.taskOrder
+  modifyForm.taskStudentRole = row.taskStudentRole.value
+  modifyDialogVis.value=true
+}
+const modifyFormRules = {
+  taskContent: [{validator: generalValidatorJudgeIfEmpty('任务名称'), trigger: 'blur'}],
+  deadline: [{validator: generalValidatorJudgeIfEmpty('任务截止时间'), trigger: 'blur'}],
+  taskOrder: [{validator: generalValidatorJudgeIfEmpty('任务排序号'), trigger: 'blur'}],
+  taskStudentRole: [{validator: generalValidatorJudgeIfEmpty('负责学生角色'), trigger: 'blur'}],
+}
+const modifyFormRef = ref()
+function resetModifyForm(){
+  if(!modifyFormRef.value) return
+  modifyFormRef.value.resetFields()
+  modifyForm.classId = clazz.classId
+}
+const handleUpdateTask = ()=>{
+  modifyFormRef.value.validate(valid=>{
+    console.log(modifyForm.deadline)
+    if(valid){
+      teacherUpdateClassTasks(modifyForm).then(r=>{
+        ElMessage.success('修改成功！')
+        modifyDialogVis.value = false
+        requestClassTasksList()
+      })
+    }
+  })
+}
 </script>
 
 <template>
@@ -212,18 +252,46 @@ const modifyForm = reactive({
       </template>
       <el-table :data="classTasks" v-loading="taskTabLoading">
         <el-table-column label="任务名称" prop="taskContent" align="center"/>
-        <el-table-column label="任务负责人角色" prop="taskStudentRole" align="center"/>
+        <el-table-column label="任务负责人角色" prop="taskStudentRole.label" align="center"/>
         <el-table-column label="截止时间" prop="deadline" align="center"/>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center">
           <template #default="line">
-            <el-button @click="()=>{modifyDialogVis=true}" text type="primary">修改</el-button>
+            <el-button @click="fillModifyForm(line.row)" text type="primary">修改</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-dialog>
 
-    <el-dialog v-model="modifyDialogVis">
-
+    <el-dialog v-model="modifyDialogVis" width="400px">
+      <template #header>
+        <div class="h-100 w-100 flex items-center">
+          <el-icon :size="16" color="#2a3f67"><Edit/></el-icon>
+          <span class="inline-block ml-1">修改</span>
+        </div>
+      </template>
+      <el-form :model="modifyForm" ref="modifyFormRef" label-width="120px" :rules="modifyFormRules">
+        <el-form-item label="任务名称" prop="taskContent">
+          <el-input v-model="modifyForm.taskContent" clearable type="text"/>
+        </el-form-item>
+        <el-form-item label="任务负责人角色" prop="taskStudentRole">
+          <el-select v-model="modifyForm.taskStudentRole">
+            <el-option v-for="option in sys_student_role.data" :label="option.label"
+                       :value="option.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="截止时间" prop="deadline">
+          <el-date-picker v-model="modifyForm.deadline" type="datetime" placeholder="选择截止提交时间"
+                          format="YYYY-MM-DD HH:mm:ss" date-format="MMM DD, YYYY" time-format="HH:mm" />
+        </el-form-item>
+        <el-form-item label="任务排序号" prop="taskOrder">
+          <el-input-number v-model="modifyForm.taskOrder"/>
+        </el-form-item>
+        <el-form-item label-width="0">
+          <div class="w-100 h-100 flex justify-end items-center">
+            <el-button type="primary" @click="handleUpdateTask">确定</el-button>
+          </div>
+        </el-form-item>
+      </el-form>
     </el-dialog>
 
   </teacher-menu>
