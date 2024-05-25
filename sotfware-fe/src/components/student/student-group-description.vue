@@ -5,13 +5,19 @@
 -->
 
 <script setup>
-import {Edit, Scissors} from "@icon-park/vue-next";
-import {genFileId} from "element-plus";
+import {Edit, Scissors, Seal} from "@icon-park/vue-next";
+import {ElMessage, genFileId} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
 import {base64ToBlob, compressImage} from "@/util/dongyan.js";
 import {VueCropper} from 'vue-cropper'
 import {generalValidatorJudgeIfEmpty} from "@/util/common.js";
 import upload from "@/web-api/upload.js";
+import {auditApplication, getAllTeamApply, updateStudentGroup} from "@/web-api/student/studentGroup.js";
+import {useStudentGroupStore} from "@/store/index.js";
+
+const emit = defineEmits([
+    'update'
+])
 
 const props = defineProps({
   groupName: String,
@@ -19,7 +25,19 @@ const props = defineProps({
   groupIntroduction: String,
   groupLeaderName: String,
   groupLeaderAvatar: String,
-  editVis: Boolean
+  editVis: Boolean,
+  showAuditAddInTeam: Boolean
+})
+
+
+onUpdated(()=>{
+  form.groupIntroduction = props.groupIntroduction
+  form.groupName = props.groupName
+  form.groupAvatar = props.groupAvatar
+  dialogUploadFileList.value = [{
+    name: 'test',
+    url: props.groupAvatar
+  }]
 })
 
 const form = reactive({
@@ -216,15 +234,81 @@ const modifyFormRules = reactive({
 })
 
 const handleModifySubmit = ()=>{
-  console.log(form)
+  updateStudentGroup(form).then(res=>{
+    // 我已更新完毕，告诉父组件可以重新请求了
+    emit('update')
+    dialogVis.value = false
+  })
 }
 
+const auditDialogVis = ref(false)
 
+const openAuditApplyDialog = ()=>{
+  params.page = 1
+  params.pageSize = 10
+  auditDialogVis.value = true
+  requestAllTeamApply()
+}
+const auditTableLoading = ref(false)
+const auditTableData = ref()
+const totalApply = ref()
+const params = reactive({
+  page: 1,
+  pageSize: 10
+})
+function requestAllTeamApply(){
+  const groupId = useStudentGroupStore().group.groupId
+  auditTableLoading.value = true
+  getAllTeamApply(groupId, params).then(res=>{
+    auditTableData.value = res.rows
+    totalApply.value = res.total
+    auditTableLoading.value = false
+  })
+}
+const auditStudentJoinGroupApply = (applyId, isAccept)=>{
+  auditApplication(applyId, isAccept).then(()=>{
+    ElMessage.success(isAccept?'已通过':'已驳回')
+    requestAllTeamApply()
+  })
+}
 
+const doPagination = (pageNum)=>{
+  params.page = pageNum
+  requestAllTeamApply()
+}
 
 </script>
 
 <template>
+<!--  组长审批对话框-->
+  <el-dialog v-model="auditDialogVis">
+    <template #header>
+      <div class="h-100 w-100 flex items-center">
+        <seal theme="outline" size="16" fill="#2a3f67"/>
+        <span class="inline-block ml-1">审批</span>
+      </div>
+    </template>
+
+    <el-table :data="auditTableData" v-loading="auditTableLoading">
+      <el-table-column label="学生姓名" prop="studentName" align="center"/>
+      <el-table-column label="学生头像" align="center">
+        <template #default="scope">
+          <n-avatar :src="scope.row.studentAvatar" :size="32" circle/>
+        </template>
+      </el-table-column>
+      <el-table-column label="申请时间" prop="appealDate" align="center"/>
+      <el-table-column label="操作" align="center">
+        <template #default="scope">
+          <el-button text type="primary" @click="auditStudentJoinGroupApply(scope.row.appealId, true)">通过</el-button>
+          <el-button text type="primary" @click="auditStudentJoinGroupApply(scope.row.appealId, false)">驳回</el-button>
+        </template>
+      </el-table-column>
+      <div class="w-100 flex items-center justify-end my-2">
+        <el-pagination background layout="prev, pager, next" @change="doPagination" :total="totalApply" :page-size="10"/>
+      </div>
+    </el-table>
+  </el-dialog>
+
   <!-- 二层对话框，裁剪上传图像-->
   <el-dialog v-model="cropVis" @close="handleCloseCropDialog" width="600px">
     <template #header>
@@ -319,6 +403,13 @@ const handleModifySubmit = ()=>{
           <edit theme="outline" size="18" fill="#2a3f67"/>
         </template>
       </n-button>
+      <n-button size="medium" v-if="props.showAuditAddInTeam" @click="openAuditApplyDialog" class="ml-2">
+        <template #icon>
+          <seal theme="outline" size="16" fill="#2a3f67"/>
+        </template>
+        审理入队申请
+      </n-button>
+      <slot></slot>
     </template>
     <p class="text-clip opacity-50">
       {{props.groupIntroduction}}

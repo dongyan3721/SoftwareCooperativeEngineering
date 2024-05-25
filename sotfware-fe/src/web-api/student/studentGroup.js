@@ -14,8 +14,9 @@ export function groupGetStudentById(studentId){
 
 export function getGroupByGroupId(studentGroup){
     return request({
-        url: '/student/group/detail/'+studentGroup,
-        method: 'GET'
+        url: '/student/group/getDetail',
+        method: 'GET',
+        params: {groupId: studentGroup}
     })
 }
 
@@ -26,3 +27,30 @@ export function groupGetClassByClassId(classId){
     })
 }
 
+export function getAllTeamApply(groupId, params){
+    return request({
+        url: '/student/group/appeal/'+groupId,
+        params,
+        method: 'GET'
+    })
+}
+
+
+export function updateStudentGroup(data) {
+    return request({
+        url: '/student/group',
+        data,
+        method: 'PUT'
+    })
+}
+
+export function auditApplication(appealId, isAccept){
+    const f = new FormData()
+    f.append('appealId', appealId)
+    f.append('isAccept', isAccept)
+    return request({
+        url: '/student/group/approveIn',
+        method: 'POST',
+        data: f
+    })
+}

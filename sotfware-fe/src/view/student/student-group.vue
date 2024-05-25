@@ -12,9 +12,29 @@ import Chatroom from "@/components/general/chatroom.vue";
 // 我的小组进来之前先请求一波后端看看自己最新的小组情况
 import {useUserStore, useStudentGroupStore, useStudentClassStore} from "@/store/index.js";
 import {getGroupByGroupId, groupGetClassByClassId, groupGetStudentById} from "@/web-api/student/studentGroup.js";
+import {sys_class_phase} from "@/configuration/dictionary.js";
 const userStore = useUserStore()
 const studentGroupStore = useStudentGroupStore()
 const studentClassStore = useStudentClassStore()
+
+const userHasGroup = ref(false)
+const pageGroupInfo = ref({
+  groupId: null,
+  groupName: null,
+  classId: null,
+  groupAvatar: null,
+  groupIntroduction: null,
+  groupLeaderId: null,
+  groupLeaderName: null,
+  groupLeaderAvatar: null
+})
+
+const requestGroupDetail = ()=>{
+  getGroupByGroupId(userStore.studentGroup).then(res=>{
+    pageGroupInfo.value = res.data
+  })
+}
+
 onBeforeMount(()=>{
   // 优先更新一遍当前课程情况
   groupGetClassByClassId(userStore.studentClass).then(res=>{
@@ -26,11 +46,13 @@ onBeforeMount(()=>{
     userStore.studentGroup = res.data.studentGroup
     // 组号不是0，有组
     if(res.data.studentGroup) {
+      userHasGroup.value = true
       // 其次看是不是组长
       getGroupByGroupId(userStore.studentGroup).then(res=>{
         // 当前本人是不是组长
         studentGroupStore.setIfLeader(res.data.groupLeaderId === userStore.userId)
         studentGroupStore.setStudentGroup(res.data)
+        pageGroupInfo.value = res.data
       })
     }
 
@@ -41,11 +63,11 @@ onBeforeMount(()=>{
 <template>
   <student-menu>
     <universe-section title="小组概况"/>
-    <student-group-description :edit-vis="true" group-avatar="http://47.120.49.22:8080/static/avatar/bbb.jpg"
-                               group-introduction="大号的要我人多啊合肥索菲亚四风也大有的等会我熬夜的我i滚犊子来吃吧世俗一人一额土狗复古刷到过"
-                               group-leader-avatar="http://47.120.49.22:8080/static/avatar/bbb.jpg"
-                               group-leader-name="AAA莆田高仿K姐"
-                               group-name="贼能C"/>
+    <student-group-description :edit-vis="studentGroupStore.isLeader" :group-avatar="pageGroupInfo.groupAvatar"
+                               :group-introduction="pageGroupInfo.groupIntroduction" @update="requestGroupDetail"
+                               :group-leader-avatar="pageGroupInfo.groupLeaderAvatar"
+                               :group-leader-name="pageGroupInfo.groupLeaderName" :show-audit-add-in-team="studentGroupStore.isLeader&&studentClassStore.clazz.phase===sys_class_phase.TEAMING"
+                               :group-name="pageGroupInfo.groupName" v-show="userHasGroup"/>
     <universe-section title="互通有无"/>
     <chatroom/>
   </student-menu>
