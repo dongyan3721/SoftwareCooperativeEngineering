@@ -126,4 +126,11 @@ public class GroupController {
         return AjaxResult.success();
     }
 
+    @GetMapping("/{groupId}")
+    @Operation(summary = "根据id查询团队")
+    public AjaxResult getGroupByGroupId(@PathVariable Integer groupId) {
+        BGroup res = groupService.getGroupByGroupId(groupId);
+        return AjaxResult.success(res);
+    }
+
 }

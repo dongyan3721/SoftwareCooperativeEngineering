@@ -47,4 +47,6 @@ public interface GroupService {
     void exitGroup(Integer groupId) throws IOException;
 
     List<GroupVO> getGroupByClassWithHasAppeal(Integer classId);
+
+    BGroup getGroupByGroupId(Integer groupId);
 }

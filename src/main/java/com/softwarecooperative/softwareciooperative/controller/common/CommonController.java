@@ -3,7 +3,9 @@ package com.softwarecooperative.softwareciooperative.controller.common;
 import com.softwarecooperative.softwareciooperative.framework.annotation.AccessWithoutVerification;
 import com.softwarecooperative.softwareciooperative.framework.net.AjaxResult;
 import com.softwarecooperative.softwareciooperative.framework.net.TableDataInfo;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BDict;
+import com.softwarecooperative.softwareciooperative.service.ClassService;
 import com.softwarecooperative.softwareciooperative.service.CommonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +31,9 @@ public class CommonController {
     @Autowired
     private CommonService commonService;
 
+    @Autowired
+    private ClassService classService;
+
     @GetMapping("/dict/{dictName}")
     @Operation(summary = "获取字典键值对")
     @AccessWithoutVerification
@@ -43,5 +48,12 @@ public class CommonController {
     public AjaxResult uploadFile(@RequestBody MultipartFile file) throws IOException {
         String url = commonService.uploadFile(file.getBytes(), file.getOriginalFilename());
         return AjaxResult.success(url);
+    }
+
+    @GetMapping("/class/{classId}")
+    @Operation(summary = "根据教学班id查教学班")
+    public AjaxResult getClassByClassId(@PathVariable Integer classId) {
+        BClass res = classService.getClassByClassId(classId);
+        return AjaxResult.success(res);
     }
 }
