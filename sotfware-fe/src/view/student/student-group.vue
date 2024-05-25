@@ -9,6 +9,33 @@ import StudentMenu from "@/components/student/student-menu.vue";
 import StudentGroupDescription from "@/components/student/student-group-description.vue";
 import UniverseSection from "@/components/universe-section.vue";
 import Chatroom from "@/components/general/chatroom.vue";
+// 我的小组进来之前先请求一波后端看看自己最新的小组情况
+import {useUserStore, useStudentGroupStore, useStudentClassStore} from "@/store/index.js";
+import {getGroupByGroupId, groupGetClassByClassId, groupGetStudentById} from "@/web-api/student/studentGroup.js";
+const userStore = useUserStore()
+const studentGroupStore = useStudentGroupStore()
+const studentClassStore = useStudentClassStore()
+onBeforeMount(()=>{
+  // 优先更新一遍当前课程情况
+  groupGetClassByClassId(userStore.studentClass).then(res=>{
+    studentClassStore.setStudentClass(res.data)
+  })
+
+  // 首先看有没有组
+  groupGetStudentById(userStore.userId).then(res=>{
+    userStore.studentGroup = res.data.studentGroup
+    // 组号不是0，有组
+    if(res.data.studentGroup) {
+      // 其次看是不是组长
+      getGroupByGroupId(userStore.studentGroup).then(res=>{
+        // 当前本人是不是组长
+        studentGroupStore.setIfLeader(res.data.groupLeaderId === userStore.userId)
+        studentGroupStore.setStudentGroup(res.data)
+      })
+    }
+
+  })
+})
 </script>
 
 <template>

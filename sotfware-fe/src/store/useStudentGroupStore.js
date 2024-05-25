@@ -10,12 +10,12 @@ export const useStudentGroupStore = defineStore(
     'student-group',
     ()=>{
 
-        const groupId = ref()
+        const group = ref()
         const isLeader = ref()
 
         // 设置队伍id信息
         const setStudentGroup = (group_id)=>{
-            groupId.value = group_id
+            group.value = group_id
         }
 
         // 设置当前登录用户是否是组长身份
@@ -25,12 +25,12 @@ export const useStudentGroupStore = defineStore(
 
         // 清空信息
         const clearGroupInfo = ()=>{
-            groupId.value = _undefined
+            group.value = _undefined
             isLeader.value = _undefined
         }
 
         return {
-            groupId, isLeader, setStudentGroup, setIfLeader, clearGroupInfo
+            group, isLeader, setStudentGroup, setIfLeader, clearGroupInfo
         }
     },
     // 通用持久化
