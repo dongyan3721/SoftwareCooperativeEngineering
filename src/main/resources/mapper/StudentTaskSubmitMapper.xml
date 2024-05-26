@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.softwarecooperative.softwareciooperative.dao.mapper.StudentTaskSubmitMapper">
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO b_student_task_submit
+            (record_id, task_id, task_handler, task_handler_group_id, task_handler_name, task_handler_work, submit_link, submit_status, submit_time, submit_type)
+        VALUES
+        <foreach collection="list" item="subtask" separator=", ">
+            (#{subtask.recordId}, #{subtask.taskId}, #{subtask.taskHandler}, #{subtask.taskHandlerGroupId},
+            #{subtask.taskHandlerName}, #{subtask.taskHandlerWork}, #{subtask.submitLink},
+            #{subtask.submitStatus}, #{subtask.submitTime}, #{subtask.submitType})
+        </foreach>
+    </insert>
     <update id="update">
         UPDATE b_student_task_submit
         <set>
@@ -17,7 +27,7 @@
         WHERE record_id = #{recordId}
     </update>
     <select id="selectGroupPhaseByGroupId" resultType="java.lang.Integer">
-        SELECT COUNT(record_id) FROM b_student_task_submit WHERE task_handler_group_id = #{groupId} AND submit_type = '1'
+        SELECT COUNT(record_id) FROM b_student_task_submit WHERE task_handler_group_id = #{groupId} AND submit_type = '1' AND submit_status = '2'
     </select>
     <select id="selectByCond"
             resultType="com.softwarecooperative.softwareciooperative.pojo.entity.BStudentTaskSubmit">

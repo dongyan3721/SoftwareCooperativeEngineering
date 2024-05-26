@@ -75,7 +75,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    @ClearAllCache({"groupAllTask"})
+    @ClearAllCache({"groupAllTask", "groupProcess"})
     @CacheEvict(cacheNames = "subtaskCache", key = "#recordId")
     public void submitSubTask(Integer recordId, String submitLink) throws IOException {
         // TODO 这里需要判断是否是主任务，如果是主任务需要在阶段任务全部提交后再提交

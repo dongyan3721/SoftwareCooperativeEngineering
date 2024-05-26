@@ -90,7 +90,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @Cacheable(cacheNames = "pageStudent", key = "#page + '_' + #pageSize + '_' + #classId")
+    @Cacheable(cacheNames = "pageStudent", key = "#classId + '_' + #page + '_' + #pageSize")
     public PageResult<BStudent> pageSelect(Integer page, Integer pageSize, Integer classId) {
         PageHelper.startPage(page,pageSize);
         BStudent query = BStudent.builder()

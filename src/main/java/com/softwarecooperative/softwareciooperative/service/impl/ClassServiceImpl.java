@@ -12,7 +12,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Description
@@ -37,6 +40,12 @@ public class ClassServiceImpl implements ClassService {
     @Autowired
     private ClassTaskMapper classTaskMapper;
 
+    @Autowired
+    private GroupMapper groupMapper;
+
+    @Autowired
+    private StudentTaskSubmitMapper studentTaskSubmitMapper;
+
     @Override
     public List<BClass> getTeacherClass() {
         Integer teacherId = Integer.parseInt(BaseContext.getCurrentId());
@@ -54,7 +63,9 @@ public class ClassServiceImpl implements ClassService {
             // 初始化教学班任务
             initializeClassTasks(classId);
         } else if (BClass.PROCESSING.equals(phase)) {
-            // TODO 进入项目进行阶段自动执行的操作
+            // 进入项目进行阶段自动执行的操作：检查团队成员是否齐全和初始化submit表
+            checkIfAllStudentsAreIntegrated(classId);
+            initializeSubtasks(classId);
         } else if (BClass.FINISHED.equals(phase)) {
             // TODO 进入结课状态自动执行的操作
         } else {
@@ -130,5 +141,52 @@ public class ClassServiceImpl implements ClassService {
         task.setTaskOrder(5);
         task.setTaskStudentRole(BStudent.TEST_MANAGER);
         classTaskMapper.insert(task);
+    }
+
+    private void checkIfAllStudentsAreIntegrated(Integer classId) {
+        // 检查学生是否都有团队
+        List<BStudent> stuInClass = studentMapper.selectByCond(BStudent.builder().studentClass(classId).build());
+        for (BStudent stu : stuInClass) {
+            if (stu.getStudentGroup() == null || BStudent.NO_ROLE.equals(stu.getStudentRole()))
+                throw new ClassException(StringConstant.EXIST_STUDENT_NOT_INTEGRATED);
+        }
+
+        // 检查团队内角色是否齐全
+        List<BGroup> groups = groupMapper.selectByCond(BGroup.builder().classId(classId).build());
+        for (BGroup group : groups) {
+            // 检查角色是否齐全
+            List<BStudent> stuInGroup = studentMapper.selectByCond(BStudent.builder().studentGroup(group.getGroupId()).build());
+            Set<String> roles = new HashSet<>();
+            for (BStudent stu : stuInGroup) {
+                roles.add(stu.getStudentRole());
+            }
+            if (roles.size() != 5)
+                throw new ClassException(StringConstant.STUDENT_ROLE_NOT_SUFFICIENT);
+        }
+    }
+
+    private void initializeSubtasks(Integer classId) {
+        List<BClassTask> tasks = classTaskMapper.selectByCond(BClassTask.builder().classId(classId).build());
+        List<BStudentTaskSubmit> subtasks = new ArrayList<>(114);
+        for (BClassTask task : tasks) {
+            List<BGroup> groups = groupMapper.selectByCond(BGroup.builder().classId(classId).build());
+            for (BGroup group : groups) {
+                List<BStudent> stuInGroup = studentMapper.selectByCond(BStudent.builder().studentGroup(group.getGroupId()).build());
+                for (BStudent student : stuInGroup) {
+                    BStudentTaskSubmit subtask = BStudentTaskSubmit.builder()
+                            .taskId(task.getTaskId())
+                            .taskHandler(student.getStudentId())
+                            .taskHandlerGroupId(group.getGroupId())
+                            .taskHandlerName(student.getStudentName())
+                            .taskHandlerWork(StringConstant.NOT_ASSIGNED)
+                            .submitStatus(BStudentTaskSubmit.UNASSIGNED.toString())
+                            .submitType(task.getTaskStudentRole().equals(student.getStudentRole()) ?
+                                    BStudentTaskSubmit.MAIN_TASK_SUBMIT : BStudentTaskSubmit.SUBTASK_SUBMIT)
+                            .build();
+                    subtasks.add(subtask);
+                }
+            }
+        }
+        studentTaskSubmitMapper.insertBatch(subtasks);
     }
 }

@@ -8,6 +8,7 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.vo.GroupAndPhaseVO;
 import com.softwarecooperative.softwareciooperative.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class ProcessServiceImpl implements ProcessService {
     private GroupMapper groupMapper;
 
     @Override
+    @Cacheable(cacheNames = "groupProcess", key = "#groupId")
     public Integer getGroupPhase(Integer groupId) {
         return studentTaskSubmitMapper.selectGroupPhaseByGroupId(groupId);
     }
