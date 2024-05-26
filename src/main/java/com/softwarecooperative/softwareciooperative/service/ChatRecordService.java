@@ -10,6 +10,9 @@ import java.util.List;
  * @Date 2024/4/28-14:15:43
  */
 public interface ChatRecordService {
+
+    void studentAddOne(String content, Integer contentType);
+
     void addOne(ChatRecord chatRecord);
 
     List<ChatRecord> getOnePage(Integer groupId, Integer pageNum, Integer pageSize);

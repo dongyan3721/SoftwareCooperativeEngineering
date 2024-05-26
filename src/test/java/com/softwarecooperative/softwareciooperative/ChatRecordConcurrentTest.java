@@ -26,7 +26,7 @@ public class ChatRecordConcurrentTest {
     @Test
     public void concurrentTest() throws InterruptedException {
         log.info("开始进行ChatRecord业务高并发写入测试...");
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             Thread thread = new Thread(concurrentThread);
             thread.setDaemon(true);
             thread.start();

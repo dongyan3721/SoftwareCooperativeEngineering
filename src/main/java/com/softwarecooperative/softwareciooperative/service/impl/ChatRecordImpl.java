@@ -1,7 +1,12 @@
 package com.softwarecooperative.softwareciooperative.service.impl;
 
 import com.alibaba.fastjson2.JSON;
+import com.softwarecooperative.softwareciooperative.dao.mapper.GroupMapper;
+import com.softwarecooperative.softwareciooperative.dao.mapper.StudentMapper;
 import com.softwarecooperative.softwareciooperative.dao.repository.ChatRecordRepo;
+import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
+import com.softwarecooperative.softwareciooperative.pojo.entity.BStudent;
 import com.softwarecooperative.softwareciooperative.pojo.entity.ChatRecord;
 import com.softwarecooperative.softwareciooperative.service.ChatRecordService;
 import org.springframework.amqp.core.Message;
@@ -16,6 +21,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -34,6 +40,24 @@ public class ChatRecordImpl implements ChatRecordService {
 
     @Autowired
     private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private StudentMapper studentMapper;
+
+    @Override
+    public void studentAddOne(String content, Integer contentType) {
+        Integer curId = Integer.parseInt(BaseContext.getCurrentId());
+        BStudent curStu = studentMapper.selectOne(BStudent.createIdQuery(curId));
+        ChatRecord record = ChatRecord.builder()
+                .content(content)
+                .contentType(contentType)
+                .groupId(curStu.getStudentGroup())
+                .sendDateTime(LocalDateTime.now())
+                .userId(curId)
+                .userType(BClass.STUDENT)
+                .build();
+        this.addOne(record);
+    }
 
     @Override
     public void addOne(ChatRecord chatRecord) {
