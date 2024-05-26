@@ -24,9 +24,28 @@ export function getClassGroups(classId){
 
 export function getClassTasks(classId){
     return request({
-        url: '/student/task',
+        url: '/teacher/task',
         method: 'GET',
         params: {classId}
     })
 }
 
+/**
+ *
+ * @param data targetStuId / groupId / taskId / performance / comment
+ */
+export function markStudentHandOnGrade(data){
+    return request({
+        url: '/teacher/task/performance',
+        data,
+        method: 'POST'
+    })
+}
+
+export function teacherViewStageMainTaskSubmit(groupId, taskId){
+    return request({
+        url: '/teacher/task/mainTask',
+        method: "GET",
+        params: {groupId, taskId}
+    })
+}
