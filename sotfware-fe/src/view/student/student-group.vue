@@ -15,7 +15,7 @@ import {
   delegateGroupUser,
   getGroupByGroupId,
   groupGetClassByClassId,
-  groupGetStudentById, queryGroupMembers, studentBreakDownGroup
+  groupGetStudentById, queryGroupMembers, studentBreakDownGroup, studentGetAwayFromGroup
 } from "@/web-api/student/studentGroup.js";
 import {sys_class_phase} from "@/configuration/dictionary.js";
 import {Delete, Bye, PreviewOpen, Delivery} from "@icon-park/vue-next";
@@ -93,7 +93,7 @@ const goAway = ()=>{
         cancelButtonText: '取消',
         type: 'warning',
       }).then(()=>{
-    studentBreakDownGroup(userStore.studentGroup).then(()=>{
+    studentGetAwayFromGroup(userStore.studentGroup).then(()=>{
       ElMessage.success('已退出')
       router.push('/student-group-apply')
     })
