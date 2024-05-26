@@ -55,15 +55,20 @@ export function auditApplication(appealId, isAccept){
     })
 }
 
-export function studentBreakDownGroup(){
+export function studentBreakDownGroup(groupId){
     return request({
-
+        url: '/student/group/'+groupId,
+        method: 'DELETE'
     })
 }
 
-export function studentGetAwayFromGroup(){
+export function studentGetAwayFromGroup(groupId){
+    const f = new FormData()
+    f.append('groupId', groupId)
     return request({
-
+        url: '/student/group/exit',
+        method: 'DELETE',
+        data: f
     })
 }
 

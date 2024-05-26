@@ -15,12 +15,13 @@ import {
   delegateGroupUser,
   getGroupByGroupId,
   groupGetClassByClassId,
-  groupGetStudentById, queryGroupMembers
+  groupGetStudentById, queryGroupMembers, studentBreakDownGroup
 } from "@/web-api/student/studentGroup.js";
 import {sys_class_phase} from "@/configuration/dictionary.js";
 import {Delete, Bye, PreviewOpen, Delivery} from "@icon-park/vue-next";
 import {dictDataExtractWidthReflection} from "@/util/dictDataExtarct.js";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
+import router from "@/router/index.js";
 const userStore = useUserStore()
 const studentGroupStore = useStudentGroupStore()
 const studentClassStore = useStudentClassStore()
@@ -68,11 +69,35 @@ onBeforeMount(()=>{
 })
 
 const tearDown = ()=>{
-
+  ElMessageBox.confirm(
+      '确定要解散小组吗？',
+      '警告',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(()=>{
+        studentBreakDownGroup(userStore.studentGroup).then(()=>{
+          ElMessage.success('解散成功')
+          router.push('/student-group-apply')
+        })
+  })
 }
 
 const goAway = ()=>{
-
+  ElMessageBox.confirm(
+      '确定要退出小组吗？',
+      '警告',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(()=>{
+    studentBreakDownGroup(userStore.studentGroup).then(()=>{
+      ElMessage.success('已退出')
+      router.push('/student-group-apply')
+    })
+  })
 }
 
 const studentT = reactive({
@@ -170,20 +195,26 @@ const visAllGroupMembers = ref(false)
                                :group-leader-name="pageGroupInfo.groupLeaderName"
                                :show-audit-add-in-team="studentGroupStore.isLeader"
                                :group-name="pageGroupInfo.groupName" v-if="userHasGroup">
-<!--      TODO 这里要根据学生和课程时期做v-if判断-->
-      <n-button type="primary" size="medium" @click="resolveViewGroupDetail" class="ml-2">
+
+<!--      组队阶段，允许组长修改组员角色-->
+      <n-button type="primary" size="medium" @click="resolveViewGroupDetail" class="ml-2"
+                v-if="studentGroupStore.isLeader&&studentClassStore.clazz.phase===sys_class_phase.TEAMING">
         <template #icon>
           <delivery theme="outline" size=16 fill="#2a3f67"/>
         </template>
         分配角色
       </n-button>
-      <n-button type="error" size="medium" @click="tearDown" class="ml-2">
+<!--      组队阶段，允许组长解散队伍-->
+      <n-button type="error" size="medium" @click="tearDown" class="ml-2"
+                v-if="studentGroupStore.isLeader&&studentClassStore.clazz.phase===sys_class_phase.TEAMING">
         <template #icon>
           <delete theme="outline" size=16 fill="#2a3f67"/>
         </template>
         解散小组
       </n-button>
-      <n-button type="warning" size="medium" @click="goAway" class="ml-2">
+<!--      组队阶段，允许小组成员离开队伍-->
+      <n-button type="warning" size="medium" @click="goAway" class="ml-2"
+                v-if="!studentGroupStore.isLeader&&studentClassStore.clazz.phase===sys_class_phase.TEAMING">
         <template #icon>
           <bye theme="outline" size="16" fill="#2a3f67"/>
         </template>
