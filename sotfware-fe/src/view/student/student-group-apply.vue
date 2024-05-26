@@ -7,7 +7,7 @@
 <script setup>
 import StudentMenu from "@/components/student/student-menu.vue";
 import {useUserStore} from "@/store";
-import {PeoplesTwo} from "@icon-park/vue-next";
+import {PeoplesTwo, PreviewOpen} from "@icon-park/vue-next";
 import UniverseFormCompressedFileUpload from "@/components/universe-form-compressed-file-upload.vue";
 import upload from "@/web-api/upload.js";
 import {
@@ -18,6 +18,8 @@ import {
 import {downToGetInt, generateSequence, upToGetInt} from "@/util/dongyan.js";
 import UniverseSection from "@/components/universe-section.vue";
 import {ElMessage} from "element-plus";
+import {queryGroupMembers} from "@/web-api/student/studentGroup.js";
+import {dictDataExtractWidthReflection} from "@/util/dictDataExtarct.js";
 
 const userStore = useUserStore();
 const applyForNewGroupVis = ref(false)
@@ -73,17 +75,37 @@ function requestExistingGroups(){
   })
 }
 
-const resolveJoinGroup = (groupId)=>{
+const resolveJoinGroup = (groupId, index)=>{
   applyToBeGroupMember(groupId).then(res=>{
     ElMessage.success('申请成功~')
+    existingGroups.value[index].hasAppeal=true
   }).catch(err=>{
     ElMessage.error("不满足申请加入小组条件！")
   })
 }
 
-const resolveViewGroupDetail = (groupId)=>{
+const sys_dict_student_role_r = ref({data: null, reflect: null})
+dictDataExtractWidthReflection('sys_student_role').then(res=>{
+  sys_dict_student_role_r.value = res
+})
 
+const resolveViewGroupDetail = (groupId)=>{
+  visAllGroupMembers.value = true
+  loadingAllGroupMembers.value = true
+  queryGroupMembers(groupId).then(res=>{
+    tbDataViewAllGroupMembers.value = res.data.map(student=>{
+      student.studentRole = {
+        label: sys_dict_student_role_r.value.reflect[student.studentRole],
+        value: student.studentRole
+      }
+      return student
+    })
+    loadingAllGroupMembers.value = false
+  })
 }
+const tbDataViewAllGroupMembers = ref()
+const visAllGroupMembers = ref(false)
+const loadingAllGroupMembers = ref(false)
 // 新建点击按钮的时候查一下这个学生有没有正在申请的小组或者已经有组了
 
 onBeforeMount(function (){
@@ -94,6 +116,25 @@ onBeforeMount(function (){
 </script>
 
 <template>
+
+  <el-dialog v-model="visAllGroupMembers">
+    <template #header>
+      <div class="h-100 w-100 flex items-center">
+        <preview-open theme="outline" size="16" fill="#2a3f67"/>
+        <span class="ml-1 inline-block">查看小组成员</span>
+      </div>
+    </template>
+    <el-table v-loading="loadingAllGroupMembers" :data="tbDataViewAllGroupMembers">
+      <el-table-column label="学生姓名" prop="studentName" align="center"/>
+      <el-table-column label="头像" align="center">
+        <template #default="scope">
+          <n-avatar :size="32" circle :src="scope.row.avatar"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="角色" prop="studentRole.label" align="center"/>
+    </el-table>
+  </el-dialog>
+
   <el-dialog width="600px" v-model="applyForNewGroupVis" @close="resetApplyForm(applyFormRef)">
     <template #header>
       <div class="flex flex-row items-center">
@@ -150,7 +191,7 @@ onBeforeMount(function (){
               </div>
               <template #action>
                 <el-button size="small" type="warning" @click="resolveViewGroupDetail(existingGroups[i].groupId)">让我看看！</el-button>
-                <el-button size="small" type="primary" @click="resolveJoinGroup(existingGroups[i].groupId)" :disabled="existingGroups[i].hasAppeal">我汤姆来辣</el-button>
+                <el-button size="small" type="primary" @click="resolveJoinGroup(existingGroups[i].groupId, i)" :disabled="existingGroups[i].hasAppeal">我汤姆来辣</el-button>
               </template>
             </n-card>
           </el-col>

@@ -13,10 +13,10 @@ import {VueCropper} from 'vue-cropper'
 import {generalValidatorJudgeIfEmpty} from "@/util/common.js";
 import upload from "@/web-api/upload.js";
 import {auditApplication, getAllTeamApply, updateStudentGroup} from "@/web-api/student/studentGroup.js";
-import {useStudentGroupStore} from "@/store/index.js";
+import {useStudentGroupStore, useUserStore} from "@/store/index.js";
 
 const emit = defineEmits([
-    'update'
+    'modified'
 ])
 
 const props = defineProps({
@@ -29,21 +29,19 @@ const props = defineProps({
   showAuditAddInTeam: Boolean
 })
 
+console.log(props)
 
-onUpdated(()=>{
-  form.groupIntroduction = props.groupIntroduction
-  form.groupName = props.groupName
-  form.groupAvatar = props.groupAvatar
-  dialogUploadFileList.value = [{
-    name: 'test',
-    url: props.groupAvatar
-  }]
-})
+watch(() => props.groupName, (newVal, oldVal) => { form.groupName = newVal })
+watch(() => props.groupAvatar, (newVal, oldVal) => { form.groupAvatar = newVal; dialogUploadFileList.value=[{name: 'test', url: newVal}] })
+watch(() => props.groupIntroduction, (newVal, oldVal) => { form.groupIntroduction = newVal })
+watch(() => props.groupName, (newVal, oldVal) => { form.groupName = newVal })
+
 
 const form = reactive({
   groupName: props.groupName,
   groupAvatar: props.groupAvatar,
-  groupIntroduction: props.groupIntroduction
+  groupIntroduction: props.groupIntroduction,
+  groupId: useUserStore().studentGroup
 })
 
 const formRef = ref()
@@ -54,6 +52,7 @@ const formRest = (fRef)=>{
   form.groupAvatar = props.groupAvatar
   form.groupName = props.groupName
   form.groupIntroduction = props.groupIntroduction
+  form.groupId = useUserStore().studentGroup
   dialogUploadFileList.value = [{
     name: 'test',
     url: props.groupAvatar
@@ -201,7 +200,6 @@ const getCropDataBase64 = () => {
     // 这里就简单把截取到的图片展示一下吧，这里就暂时不上传给后端了
     compressImage(data).then(b64=>{
       previewUrl.value = b64;
-      console.log(b64);
       showPreview.value = true
     }).catch(err=>{
       console.log(err)
@@ -236,8 +234,9 @@ const modifyFormRules = reactive({
 const handleModifySubmit = ()=>{
   updateStudentGroup(form).then(res=>{
     // 我已更新完毕，告诉父组件可以重新请求了
-    emit('update')
+    emit('modified')
     dialogVis.value = false
+    ElMessage.success('更新成功')
   })
 }
 

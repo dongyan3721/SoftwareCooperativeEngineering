@@ -10,12 +10,13 @@ const route = useRoute()
 import {ArrowRight, Edit, ChatDotRound, Monitor, Setting, Operation, User} from "@element-plus/icons-vue";
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
+import router from "@/router/index.js";
 const userStore = useUserStore()
 const {avatar, userName} = storeToRefs(userStore)
 const {clearLoginInFo} = userStore
 
 const gotoIndex = ()=>{
-
+  router.push('/login')
 }
 
 const quitLogin = ()=>{
