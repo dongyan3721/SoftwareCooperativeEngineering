@@ -35,4 +35,6 @@ public class StringConstant {
     public static final String QUALITY_PLANNING = "质量计划";
     public static final String DEVELOPING = "开发实现";
     public static final String TESTING = "测试验收";
+    public static final String EXIST_STUDENT_NOT_INTEGRATED = "存在学生没有组队";
+    public static final String STUDENT_ROLE_NOT_SUFFICIENT = "成员角色不齐全";
 }
