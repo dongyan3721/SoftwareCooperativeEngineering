@@ -6,17 +6,190 @@
 
 <script setup>
 
-const props = defineProps({
-  groupId: Number,
+import {
+  LoadingOne,
+  HourglassFull,
+  CheckOne,
+  Caution,
+  Seal,
+  PeoplesTwo,
+  DocumentFolder,
+  Eyes
+} from "@icon-park/vue-next";
+import {sys_task_submit_status} from "@/configuration/dictionary.js";
+import TeacherMonitorTitle from "@/components/teacher/teacher-monitor-title.vue";
+import {markStudentHandOnGrade, teacherViewStageMainTaskSubmit} from "@/web-api/teacher/studentMonitorGroupProgress.js";
+import {ElMessage} from "element-plus";
+import {Document} from "@element-plus/icons-vue";
 
+const props = defineProps({
+  groupName: String,
+  groupId: String,
+  progressItems: Array,
+  /**
+   * {
+   *   deadline: 截止时间,
+   *   title: 任务名，
+   *   taskId：任务id，
+   *   taskFinishStatus: 任务完成状态
+   *   完成或正在进行或未完成
+   *   只要按照group_id查询b_student_task_submit，把本组所有完成过的任务都查出来，看最后一个项目，如果最后一个项目的
+   *   提交状态全部是2，那么认为全部结束；如果有3，则是任务被打回状态，有1是等待批阅，有0是没有完成，4是未分配任务状态
+   *   排序先于这个任务的都是完成，晚于这个任务的都是未完成
+   *   老师批阅完成后，自动创建下一个任务的未分配任务状态
+   * }
+   */
+  /**
+   * 给出本课程的任务列表，再给出分界处任务的详细信息和任务的状态即可，前端做清洗
+   */
+  // 最后加上固定的开始结束
+  // 任务开始时，系统自动创建小组b_student_task_submit模板，任务让阶段负责人去分配
+  // separatorWidth: String
 })
 
+const emit = defineEmits(['doneCheck'])
+
+const submitStudent = ref()
+const submitLink = ref()
+const markForm = reactive({
+  groupId: props.groupId,
+  taskId: null,
+  targetStuId: null,
+  performance: 0,
+  comment: null
+})
+const markFormRef = ref()
+const resetMarkForm = ()=>{
+  if(!markFormRef.value) return
+  markFormRef.value.resetFields()
+  markForm.groupId = props.groupId
+  markForm.performance = 0
+}
+const handleCheckStudentTask = (taskId)=>{
+  // 批阅学生作业
+  teacherViewStageMainTaskSubmit(props.groupId, taskId).then(res=>{
+    if(res.data.submitStatus!==sys_task_submit_status.WAIT_FOR_TEACHER_MARK){
+      ElMessage.error('当前学生尚未提交本阶段内容~')
+      return
+    }
+    resetMarkForm()
+    submitStudent.value = res.data.taskHandlerName
+    submitLink.value = res.data.submitLink
+    markForm.taskId = taskId
+    markForm.targetStuId = res.data.taskHandler
+    visTeacherMarkStudentDialog.value = true
+  })
+}
+
+const handleViewSubmitDetail = (taskId) =>{
+  // 查看历史提交详情以及自己给出的分数
+
+}
+// 控制提交详情对话窗口的可见性
+const dialogVis = ref(false)
+// 关闭对话窗口
+const closeSubmitDialog = ()=>{
+  dialogVis.value = false
+}
+const visTeacherMarkStudentDialog = ref(false)
+const visTeacherMark = ref(false)
+const handleSubmitStudentMark = ()=>{
+  markStudentHandOnGrade(markForm).then(res=>{
+    ElMessage.success('打分成功~')
+    visTeacherMarkStudentDialog.value = false
+    visTeacherMark.value = false
+    resetMarkForm()
+    emit('doneCheck')
+  })
+}
 </script>
 
 <template>
+  <el-dialog v-model="visTeacherMark" width="300px">
+    <el-form ref="markFormRef" :model="markForm">
+      <el-form-item label="成绩" prop="performance">
+        <el-input-number v-model="markForm.performance" max="100"/>
+      </el-form-item>
+      <el-form-item label="评价" prop="comment">
+        <el-input placeholder="请填写评价" v-model="markForm.comment" clearable/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="warning" @click="handleSubmitStudentMark">提交</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
 
+
+  <el-dialog v-model="visTeacherMarkStudentDialog" width="400px">
+    <template #header>
+      <div class="h-100 w-100 flex items-center">
+        <eyes theme="outline" size="18" fill="#2a3f67" class="inline"/>
+        <span class="ml-1 inline-block">查看提交</span>
+      </div>
+    </template>
+    <teacher-monitor-title>
+      <span class="text-xl">来自学生</span>
+      <span class="text-xl italic text-sky-500">"{{submitStudent}}"</span>
+      <span class="text-xl">的提交</span>
+    </teacher-monitor-title>
+    <el-link :href="submitLink" :underline="false">
+      <el-icon><Document/></el-icon>
+      <span class="text-gray-400 fw-bolder">{{submitStudent}}</span>
+      <span class="text-gray-400">提交的小组任务整合(点击下载查看)</span>
+    </el-link>
+    <template #footer>
+      <div class="h-100 w-100 items-center justify-end">
+        <el-button type="primary" @click="()=>{visTeacherMark=true}">打分</el-button>
+      </div>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="dialogVis" @close="closeSubmitDialog">
+    <template #header>
+      <div class="flex items-center justify-start">
+        <document-folder theme="outline" size="18" fill="#2a3f67" style="display: inline"/>
+        <span class="ml-1 text-base">提交详情</span>
+      </div>
+    </template>
+    <!--一个表格，有本组每个人上传的东西-->
+  </el-dialog>
+
+  <teacher-monitor-title>
+    <span class="text-2xl">来自</span>
+    <span class="text-2xl italic text-emerald-700 fw-bolder">"{{props.groupName}}"</span>
+    <span class="text-2xl">小组的提交</span>
+  </teacher-monitor-title>
+
+  <div class="my-8">
+    <n-timeline horizontal size="large" :icon-size="24">
+      <n-timeline-item v-for="t in props.progressItems" type="success" :title="t.taskContent" :time="t.deadline" :key="t.taskId">
+        <!--            提交详情在完成提交的任务内出现-->
+        <el-button text type="primary" @click="handleViewSubmitDetail(t.taskId)" v-if="t.taskFinishStatus===sys_task_submit_status.PASS">
+          提交详情
+        </el-button>
+
+
+
+        <el-button text v-if="t.taskFinishStatus!==sys_task_submit_status.PASS&&t.taskFinishStatus!==sys_task_submit_status.UNASSIGNED" @click="handleCheckStudentTask(t.taskId)"
+                   :disabled="t.taskFinishStatus===sys_task_submit_status.WAIT_FOR_TEACHER_MARK||t.taskFinishStatus===sys_task_submit_status.UNREACHED">批阅作业</el-button>
+
+        <el-button text v-if="t.taskFinishStatus===sys_task_submit_status.UNASSIGNED">待分配任务</el-button>
+        <template #icon>
+          <check-one theme="outline" size="24" fill="#46b300" v-if="t.taskFinishStatus===sys_task_submit_status.PASS"/>
+          <peoples-two theme="outline" size="24" fill="#606266" v-if="t.taskFinishStatus===sys_task_submit_status.UNASSIGNED"/>
+          <loading-one theme="outline" size="24" fill="#003dff" v-if="t.taskFinishStatus===sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON"/>
+          <seal theme="outline" size="24" fill="#003dff" v-if="t.taskFinishStatus===sys_task_submit_status.WAIT_FOR_TEACHER_MARK"/>
+          <caution theme="outline" size="24" fill="#dd524d" v-if="t.taskFinishStatus===sys_task_submit_status.REDO"/>
+          <hourglass-full theme="outline" size="24" fill="#606266" v-if="t.taskFinishStatus===sys_task_submit_status.UNREACHED"/>
+        </template>
+      </n-timeline-item>
+
+    </n-timeline>
+  </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+//:deep(.n-timeline-item){
+//  width: v-bind('props.separatorWidth')
+//}
 </style>
