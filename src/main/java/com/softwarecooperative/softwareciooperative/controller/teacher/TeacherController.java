@@ -74,32 +74,4 @@ public class TeacherController {
         teacherService.changePassword(changePasswordDTO);
         return AjaxResult.success();
     }
-
-    @PostMapping("/student")
-    @Operation(summary = "教师添加单个学生")
-    public AjaxResult addOneStudent(@RequestBody BStudent student){
-        teacherService.addOneStudent(student);
-        return AjaxResult.success();
-    }
-    @DeleteMapping("/student/{studentId}")
-    @Operation(summary = "教师删除单个学生")
-    public AjaxResult deleteOneStudent(@PathVariable Integer studentId){
-        teacherService.deleteOneStudent(studentId);
-        return AjaxResult.success();
-    }
-
-    @PutMapping("/student")
-    @Operation(summary = "教师修改学生信息")
-    public AjaxResult modifyStudent(@RequestBody BStudent student){
-        teacherService.modifyStudent(student);
-        return AjaxResult.success();
-    }
-
-    @GetMapping("/student")
-    @Operation(summary = "教师分页查询学生")
-    public TableDataInfo pageSelect(Integer pageNum, Integer pageSize,Integer classId){
-        PageResult<BStudent> res =teacherService.pageSelect(pageNum,pageSize,classId);
-        return TableDataInfo.success(res.getRecords(), res.getTotal());
-    }
-
 }

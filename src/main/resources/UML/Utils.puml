@@ -1,0 +1,49 @@
+@startuml
+package com.softwarecooperative.softwareciooperative.utils {
+    class AliOssUtil {
+        -endpoint: String
+        -accessKeyId: String
+        -accessKeySecret: String
+        -bucketName: String
+        +upload(bytes: byte[], objectName: String): String
+    }
+}
+
+package com.softwarecooperative.softwareciooperative.utils {
+    class JwtUtils {
+        -EXPIRE_TIME: long
+        -TOKEN_SECRET: String
+        -TOKEN: String
+        +sign(userName: String): String
+        +verify(token: String): String
+        +isNeedUpdate(token: String): boolean
+    }
+}
+
+package com.softwarecooperative.softwareciooperative.utils.snowflake {
+    class MinuteCounter {
+        - MASK: int
+        - atom: AtomicInteger
+        + MinuteCounter()
+        + incrementAndGet(): int
+        + get(): int
+        + set(int newValue): void
+    }
+
+    class SnowflakeIdWorker {
+        - twepoch: int
+        - sequenceBits: long
+        - timestampLeftShift: long
+        - sequenceMask: int
+        - sequence: int
+        - laterSequence: int
+        - lastTimestamp: int
+        - counter: MinuteCounter
+        - isAdvance: boolean
+        + nextId(): int
+        + timeGen(): int
+    }
+
+    SnowflakeIdWorker --> MinuteCounter
+}
+@enduml

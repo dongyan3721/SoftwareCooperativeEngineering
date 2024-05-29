@@ -24,5 +24,5 @@ public interface TeacherService {
 
     void modifyStudent(BStudent student);
 
-    PageResult<BStudent> pageSelect(Integer page, Integer pageSize,Integer classId);
+    PageResult<BStudent> pageSelect(Integer page, Integer pageSize, Integer classId, String studentName, Integer studentId);
 }
