@@ -1,5 +1,6 @@
 package com.softwarecooperative.softwareciooperative.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.softwarecooperative.softwareciooperative.dao.mapper.*;
 import com.softwarecooperative.softwareciooperative.framework.annotation.ClearAllCache;
 import com.softwarecooperative.softwareciooperative.framework.context.BaseContext;
@@ -12,6 +13,9 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.*;
 import com.softwarecooperative.softwareciooperative.service.NotificationService;
 import com.softwarecooperative.softwareciooperative.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -21,7 +25,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 /**
@@ -53,6 +59,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     @Cacheable(cacheNames = "classTaskCache", key = "#classId")
@@ -230,6 +239,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void markPerformanceByTeacher(MarkPerformanceDTO mark) throws IOException {
         // 判断目标组员的任务是否已提交
         BStudentTaskSubmit query = BStudentTaskSubmit.builder()
@@ -269,7 +279,20 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @CacheEvict(cacheNames = "classTaskCache", key = "#task.classId")
+    @Transactional(propagation = Propagation.REQUIRED)
     public void updateTask(BClassTask task) {
+        BClassTask oldTask = classTaskMapper.selectOne(BClassTask.createIdQuery(task.getTaskId()));
         classTaskMapper.update(task);
+        if (task.getDeadline().toEpochSecond(ZoneOffset.of("+8")) ==
+                oldTask.getDeadline().toEpochSecond(ZoneOffset.of("+8")))
+            return;
+        long ddl = task.getDeadline().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+
+        // 将定时任务插入消息队列
+        Message message = MessageBuilder
+                .withBody(JSON.toJSONString(task).getBytes(StandardCharsets.UTF_8))
+                .setExpiration(String.valueOf(Math.max(ddl - System.currentTimeMillis() - 24 * 60 * 60 * 1000, 0)))
+                .build();
+        rabbitTemplate.convertAndSend("TLE.in.exchange", "114514", message);
     }
 }

@@ -194,7 +194,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private Publisher getPublisher(Integer sourceRole) {
-        Integer id = Integer.parseInt(BaseContext.getCurrentId());
+        String strId = BaseContext.getCurrentId();
+        Integer id = Integer.parseInt(strId == null ? "0" : strId);
         Publisher publisher = new Publisher();
         switch (sourceRole) {
             case BClass.STUDENT:

@@ -1,0 +1,55 @@
+@startuml
+interface TaskService {
+    + getGroupAllTask(Integer groupId, Integer taskId): List<BStudentTaskSubmit>
+    + getSubtaskSubmit(Integer recordId): BStudentTaskSubmit
+    + getMainTaskSubmit(Integer groupId, Integer taskId): BStudentTaskSubmit
+    + submitSubTask(Integer recordId, String submitLink): void
+    + updateSubTask(Integer recordId, String submitLink): void
+    + updateSubTaskDescription(Integer recordId, String description): void
+    + getClassAllTask(Integer classId): List<BClassTask>
+    + updateTask(BClassTask task): void
+    + markPerformanceByStudent(MarkPerformanceDTO mark): void
+    + markPerformanceByTeacher(MarkPerformanceDTO mark): void
+}
+
+class TaskServiceImpl {
+  - classTaskMapper: ClassTaskMapper
+  - studentTaskSubmitMapper: StudentTaskSubmitMapper
+  - studentMapper: StudentMapper
+  - classMapper: ClassMapper
+  - groupMapper: GroupMapper
+  - studentPerformanceStudentMapper: StudentPerformanceStudentMapper
+  - notificationService: NotificationService
+  - rabbitTemplate: RabbitTemplate
+  + getClassAllTask(Integer classId): List<BClassTask>
+  + getGroupAllTask(Integer groupId, Integer taskId): List<BStudentTaskSubmit>
+  + submitSubTask(Integer recordId, String submitLink): void
+  + updateSubTask(Integer recordId, String submitLink): void
+  + updateSubTaskDescription(Integer recordId, String description): void
+  + getSubtaskSubmit(Integer recordId): BStudentTaskSubmit
+  + getMainTaskSubmit(Integer groupId, Integer taskId): BStudentTaskSubmit
+  + markPerformanceByStudent(MarkPerformanceDTO mark): void
+  + markPerformanceByTeacher(MarkPerformanceDTO mark): void
+  + updateTask(BClassTask task): void
+}
+
+TaskServiceImpl -|> TaskService
+
+class ClassTaskMapper
+class StudentTaskSubmitMapper
+class StudentMapper
+class ClassMapper
+class GroupMapper
+class StudentPerformanceStudentMapper
+class NotificationService
+class RabbitTemplate
+
+TaskServiceImpl --> ClassTaskMapper
+TaskServiceImpl --> StudentTaskSubmitMapper
+TaskServiceImpl --> StudentMapper
+TaskServiceImpl --> ClassMapper
+TaskServiceImpl --> GroupMapper
+TaskServiceImpl --> StudentPerformanceStudentMapper
+TaskServiceImpl --> NotificationService
+TaskServiceImpl --> RabbitTemplate
+@enduml

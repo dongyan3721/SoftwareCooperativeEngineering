@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -27,7 +28,8 @@ public class ChatController {
 
     @PostMapping("")
     @Operation(summary = "发送聊天消息")
-    public AjaxResult sendChatMessage(String content, Integer contentType) {
+    public AjaxResult sendChatMessage(@RequestParam(required = true) String content,
+                                      @RequestParam(required = true) Integer contentType) {
         chatRecordService.studentAddOne(content, contentType);
         return AjaxResult.success();
     }

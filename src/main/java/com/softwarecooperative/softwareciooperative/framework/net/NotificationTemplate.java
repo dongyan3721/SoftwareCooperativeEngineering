@@ -62,4 +62,8 @@ public class NotificationTemplate {
     public static String TEACHER_HAS_MARKED(Integer performance) {
         return "根据任务中的表现，老师给您的团队打了" + performance + "分";
     }
+
+    public static String TASK_REMAIN_24_HOURS(String taskTitle) {
+        return "大家好，" + taskTitle + "任务将于24小时后截止";
+    }
 }
