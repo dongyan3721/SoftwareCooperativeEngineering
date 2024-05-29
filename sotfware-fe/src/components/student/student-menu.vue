@@ -7,15 +7,16 @@
 <script setup>
 import {useRoute} from "vue-router";
 const route = useRoute()
-import {ArrowRight, EditPen, Notebook} from "@element-plus/icons-vue";
+import {ArrowRight, EditPen, Message, MessageBox, Notebook} from "@element-plus/icons-vue";
 import {Peoples, Hands} from "@icon-park/vue-next";
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
-import {studentLogin} from "@/web-api/general/login.js";
 const userStore = useUserStore()
 const {avatar, userName} = storeToRefs(userStore)
 const {clearLoginInFo} = userStore
 import router from '@/router'
+import {groupGetClassByClassId} from "@/web-api/student/studentGroup.js";
+import {sys_class_phase} from "@/configuration/dictionary.js";
 const gotoIndex = ()=>{
   router.push('/login')
 }
@@ -24,6 +25,14 @@ const quitLogin = ()=>{
   clearLoginInFo()
   gotoIndex()
 }
+
+
+const teamPermit = ref(false)
+onBeforeMount(()=>{
+  groupGetClassByClassId(userStore.studentClass).then(res=>{
+    if(res.data.phase===sys_class_phase.TEAMING) teamPermit.value = true
+  })
+})
 
 </script>
 
@@ -37,7 +46,7 @@ const quitLogin = ()=>{
               style="display: flex; align-items: center; justify-content: center; width: 200px">软件协同设计</span>
         </div>
         <el-menu style="border: none" :default-active="currentUrl" router background-color="bbb" text-color="#f9f9f9">
-          <el-menu-item index="/student-group-apply">
+          <el-menu-item index="/student-group-apply" v-if="teamPermit">
             <template #title>
               <el-icon><hands theme="outline" size="18" fill="#fff"/></el-icon>
               加入小组
@@ -69,6 +78,11 @@ const quitLogin = ()=>{
             <el-breadcrumb-item v-for="item in route.matched" :to="{path: item.path}">{{ item.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="avatar-container" style="align-items: center; display: flex; justify-content: flex-end">
+
+            <el-icon size="24" @click="()=>{router.push('/student-notice')}" class="mr-2 hover:cursor-pointer hover:text-sky-500">
+              <MessageBox/>
+            </el-icon>
+
             <el-dropdown style="display: flex; align-items: center; justify-content: flex-end" placement="bottom">
               <span class="el-dropdown-link" style="display: flex; align-items: center; cursor: pointer">
                 <el-avatar :size="24" :src="avatar" style="margin: 0 5px"/>

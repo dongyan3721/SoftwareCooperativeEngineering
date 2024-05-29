@@ -7,7 +7,7 @@
 <script setup>
 import {useRoute} from "vue-router";
 const route = useRoute()
-import {ArrowRight, Edit, ChatDotRound, Monitor, Setting, Operation, User} from "@element-plus/icons-vue";
+import {ArrowRight, Edit, ChatDotRound, Monitor, Setting, Operation, User, MessageBox} from "@element-plus/icons-vue";
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
 import router from "@/router/index.js";
@@ -82,6 +82,9 @@ const quitLogin = ()=>{
             <el-breadcrumb-item v-for="item in route.matched" :to="{path: item.path}">{{ item.meta.title }}</el-breadcrumb-item>
           </el-breadcrumb>
           <div class="avatar-container" style="align-items: center; display: flex; justify-content: flex-end">
+            <el-icon size="24" @click="()=>{router.push('/teacher-notice')}" class="mr-2 hover:cursor-pointer hover:text-sky-500">
+              <MessageBox/>
+            </el-icon>
             <el-dropdown style="display: flex; align-items: center; justify-content: flex-end" placement="bottom">
               <span class="el-dropdown-link" style="display: flex; align-items: center; cursor: pointer">
                 <el-avatar :size="24" :src="avatar" style="margin: 0 5px"/>

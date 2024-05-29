@@ -5,6 +5,7 @@
  */
 
 import {defineStore} from "pinia";
+import {aesDecrypt, aesEncrypt} from "@/util/aes.js";
 
 const _undefined = void 0
 export const useTeacherClassStore = defineStore(
@@ -29,7 +30,16 @@ export const useTeacherClassStore = defineStore(
     },
     // 通用持久化
     {
-        persist: true
+        persist: {
+            storage: {
+                getItem(key){
+                    return aesDecrypt(localStorage.getItem(key))
+                },
+                setItem(key, value){
+                    return localStorage.setItem(key, aesEncrypt(value))
+                }
+            }
+        }
     }
 )
 
