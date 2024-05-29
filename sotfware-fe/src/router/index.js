@@ -54,7 +54,7 @@ const routes = [
     {
         path: '/teacher-course-setting',
         name: 'teacher-course-setting',
-        component: ()=>import('@/view/teacher/teacher-course-settings.vue')
+        component: ()=>import('@/view/teacher/teacher-course-setting.vue')
     },
     {
         path: '/preview',
@@ -95,6 +95,12 @@ const routes = [
         path: '/404',
         name: '404',
         component: () => import('@/view/general/HttpStatus404.vue')
+    },
+
+    {
+        path: '/teacher-course-setting',
+        name: 'teacher-course-setting',
+        component: () => import('@/view/teacher/teacher-course-setting.vue')
     }
 ];
 
