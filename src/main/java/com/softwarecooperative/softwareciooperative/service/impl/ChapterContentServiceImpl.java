@@ -4,12 +4,14 @@ import com.softwarecooperative.softwareciooperative.dao.mapper.ClassChapterConte
 import com.softwarecooperative.softwareciooperative.framework.net.IntegerConstant;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BClassChapterContent;
 import com.softwarecooperative.softwareciooperative.service.ChapterContentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class ChapterContentServiceImpl implements ChapterContentService {
 
     @Autowired
@@ -70,6 +72,7 @@ public class ChapterContentServiceImpl implements ChapterContentService {
                     break;
             }
         }
+        log.info(bClassChapterContent.toString());
         bClassChapterContent.setResourceType(resourceType);
         chapterContentMapper.addContent(bClassChapterContent);
     }

@@ -1,0 +1,13 @@
+@startuml
+package com.softwarecooperative.softwareciooperative.mq {
+    class ChatRecordListener {
+        -chatRecordRepo: ChatRecordRepo
+        -scheduler: ScheduledExecutorService
+        -buffer: List<ChatRecord>
+
+        +ChatRecordListener()
+        +receiveMessage(message: String): void
+        -saveMessages(): void
+    }
+}
+@enduml
