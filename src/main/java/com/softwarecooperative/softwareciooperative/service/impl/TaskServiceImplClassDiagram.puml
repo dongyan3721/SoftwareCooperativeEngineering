@@ -1,0 +1,50 @@
+@startuml
+package com.softwarecooperative.softwareciooperative.service.impl {
+    class TaskServiceImpl {
+        -classTaskMapper : ClassTaskMapper
+        -studentTaskSubmitMapper : StudentTaskSubmitMapper
+        -studentMapper : StudentMapper
+        -classMapper : ClassMapper
+        -groupMapper : GroupMapper
+        -studentPerformanceStudentMapper : StudentPerformanceStudentMapper
+        -notificationService : NotificationService
+
+        +getClassAllTask(Integer) : List<BClassTask>
+        +getGroupAllTask(Integer, Integer) : List<BStudentTaskSubmit>
+        +submitSubTask(Integer, String)
+        +updateSubTask(Integer, String)
+        +updateSubTaskDescription(Integer, String)
+        +getSubtaskSubmit(Integer) : BStudentTaskSubmit
+        +getMainTaskSubmit(Integer, Integer) : BStudentTaskSubmit
+        +markPerformanceByStudent(MarkPerformanceDTO)
+        +markPerformanceByTeacher(MarkPerformanceDTO)
+        +updateTask(BClassTask)
+    }
+}
+
+package com.softwarecooperative.softwareciooperative.dao.mapper {
+    class ClassTaskMapper {
+
+     }
+    class StudentTaskSubmitMapper { }
+    class StudentMapper { }
+    class ClassMapper { }
+    class GroupMapper { }
+    class StudentPerformanceStudentMapper { }
+}
+
+package com.softwarecooperative.softwareciooperative.service {
+    interface NotificationService { }
+    interface TaskService { }
+}
+
+TaskServiceImpl --> ClassTaskMapper : uses
+TaskServiceImpl --> StudentTaskSubmitMapper : uses
+TaskServiceImpl --> StudentMapper : uses
+TaskServiceImpl --> ClassMapper : uses
+TaskServiceImpl --> GroupMapper : uses
+TaskServiceImpl --> StudentPerformanceStudentMapper : uses
+TaskServiceImpl --> NotificationService : uses
+
+TaskServiceImpl ..> TaskService : implements
+@enduml

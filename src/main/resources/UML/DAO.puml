@@ -1,0 +1,69 @@
+@startuml
+package com.softwarecooperative.softwareciooperative.dao.mapper {
+    interface ClassTaskMapper {
+        +List<BClassTask> selectByCond(BClassTask classTask)
+        +BClassTask selectOne(BClassTask query)
+        +void insert(BClassTask task)
+        +void update(BClassTask task)
+    }
+}
+interface MongoRepository {
+    +insert(entity: S): S
+    +insert(entities: Iterable<S>): List<S>
+    +findByGroupId(groupId: Integer, pageable: Pageable): Page<ChatRecord>
+}
+
+package com.softwarecooperative.softwareciooperative.dao.repository {
+    interface ChatRecordRepo {
+        +insert(entity: S): S
+        +insert(entities: Iterable<S>): List<S>
+        +findByGroupId(groupId: Integer, pageable: Pageable): Page<ChatRecord>
+    }
+}
+
+ChatRecordRepo-|> MongoRepository
+
+package com.softwarecooperative.softwareciooperative.dao.mapper {
+    interface GroupMapper {
+        -selectByCond(bGroup: BGroup): List<BGroup>
+        -selectIdByCond(bGroup: BGroup): List<Integer>
+        -selectOne(bGroup: BGroup): BGroup
+        -selectLeaderByGroupId(groupId: Integer): BStudent
+        +insert(bGroup: BGroup)
+        +delete(groupId: Integer)
+        +update(bGroup: BGroup)
+    }
+}
+
+package com.softwarecooperative.softwareciooperative.dao.mapper {
+    interface GroupAppealInMapper {
+        +insert(appeal: BGroupAppealIn)
+        -selectOne(query: BGroupAppealIn): BGroupAppealIn
+        -delete(appealId: Integer)
+        -deleteByStuId(studentId: Integer)
+        -selectAppealInVOByGroupId(groupId: Integer): Page<AppealInVO>
+        -selectGrpIdByStuId(studentId: Integer): List<Integer>
+    }
+}
+
+package com.softwarecooperative.softwareciooperative.dao.mapper {
+    interface GroupAppealLeaderMapper {
+        +delete(appealId: Integer)
+        -selectById(appealId: Integer): BGroupAppealLeader
+        -selectAppealLeaderVOByClass(classId: Integer): Page<AppealLeaderVO>
+        +insert(bGroupAppealLeader: BGroupAppealLeader)
+        -selectOne(appealQuery: BGroupAppealLeader): BGroupAppealLeader
+    }
+}
+
+package com.softwarecooperative.softwareciooperative.dao.mapper {
+    interface StudentTaskSubmitMapper {
+        +selectGroupPhaseByGroupId(groupId: Integer): Integer
+        +selectByCond(query: BStudentTaskSubmit): List<BStudentTaskSubmit>
+        +selectOne(query: BStudentTaskSubmit): BStudentTaskSubmit
+        +update(newSubmit: BStudentTaskSubmit)
+        +insertBatch(subtasks: List<BStudentTaskSubmit>)
+    }
+}
+
+@enduml
