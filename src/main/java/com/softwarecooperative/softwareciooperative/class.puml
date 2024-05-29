@@ -1,0 +1,80 @@
+@startuml
+
+package "com.softwarecooperative.softwareciooperative.framework.exception.file" {
+    class FileException {
+        + FileException(String, Object[])
+    }
+    class FileNameLengthLimitExceededException {
+        + FileNameLengthLimitExceededException(int)
+    }
+    class FileSizeLimitExceededException {
+        + FileSizeLimitExceededException(long)
+    }
+    class FileUploadException {
+        + FileUploadException()
+        + FileUploadException(String)
+        + FileUploadException(String, Throwable)
+        + printStackTrace(PrintStream)
+        + printStackTrace(PrintWriter)
+        + getCause(): Throwable
+    }
+    class InvalidExtensionException {
+        + InvalidExtensionException(String[], String, String)
+        + InvalidImageExtensionException(String[], String, String)
+        + InvalidFlashExtensionException(String[], String, String)
+        + InvalidMediaExtensionException(String[], String, String)
+        + InvalidVideoExtensionException(String[], String, String)
+    }
+    class UnsupportedFileExtensionException {
+        + UnsupportedFileExtensionException(String)
+        + printStackTrace(PrintStream)
+    }
+}
+
+package "com.softwarecooperative.softwareciooperative.framework.exception.service" {
+    class LoginFailedException {
+        + LoginFailedException(String)
+        + LoginFailedException(String, int)
+    }
+}
+
+package "com.softwarecooperative.softwareciooperative.framework.exception" {
+    class BaseException {
+        + BaseException(String, String, Object[], String)
+        + BaseException(String, String, Object[])
+        + BaseException(String, String)
+        + BaseException(String, Object[])
+        + BaseException(String)
+        + getMessage(): String
+        + getModule(): String
+        + getCode(): String
+        + getArgs(): Object[]
+        + getDefaultMessage(): String
+    }
+    class GeneralServiceException {
+        + GeneralServiceException(String)
+        + GeneralServiceException(String, int)
+    }
+    class UnAuthenticatedException {
+        + UnAuthenticatedException(String)
+    }
+    class UtilException {
+        + UtilException(Throwable)
+        + UtilException(String)
+        + UtilException(String, Throwable)
+    }
+}
+
+FileException --> BaseException
+FileNameLengthLimitExceededException --> FileException
+FileSizeLimitExceededException --> FileException
+FileUploadException --> Exception
+InvalidExtensionException --> FileUploadException
+UnsupportedFileExtensionException --> Exception
+LoginFailedException --> GeneralServiceException
+BaseException <|-- GeneralServiceException
+GeneralServiceException --> RuntimeException
+UnAuthenticatedException --> Exception
+UtilException --> RuntimeException
+
+@enduml
