@@ -8,6 +8,7 @@ import com.softwarecooperative.softwareciooperative.framework.net.StringConstant
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * @author Santa Antilles
@@ -20,6 +21,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GeneralServiceException.class)
     public AjaxResult handleServiceException(GeneralServiceException e){
         return new AjaxResult(e.getCode(), e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public AjaxResult handleMultipartFileException(MaxUploadSizeExceededException e) {
+        return AjaxResult.error(HttpStatus.BAD_REQUEST, StringConstant.UPLOAD_FILE_SIZE_EXCEEDED);
     }
 
     @ResponseBody

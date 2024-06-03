@@ -7,6 +7,7 @@ import {manufacturePreviewUrl} from "@/util/filePreviewUrl.js"
 import { useTeacherClassStore } from "@/store";
 import { Plus } from "@element-plus/icons-vue";
 import TeacherMenu from "@/components/teacher/teacher-menu.vue";
+import router from "@/router/index.js";
 
 // 定义 Chapter 类
 class Chapter {
@@ -309,11 +310,13 @@ const _window =window
             </div>
             <div class="chapter-content">
               <el-collapse>
-                <el-collapse-item v-for="(content, index) in chapter.contents" :title="content.contentDescription" :name="index + 1">
-                  <p>
-                    {{ content.resourceLink }}
-                    <el-button type="primary" @click="_window.open(manufacturePreviewUrl(content.resourceLink), '_blank')">预览</el-button>
-                  </p>
+                <el-collapse-item v-for="(content, index) in chapter.contents" :title="'&nbsp;&nbsp;&nbsp;&nbsp;' + content.contentDescription" :name="index + 1">
+<!--                  <p>-->
+<!--                    {{ content.resourceLink }}-->
+<!--                    <el-button type="primary" @click="_window.open(manufacturePreviewUrl(content.resourceLink), '_blank')">预览</el-button>-->
+<!--                  </p>-->
+<!--                  <el-button type="primary" @click="_window.open(manufacturePreviewUrl(content.resourceLink), '_blank')">预览</el-button>-->
+                  <el-button type="primary" @click="router.push({name: 'file-viewing', query: {header: content.contentDescription, link: content.resourceLink, userType: 'teacher'}})">预览</el-button>
                   <el-button type="warning" @click="handleOpenModifyDialogCon(content)">修改</el-button>
                   <el-button type="danger" @click="confirmDeleteChapterContent(content.contentId)">删除</el-button>
                 </el-collapse-item>
@@ -381,7 +384,7 @@ const _window =window
             :before-remove="() => false" @change="handleManualUpload"
             :auto-upload="false" accept="*">
           <el-button type="primary">选择文件</el-button>
-          <div slot="tip" class="el-upload__tip">不超过500kb</div>
+          <div slot="tip" class="el-upload__tip">不超过100MB</div>
         </el-upload>
       </el-form-item>
       <el-form-item>
@@ -408,7 +411,7 @@ const _window =window
             :before-remove="() => false" @change="handleManualUpload"
             :auto-upload="false" accept="*">
           <el-button type="primary">选择文件</el-button>
-          <div slot="tip" class="el-upload__tip">不超过500kb</div>
+          <div slot="tip" class="el-upload__tip">不超过100MB</div>
         </el-upload>
       </el-form-item>
       <el-form-item>
