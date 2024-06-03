@@ -90,11 +90,15 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    @Cacheable(cacheNames = "pageStudent", key = "#classId + '_' + #page + '_' + #pageSize")
-    public PageResult<BStudent> pageSelect(Integer page, Integer pageSize, Integer classId) {
+    @Cacheable(cacheNames = "pageStudent",
+            condition = "#studentName == null || #studentId == null ",
+            key = "#classId + '_' + #page + '_' + #pageSize")
+    public PageResult<BStudent> pageSelect(Integer page, Integer pageSize, Integer classId, String studentName, Integer studentId) {
         PageHelper.startPage(page,pageSize);
         BStudent query = BStudent.builder()
                 .studentClass(classId)
+                .studentName(studentName)
+                .studentId(studentId)
                 .build();
         Page<BStudent> res = studentMapper.pageSelect(query);
         return new PageResult<>(res.getTotal(), res.getResult());

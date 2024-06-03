@@ -10,4 +10,15 @@ package com.softwarecooperative.softwareciooperative.mq {
         -saveMessages(): void
     }
 }
+
+package com.softwarecooperative.softwareciooperative.dao.repository {
+    interface ChatRecordRepo {
+        +insert(entity: S): S
+        +insert(entities: Iterable<S>): List<S>
+        +findByGroupId(groupId: Integer, pageable: Pageable): Page<ChatRecord>
+    }
+}
+
+ChatRecordListener --> ChatRecordRepo
+
 @enduml

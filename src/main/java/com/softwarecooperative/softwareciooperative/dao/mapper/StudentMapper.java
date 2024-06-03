@@ -48,5 +48,5 @@ public interface StudentMapper {
     @ClearAllCache({"studentsInGroup", "pageStudent"})
     void deleteOne(Integer studentId);
 
-    Page<BStudent> pageSelect(BStudent classId);
+    Page<BStudent> pageSelect(BStudent query);
 }
