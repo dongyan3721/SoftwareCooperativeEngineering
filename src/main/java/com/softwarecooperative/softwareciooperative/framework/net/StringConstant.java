@@ -37,4 +37,5 @@ public class StringConstant {
     public static final String TESTING = "测试验收";
     public static final String EXIST_STUDENT_NOT_INTEGRATED = "存在学生没有组队";
     public static final String STUDENT_ROLE_NOT_SUFFICIENT = "成员角色不齐全";
+    public static final String UPLOAD_FILE_SIZE_EXCEEDED = "上传文件太大";
 }

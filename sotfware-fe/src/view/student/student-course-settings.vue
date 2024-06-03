@@ -9,6 +9,7 @@ import { getChapterContents, ListClassChapter } from "@/web-api/teacher/teacherC
 import { manufacturePreviewUrl } from "@/util/filePreviewUrl.js";
 import { useUserStore } from "@/store";
 import StudentMenu from "@/components/student/student-menu.vue";
+import router from "@/router/index.js";
 
 // 定义 Chapter 类
 class Chapter {
@@ -87,8 +88,8 @@ onMounted(() => {
 
 <template>
   <student-menu>
-    <p>{{classId}}
-    </p>
+<!--    <p>{{classId}}-->
+<!--    </p>-->
     <div class="data-container">
       <!-- 遍历 chapters 数组并显示章节信息 -->
       <el-row :gutter="20">
@@ -99,11 +100,12 @@ onMounted(() => {
             </div>
             <div class="chapter-content">
               <el-collapse>
-                <el-collapse-item v-for="(content, index) in chapter.contents" :title="content.contentDescription" :name="index + 1">
-                  <p>
-                    {{ content.resourceLink }}
-                    <el-button type="primary" @click="_window.open(manufacturePreviewUrl(content.resourceLink), '_blank')">预览</el-button>
-                  </p>
+                <el-collapse-item v-for="(content, index) in chapter.contents" :title="'&nbsp;&nbsp;&nbsp;&nbsp;' + content.contentDescription" :name="index + 1">
+<!--                  <p>-->
+<!--                    {{ content.resourceLink }}-->
+<!--                    <el-button type="primary" @click="_window.open(manufacturePreviewUrl(content.resourceLink), '_blank')">预览</el-button>-->
+<!--                  </p>-->
+                  <el-button type="primary" @click="router.push({name: 'file-viewing', query: {header: content.contentDescription, link: content.resourceLink, userType: 'student'}})">预览</el-button>
                 </el-collapse-item>
               </el-collapse>
             </div>

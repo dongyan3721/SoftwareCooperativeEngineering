@@ -101,7 +101,12 @@ const routes = [
         path: '/teacher-course-setting',
         name: 'teacher-course-setting',
         component: () => import('@/view/teacher/teacher-course-setting.vue')
-    }
+    },
+	{
+		path: "/file-viewing",
+		name: "file-viewing",
+		component: () => import("@/view/general/file-viewing.vue")
+	}
 ];
 
 import {createRouter} from 'vue-router'
