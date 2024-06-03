@@ -38,3 +38,11 @@ export function postManagerComment(performanceDTO) {
 		data: performanceDTO
 	}))
 }
+
+export function modifySubTaskDescription(subtask){
+	return request({
+		url: '/student/task/description',
+		method: 'PUT',
+		data: subtask
+	})
+}

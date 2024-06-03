@@ -14,9 +14,10 @@ import {useUserStore} from "@/store/index.js";
 import {
   getClassTask,
   getGroupProcess,
-  getGroupSubtasks,
+  getGroupSubtasks, modifySubTaskDescription,
   postManagerComment
 } from "@/web-api/student/studentProceeding.js";
+import {ElMessage} from "element-plus";
 
 const currentUser = useUserStore()
 
@@ -45,20 +46,25 @@ const getProcess = () => {
   let groupId = currentUser.studentGroup
   // console.log(groupId)
   getGroupProcess(groupId).then(res => {
-    if (res.code !== 200)
-      return
     process = res.data
     for (let i = 0; i < process; i++)
       classTasks.value[i].taskFinishStatus = sys_task_submit_status.PASS
-    classTasks.value[process].taskFinishStatus = sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON
+    process<5?classTasks.value[process].taskFinishStatus = sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON:console.log('全部完成')
     for (let i = process + 1; i < 5; i++)
       classTasks.value[i].taskFinishStatus = sys_task_submit_status.UNREACHED
-    console.log("process " + classTasks.value[0].taskFinishStatus)
   })
 }
 
-const handleGoToSubmitTask = (taskId)=>{
-  console.log(taskId)
+const handleGoToSubmitTask = ()=>{
+  if(!currentUserBelongSubTaskId.value){
+    ElMessage.error('孩子你无敌了，你TM犯法了你知道吗？')
+    return
+  }
+  if(!permitMemberSubmit.value){
+    ElMessage.error('阶段负责人尚未将所有子任务分配完成，请等待分配完成后再试~')
+    return
+  }
+  ElMessage.success('11111')
 }
 
 const rowRef = ref()
@@ -87,15 +93,46 @@ const getSubtasks = () => {
   let curTaskId = classTasks.value[process].taskId
   getGroupSubtasks(groupId, curTaskId).then(res => {
     subtasks.value = res.data
+    res.data.forEach(a=>{
+      if(a.submitType) {
+        taskDistributorId.value = a.taskHandler
+        isTaskDistributor.value = taskDistributorId.value === currentUser.userId
+      }
+
+      // 但凡有一个任务没分配，就不允许提交
+      if(a.submitStatus===sys_task_submit_status.UNASSIGNED) permitMemberSubmit.value = false
+
+      // 获取当前登录人对应的任务id
+      if(a.taskHandler==currentUser.userId) currentUserBelongSubTaskId.value = a.recordId
+    })
+
   })
 }
 
-const setSubtask = () => {
-  // TODO 设置子任务
-}
+// 当前阶段负责人的id
+const taskDistributorId = ref()
+const isTaskDistributor = ref(false)
+// 是否允许组员提交，默认允许
+const permitMemberSubmit = ref(true)
+// 当前登录人对应的子任务id
+const currentUserBelongSubTaskId = ref()
 
-const submitSubtask = () => {
-  // TODO 提交子任务
+const taskContent = reactive({taskContent: null})
+const visTaskContent = ref(false)
+const selectedSubTask = ref()
+const setSubtask = (subtask) => {
+  selectedSubTask.value = subtask
+  taskContent.taskContent = null
+  visTaskContent.value = true
+}
+const submitSubTaskModify = ()=>{
+  const params = {...selectedSubTask.value}
+  params.taskHandlerWork = taskContent.taskContent
+  modifySubTaskDescription(params).then(res=>{
+    ElMessage.success('修改成功')
+    visTaskContent.value = false
+    getClassTasks()
+  })
 }
 
 const managerComment = () => {
@@ -122,9 +159,34 @@ onUnmounted(()=>{
   window.removeEventListener('resize', resizeListener)
 })
 
+const calcBtnStatus = (status)=>{
+  if(status==sys_task_submit_status.UNASSIGNED) return 'default'
+  else if(status==sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON) return 'danger'
+  else return 'success'
+}
+
+const calcBtnText = (status)=>{
+  if(status==sys_task_submit_status.UNASSIGNED) return '未分配任务'
+  else if(status==sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON) return '未交'
+  else return '已交'
+}
+
 </script>
 
 <template>
+
+  <el-dialog v-model="visTaskContent" title="分配子任务" width="400px">
+    <el-form :model="taskContent">
+      <el-form-item label="子任务内容">
+        <el-input v-model="taskContent.taskContent" clearable placeholder="填写子任务内容"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="submitSubTaskModify">确定</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
+
+
   <student-menu>
 
     <universe-section class="mb-3" title="任务进度"/>
@@ -145,26 +207,23 @@ onUnmounted(()=>{
         <el-table-column prop="taskHandlerWork" align="center" label="任务内容"/>
         <el-table-column align="center" label="提交状态">
           <template #default="scope">
-            <el-button :type="scope.row.submitStatus === sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON ||
-                scope.row.submitStatus === sys_task_submit_status.UNASSIGNED ? 'danger' : 'success'"
-                       @click="handleGoToSubmitTask(scope.row.taskHandlerName)">
-              {{scope.row.submitStatus === sys_task_submit_status.WAIT_FOR_STUDENT_HAND_ON ||
-                scope.row.submitStatus === sys_task_submit_status.UNASSIGNED ? '未交' : '已交'}}
+            <el-button :type="calcBtnStatus(scope.row.submitStatus)">
+              {{calcBtnText(scope.row.submitStatus)}}
             </el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template #default="scope">
-            <el-button text type="primary" @click="setSubtask">分配任务</el-button>
-            <el-button text type="primary" :disabled="scope.row.submitStatus!=='0'" @click="submitSubtask">提交任务</el-button>
+            <el-button text type="primary" @click="setSubtask(scope.row)" :disabled="!isTaskDistributor">分配任务</el-button>
+<!--            <el-button text type="primary" :disabled="scope.row.submitStatus!=='0'" @click="submitSubtask">提交任务</el-button>-->
           </template>
         </el-table-column>
       </el-table>
       <template #action>
         <div class="flex justify-end w-100 h-100">
 <!--          <el-button type="success" size="large">组员评价</el-button>-->
-          <el-button size="large" @click="managerComment">负责人评价</el-button>
-          <el-button type="warning" size="large">提交任务</el-button>
+          <el-button size="large" @click="managerComment" v-if="isTaskDistributor">负责人评价</el-button>
+          <el-button type="warning" size="large" @click="handleGoToSubmitTask">提交任务</el-button>
         </div>
       </template>
     </n-card>
