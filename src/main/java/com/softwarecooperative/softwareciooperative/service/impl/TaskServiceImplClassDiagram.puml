@@ -23,9 +23,7 @@ package com.softwarecooperative.softwareciooperative.service.impl {
 }
 
 package com.softwarecooperative.softwareciooperative.dao.mapper {
-    class ClassTaskMapper {
-
-     }
+    class ClassTaskMapper { }
     class StudentTaskSubmitMapper { }
     class StudentMapper { }
     class ClassMapper { }

@@ -1,0 +1,57 @@
+@startuml
+!define SERVICE_CLASS class
+!define AUTOWIRED_FIELD .field
+!define METHOD + method
+
+SERVICE_CLASS GroupServiceImpl {
+    AUTOWIRED_FIELD groupAppealLeaderMapper : GroupAppealLeaderMapper
+    AUTOWIRED_FIELD groupAppealInMapper : GroupAppealInMapper
+    AUTOWIRED_FIELD studentMapper : StudentMapper
+    AUTOWIRED_FIELD groupMapper : GroupMapper
+    AUTOWIRED_FIELD classMapper : ClassMapper
+    AUTOWIRED_FIELD notificationService : NotificationService
+
+    METHOD getGroupByClass(classId : Integer) : List<BGroup>
+    METHOD approveLeader(appealId : Integer, isAccept : Boolean) : void
+    METHOD getAppealLeaderByClass(page : Integer, pageSize : Integer, classId : Integer) : PageResult<AppealLeaderVO>
+    METHOD appealLeader(bGroupAppealLeader : BGroupAppealLeader) : void
+    METHOD disbandGroup(groupId : Integer) : void
+    METHOD editGroupInfo(bGroup : BGroup) : void
+    METHOD appealIn(groupId : Integer) : void
+    METHOD approveIn(appealId : Integer, isAccept : Boolean) : void
+    METHOD appoint(studentId : Integer, role : Integer) : void
+    METHOD pageGetAppealIn(groupId : Integer, page : Integer, pageSize : Integer) : PageResult<AppealInVO>
+    METHOD getAllMemberInGroup(groupId : Integer) : List<BStudent>
+    METHOD transferLeader(targetStuId : Integer) : void
+    METHOD deleteMember(targetStuId : Integer) : void
+    METHOD exitGroup(groupId : Integer) : void
+    METHOD getGroupByClassWithHasAppeal(classId : Integer) : List<GroupVO>
+    METHOD getGroupByGroupId(groupId : Integer) : BGroup
+}
+
+class GroupAppealLeaderMapper
+class GroupAppealInMapper
+class StudentMapper
+class GroupMapper
+class ClassMapper
+class NotificationService
+
+'class PageResult<T> {
+'    - content : List<T>
+'    - totalElements : long
+'    - totalPages : int
+'}
+
+class AppealLeaderVO
+class BGroupAppealLeader
+class BGroup
+class BStudent
+class GroupVO
+
+GroupServiceImpl --> GroupAppealLeaderMapper
+GroupServiceImpl --> GroupAppealInMapper
+GroupServiceImpl --> StudentMapper
+GroupServiceImpl --> GroupMapper
+GroupServiceImpl --> ClassMapper
+GroupServiceImpl --> NotificationService
+@enduml
