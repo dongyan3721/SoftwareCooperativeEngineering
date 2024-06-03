@@ -193,7 +193,7 @@ const visAllGroupMembers = ref(false)
                                :group-introduction="pageGroupInfo.groupIntroduction" @modified="requestGroupDetail"
                                :group-leader-avatar="pageGroupInfo.groupLeaderAvatar"
                                :group-leader-name="pageGroupInfo.groupLeaderName"
-                               :show-audit-add-in-team="studentGroupStore.isLeader"
+                               :show-audit-add-in-team="studentGroupStore.isLeader&&studentClassStore.clazz.phase===sys_class_phase.TEAMING"
                                :group-name="pageGroupInfo.groupName" v-if="userHasGroup">
 
 <!--      组队阶段，允许组长修改组员角色-->

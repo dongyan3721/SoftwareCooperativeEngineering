@@ -1,4 +1,5 @@
 import {defineStore} from "pinia";
+import {aesDecrypt, aesEncrypt} from "@/util/aes.js";
 
 /**
  * @author Santa Antilles
@@ -35,7 +36,16 @@ export const useStudentGroupStore = defineStore(
     },
     // 通用持久化
     {
-        persist: true
+        persist: {
+            storage: {
+                getItem(key){
+                    return aesDecrypt(localStorage.getItem(key))
+                },
+                setItem(key, value){
+                    return localStorage.setItem(key, aesEncrypt(value))
+                }
+            }
+        }
     }
 )
  

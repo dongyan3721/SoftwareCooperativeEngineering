@@ -1,0 +1,47 @@
+@startuml
+!define SERVICE_CLASS class
+!define AUTOWIRED_FIELD .field
+!define METHOD + method
+
+SERVICE_CLASS NotificationService {
+    AUTOWIRED_FIELD studentMapper : StudentMapper
+    AUTOWIRED_FIELD teacherMapper : TeacherMapper
+    AUTOWIRED_FIELD noticeStudentMapper : NoticeStudentMapper
+    AUTOWIRED_FIELD noticeReceiveStudentMapper : NoticeReceiveStudentMapper
+    AUTOWIRED_FIELD noticeTeacherMapper : NoticeTeacherMapper
+    AUTOWIRED_FIELD noticeReceiveTeacherMapper : NoticeReceiveTeacherMapper
+
+    METHOD sendNotifToOneTeacher(sourceRole : Integer, teacherId : Integer, message : String) : void
+    METHOD sendNotifToOneStudent(sourceRole : Integer, studentId : Integer, message : String) : void
+    METHOD sendNotifToStudents(sourceRole : Integer, ids : List<Integer>, message : String) : void
+    METHOD confirm(noticeId : Integer, role : Integer) : void
+    METHOD allRead(role : Integer) : void
+    METHOD pageSelect(page : Integer, pageSize : Integer, role : Integer) : PageResult<NotificationVO>
+
+    __ private __
+    METHOD getPublisher(sourceRole : Integer) : Publisher
+}
+
+class StudentMapper
+class TeacherMapper
+class NoticeStudentMapper
+class NoticeReceiveStudentMapper
+class NoticeTeacherMapper
+class NoticeReceiveTeacherMapper
+
+
+class NotificationVO
+class BStudent
+class BTeacher
+class Publisher {
+    - name : String
+    - avatar : String
+}
+
+NotificationService --> StudentMapper
+NotificationService --> TeacherMapper
+NotificationService --> NoticeStudentMapper
+NotificationService --> NoticeReceiveStudentMapper
+NotificationService --> NoticeTeacherMapper
+NotificationService --> NoticeReceiveTeacherMapper
+@enduml
