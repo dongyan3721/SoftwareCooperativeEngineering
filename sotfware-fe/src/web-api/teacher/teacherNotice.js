@@ -1,6 +1,6 @@
 import request from "@/util/request.js";
 
-export function listAllTeacherNotice(params = {page: 1, pageSize: 10}) {
+export function listAllTeacherNotice(params = {page: 1, pageSize: 5}) {
     return request({
         url: '/teacher/notice',
         method: 'GET',

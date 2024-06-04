@@ -11,11 +11,16 @@ import {confirmNotice, listAllTeacherNotice, readAllNotices} from "@/web-api/tea
 const notices = ref([]);
 const currentPage = ref(1); // 当前页数
 const pageSize = 5; // 每页显示条数
+let total = 114514;
 
 onMounted(async () => {
   try {
-    const response = await listAllTeacherNotice();
+    const response = await listAllTeacherNotice({
+      page: currentPage.value,
+      pageSize: pageSize,
+    });
     notices.value = response.rows|| [];
+    total = response.total
   } catch (error) {
     ElMessage.error('获取失败')
     notices.value = [];
@@ -43,17 +48,35 @@ const readAllNotice = ()=>{
     ElMessage.error('全部已读失败');
   })
 }
-// 计算当前页应该显示的消息数据
-const paginatedNotices = computed(() => {
-  if (!notices.value) return []; // 如果 notices.value 是 undefined，返回空数组
-  const start = (currentPage.value - 1) * pageSize;
-  const end = start + pageSize;
-  return notices.value.slice(start, end);
-});
+
+// // 计算当前页应该显示的消息数据
+// const paginatedNotices = computed(() => {
+//   if (!notices.value) {
+//     console.log("notice is null")
+//     return [];
+//   } // 如果 notices.value 是 undefined，返回空数组
+//   const start = (currentPage.value - 1) * pageSize;
+//   const end = start + pageSize;
+//   return notices.value.slice(start, end);
+// });
 
 // 处理分页器页数变化的函数
 const handleCurrentChange = (page) => {
   currentPage.value = page;
+  console.log("renewed")
+  try {
+    const curPageNum = currentPage.value;
+    listAllTeacherNotice({
+      page: curPageNum,
+      pageSize: pageSize,
+    }).then(res => {
+      notices.value = res.rows|| [];
+      total = res.total
+    });
+  } catch (error) {
+    ElMessage.error('获取失败')
+    notices.value = [];
+  }
 };
 </script>
 
@@ -63,7 +86,7 @@ const handleCurrentChange = (page) => {
       <div class="notice-inner-container">
         <el-button type="primary" @click="readAllNotice" style="margin-top: 10px;margin-left: 10px">全部已读</el-button>
         <!-- 消息通知卡片 -->
-        <div v-for="(notice, index) in paginatedNotices" :key="index">
+        <div v-for="(notice, index) in notices.values()" :key="index">
           <el-card class="notice-card">
             <div slot="header" class="clearfix" style="margin-bottom: 5px">
               <el-avatar :size="24" :src="notice.noticePublisherAvatar" style="margin: 0 5px"/>
@@ -94,7 +117,7 @@ const handleCurrentChange = (page) => {
               @current-change="handleCurrentChange"
               :current-page="currentPage"
               :page-size="pageSize"
-              :total="notices.length"
+              :total="total"
               layout="prev, pager, next"
           />
         </div>
