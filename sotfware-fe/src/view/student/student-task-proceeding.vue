@@ -15,7 +15,7 @@ import {
   getClassTask,
   getGroupProcess,
   getGroupSubtasks, modifySubTaskDescription,
-  postManagerComment, studentMarkStudent, submitSubtask
+  postManagerComment, submitSubtask
 } from "@/web-api/student/studentProceeding.js";
 import {ElMessage, ElMessageBox, genFileId} from "element-plus";
 import upload from "@/web-api/upload.js";
@@ -60,7 +60,7 @@ const getProcess = () => {
 
 const handleGoToSubmitTask = ()=>{
   if(!currentUserBelongSubTask.value){
-    ElMessage.error('孩子你无敌了，你TM犯法了你知道吗？')
+    ElMessage.error('孩子你无敌了，你犯法了你知道吗？')
     return
   }
   if(!permitMemberSubmit.value){
