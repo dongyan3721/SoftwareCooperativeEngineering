@@ -34,7 +34,7 @@ export function getGroupSubtasks(groupId, taskId) {
 export function postManagerComment(performanceDTO) {
 	return request(({
 		url: "/student/task/performance",
-		method: "GET",
+		method: "POST",
 		data: performanceDTO
 	}))
 }
@@ -46,3 +46,15 @@ export function modifySubTaskDescription(subtask){
 		data: subtask
 	})
 }
+
+export function submitSubtask(subtask){
+	const _ = new FormData()
+	_.append('recordId', subtask.recordId)
+	_.append('submitLink', subtask.submitLink)
+	return request({
+		url: '/student/task',
+		method: 'POST',
+		data: _
+	})
+}
+

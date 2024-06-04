@@ -9,9 +9,17 @@
 </script>
 
 <template>
+  <div class="swiper-box">
+    <div class="swiper-content">
+      <slot></slot>
 
+    </div>
+  </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+
+
+
 
 </style>

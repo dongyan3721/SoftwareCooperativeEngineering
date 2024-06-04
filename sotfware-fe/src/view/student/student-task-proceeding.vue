@@ -15,9 +15,12 @@ import {
   getClassTask,
   getGroupProcess,
   getGroupSubtasks, modifySubTaskDescription,
-  postManagerComment
+  postManagerComment, studentMarkStudent, submitSubtask
 } from "@/web-api/student/studentProceeding.js";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox, genFileId} from "element-plus";
+import upload from "@/web-api/upload.js";
+import {generalValidatorJudgeIfEmpty} from "@/util/common.js";
+import {Edit} from "@element-plus/icons-vue";
 
 const currentUser = useUserStore()
 
@@ -41,7 +44,7 @@ const getClassTasks = () => {
     getSubtasks()
   })
 }
-
+const currentTaskId = ref()
 const getProcess = () => {
   let groupId = currentUser.studentGroup
   // console.log(groupId)
@@ -56,7 +59,7 @@ const getProcess = () => {
 }
 
 const handleGoToSubmitTask = ()=>{
-  if(!currentUserBelongSubTaskId.value){
+  if(!currentUserBelongSubTask.value){
     ElMessage.error('孩子你无敌了，你TM犯法了你知道吗？')
     return
   }
@@ -64,14 +67,34 @@ const handleGoToSubmitTask = ()=>{
     ElMessage.error('阶段负责人尚未将所有子任务分配完成，请等待分配完成后再试~')
     return
   }
-  ElMessage.success('11111')
+  if(isTaskDistributor.value && !permitStageManagerSubmit.value){
+    ElMessage.error('您还有组员未提交，您暂时不能提交最终版本！')
+    return;
+  }
+  if(isTaskDistributor.value && permitMemberSubmit.value){
+    ElMessageBox.confirm(
+        '请确认给组员评分后再行提交',
+        '提示',
+        {
+          confirmButtonText: '我已评完',
+          cancelButtonText: '先去评分',
+          type: 'warning',
+        }).then(()=>{
+      tempForm.link = null
+      fileList.value = []
+      visStudentSubmit.value = true
+    })
+    return;
+  }
+
+  // 打开提交框
+  // ElMessage.success('11111')
+  tempForm.link = null
+  fileList.value = []
+  visStudentSubmit.value = true
 }
 
 const rowRef = ref()
-
-const logRef = ()=>{
-  console.log(rowRef.value)
-}
 
 const customWidth = ref()
 
@@ -93,19 +116,32 @@ const getSubtasks = () => {
   let curTaskId = classTasks.value[process].taskId
   getGroupSubtasks(groupId, curTaskId).then(res => {
     subtasks.value = res.data
+    let cnt = 0
+    markList.value = []
     res.data.forEach(a=>{
       if(a.submitType) {
         taskDistributorId.value = a.taskHandler
         isTaskDistributor.value = taskDistributorId.value === currentUser.userId
       }
 
+      if(a.submitStatus===sys_task_submit_status.WAIT_FOR_TEACHER_MARK) ++cnt
+
       // 但凡有一个任务没分配，就不允许提交
       if(a.submitStatus===sys_task_submit_status.UNASSIGNED) permitMemberSubmit.value = false
 
       // 获取当前登录人对应的任务id
-      if(a.taskHandler==currentUser.userId) currentUserBelongSubTaskId.value = a.recordId
+      if(a.taskHandler==currentUser.userId) currentUserBelongSubTask.value = a
+      // 获取除了阶段负责人外的所有成员，评分用
+      if(!a.submitType){
+        markList.value.push({
+          groupId: currentUser.studentGroup,
+          targetStuId: a.taskHandler,
+          targetStuName: a.taskHandlerName,
+          taskId: curTaskId
+        })
+      }
     })
-
+    permitStageManagerSubmit.value = cnt === 4
   })
 }
 
@@ -115,7 +151,10 @@ const isTaskDistributor = ref(false)
 // 是否允许组员提交，默认允许
 const permitMemberSubmit = ref(true)
 // 当前登录人对应的子任务id
-const currentUserBelongSubTaskId = ref()
+const currentUserBelongSubTask = ref()
+// 记录当前是否允许阶段负责人提交
+const permitStageManagerSubmit = ref(false)
+const markList = ref([])
 
 const taskContent = reactive({taskContent: null})
 const visTaskContent = ref(false)
@@ -136,15 +175,7 @@ const submitSubTaskModify = ()=>{
 }
 
 const managerComment = () => {
-  // TODO 阶段负责人打分，弹出一个弹窗
-  // let dto = {
-  //   "targetStuId": ,
-  //   "groupId": currentUser.studentGroup,
-  //   "taskId": ,
-  //   "performance": ,
-  //   "comment": ,
-  // }
-  // postManagerComment()
+  visMarkGroupMates.value = true
 }
 
 onMounted(()=>{
@@ -171,9 +202,141 @@ const calcBtnText = (status)=>{
   else return '已交'
 }
 
+const visStudentSubmit = ref(false)
+const uploadRef = ref()
+const fileList = ref()
+const handleExceed = (files)=>{
+  uploadRef.value.clearFiles()
+  const file = files[0]
+  file.uid = genFileId()
+  uploadRef.value.handleStart(file)
+}
+const tempForm = reactive({
+  link: null
+})
+const handleManualUpload = (file)=>{
+  console.log(file)
+  upload(file.raw).then(res=>{
+    tempForm.link = res.msg
+  })
+  ElMessage.success("文件上传成功，请点击定按钮完成提交")
+}
+const doCertifySubmit = ()=>{
+  const subtask = {...currentUserBelongSubTask.value}
+  subtask.submitLink = tempForm.link
+  submitSubtask(subtask).then(res=>{
+    ElMessage.success('提交成功！')
+    visStudentSubmit.value = false
+    getSubtasks()
+  })
+}
+
+const visMarkGroupMates = ref(false)
+
+
+// const translate = ref()
+// const tsion = ref()
+// const prev = ()=>{
+//
+// }
+// const next = ()=>{
+//
+// }
+const tempMark = ref()
+const openMarkWindow = (row)=>{
+  tempMark.value = {...row}
+  visMark.value = true
+}
+const visMark = ref(false)
+const markForm = reactive({
+  performance: null,
+  comment: null
+})
+const markFormRef = ref()
+const resetMarkForm = ()=>{
+  if(!markFormRef.value) return
+  markFormRef.value.resetFields()
+}
+const doMark = ()=>{
+  const param = {...tempMark.value}
+  param.performance = markForm.performance
+  param.comment = markForm.comment
+  postManagerComment(param).then(res=>{
+    ElMessage.success('评分完成！')
+    visMark.value = false
+    resetMarkForm()
+  })
+}
 </script>
 
 <template>
+
+  <el-dialog v-model="visMark" title="评分与评价" width="400px">
+    <el-form :model="markForm" ref="markFormRef">
+      <el-form-item label="评分" prop="performance">
+        <el-input-number v-model="markForm.performance" :max="100" :min="0"/>
+      </el-form-item>
+      <el-form-item label="评价" prop="comment">
+        <el-input type="text" clearable v-model="markForm.comment"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="doMark">提交</el-button>
+        <el-button type="warning" @click="()=>{resetMarkForm(); visMark.value=false}">取消</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
+
+  <el-dialog v-model="visMarkGroupMates" title="阶段负责人评分" width="500px">
+<!--    <div class="swiper-box">-->
+<!--      <div class="swiper-content">-->
+<!--        <div class="swiper-show" :style="{'transform': 'translateX('+translate+')px', 'transition': tsion?'all 0.5s':'none'}">-->
+<!--          -->
+<!--        </div>-->
+<!--        -->
+<!--        <div class="arrow-box">-->
+<!--          <span @click="prev"></span>-->
+<!--          <span @click="next"></span>-->
+<!--        </div>-->
+<!--        -->
+<!--      </div>-->
+<!--    </div>-->
+    <el-table :data="markList">
+      <el-table-column label="组员学号" prop="targetStuId" align="center"/>
+      <el-table-column label="组员姓名" prop="targetStuName" align="center"/>
+      <el-table-column label="当前任务" prop="taskId" align="center" v-if="false"/>
+      <el-table-column label="当前小组" prop="groupId" align="center" v-if="false"/>
+      <el-table-column label="评分" align="center">
+        <template #default="scope">
+          <el-button text type="primary" @click="openMarkWindow(scope.row)">
+            <template #icon>
+              <el-icon><edit/></el-icon>
+            </template>
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+  </el-dialog>
+
+  <el-dialog v-model="visStudentSubmit" title="提交子任务" width="400px">
+    <el-upload v-model:file-list="fileList" ref="uploadRef" :limit="1"
+               :on-exceed="handleExceed" :before-remove="()=>false" @change="handleManualUpload"
+               :auto-upload="false">
+      <template #trigger>
+        <el-button type="primary">选择文件</el-button>
+      </template>
+      <template #tip>
+        <div class="el-upload__tip text-red-500">
+          限制上传5MB以内的文件
+        </div>
+      </template>
+    </el-upload>
+    <template #footer>
+      <div class="h-100 w-100 flex justify-end">
+        <el-button type="primary" @click="doCertifySubmit">提交</el-button>
+      </div>
+    </template>
+  </el-dialog>
 
   <el-dialog v-model="visTaskContent" title="分配子任务" width="400px">
     <el-form :model="taskContent">
