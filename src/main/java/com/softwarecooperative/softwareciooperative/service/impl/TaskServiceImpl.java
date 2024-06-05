@@ -58,6 +58,9 @@ public class TaskServiceImpl implements TaskService {
     private StudentPerformanceStudentMapper studentPerformanceStudentMapper;
 
     @Autowired
+    private StudentPerformanceTeacherMapper studentPerformanceTeacherMapper;
+
+    @Autowired
     private NotificationService notificationService;
 
     @Autowired
@@ -228,6 +231,13 @@ public class TaskServiceImpl implements TaskService {
                 .build();
         studentPerformanceStudentMapper.insert(markEntity);
 
+        // 修改对应分数状态
+        BStudentTaskSubmit newSubmit = BStudentTaskSubmit.builder()
+                .submitStatus(BStudentTaskSubmit.PASS.toString())
+                .recordId(submit.getRecordId())
+                .build();
+        studentTaskSubmitMapper.update(newSubmit);
+
         // 通知被打分组员
         notificationService.sendNotifToOneStudent(
                 BClass.SYSTEM,
@@ -240,6 +250,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
+    @CacheEvict(cacheNames = "groupProcess", key = "#mark.groupId")
     public void markPerformanceByTeacher(MarkPerformanceDTO mark) throws IOException {
         // 判断目标组员的任务是否已提交
         BStudentTaskSubmit query = BStudentTaskSubmit.builder()
@@ -258,7 +269,7 @@ public class TaskServiceImpl implements TaskService {
         BStudent targetStu = studentMapper.selectOne(BStudent.createIdQuery(mark.getTargetStuId()));
         Integer curTeacherId = Integer.parseInt(BaseContext.getCurrentId());
 
-        BStudentPerformanceStudent markEntity = BStudentPerformanceStudent.builder()
+        BStudentPerformanceTeacher markEntity = BStudentPerformanceTeacher.builder()
                 .performance(mark.getPerformance())
                 .comment(mark.getComment())
                 .performanceClass(targetStu.getStudentClass())
@@ -266,7 +277,14 @@ public class TaskServiceImpl implements TaskService {
                 .performanceMaker(curTeacherId)
                 .performanceStage(mark.getTaskId())
                 .build();
-        studentPerformanceStudentMapper.insert(markEntity);
+        studentPerformanceTeacherMapper.insert(markEntity);
+
+        // 修改对应分数状态
+        BStudentTaskSubmit newSubmit = BStudentTaskSubmit.builder()
+                .submitStatus(BStudentTaskSubmit.PASS.toString())
+                .recordId(submit.getRecordId())
+                .build();
+        studentTaskSubmitMapper.update(newSubmit);
 
         // 通知被所有组员
         List<Integer> stuIds = studentMapper.selectIdByCond(BStudent.builder().studentGroup(mark.getGroupId()).build());
