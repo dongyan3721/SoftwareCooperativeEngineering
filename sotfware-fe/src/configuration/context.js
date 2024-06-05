@@ -12,3 +12,5 @@ const BASE_API_CONFIG = {
 }
 
 export default BASE_API_CONFIG[NOW_ENVIRONMENT]
+
+export const wsBackendEndpoint = "localhost:8080"

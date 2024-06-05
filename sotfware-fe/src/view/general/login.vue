@@ -72,6 +72,8 @@ import {FingerprintThree} from "@icon-park/vue-next";
 import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
 import {studentLogin, teacherLogin} from "@/web-api/general/login.js";
+import {startTeacherNotifWebSocket} from "@/ws/teacher/teacherNotificationWs.js"
+
 const userStore = useUserStore()
 const {setGeneralLoginInfo, setStudentLoginSpeciality, setUserRole} = userStore
 
@@ -119,6 +121,7 @@ const submitForm = ()=>{
             // 设置前端存储信息
             setUserStore(res)
             setUserRole(form.role)
+            startTeacherNotifWebSocket(res.data.teacherId)
             ElMessage.success("登录成功！")
             router.push('/teacher-main')
           }else{

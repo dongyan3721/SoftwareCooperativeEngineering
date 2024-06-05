@@ -11,15 +11,22 @@ import {ArrowRight, Edit, ChatDotRound, Monitor, Setting, Operation, User, Messa
 const currentUrl = ref(route.path);
 import {useUserStore} from "@/store/index.js";
 import router from "@/router/index.js";
+import {closeTeacherNotifWebSocket, startTeacherNotifWebSocket} from "@/ws/teacher/teacherNotificationWs.js";
 const userStore = useUserStore()
 const {avatar, userName} = storeToRefs(userStore)
 const {clearLoginInFo} = userStore
+
+onMounted(() => {
+  // console.log(userStore.userId)
+  startTeacherNotifWebSocket(userStore.userId)
+})
 
 const gotoIndex = ()=>{
   router.push('/login')
 }
 
 const quitLogin = ()=>{
+  closeTeacherNotifWebSocket(userStore.userId)
   clearLoginInFo()
   gotoIndex()
 }

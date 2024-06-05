@@ -52,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @CacheEvict(cacheNames = "notificationCache",
-            key = "T(com.softwarecooperative.softwareciooperative.pojo.entity.BClass).TEACHER + '_' + T(com.softwarecooperative.softwareciooperative.framework.context.BaseContext).getCurrentId() + '*'")
+            key = "T(com.softwarecooperative.softwareciooperative.pojo.entity.BClass).TEACHER + '_' + #teacherId + '*'")
     public void sendNotifToOneTeacher(Integer sourceRole, Integer teacherId, String message) throws IOException {
         Publisher publisher = getPublisher(sourceRole);
         if (publisher == null)
@@ -81,7 +81,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @CacheEvict(cacheNames = "notificationCache",
-            key = "T(com.softwarecooperative.softwareciooperative.pojo.entity.BClass).STUDENT + '_' + T(com.softwarecooperative.softwareciooperative.framework.context.BaseContext).getCurrentId() + '*'")
+            key = "T(com.softwarecooperative.softwareciooperative.pojo.entity.BClass).STUDENT + '_' + #studentId + '*'")
     public void sendNotifToOneStudent(Integer sourceRole, Integer studentId, String message) throws IOException {
         Publisher publisher = getPublisher(sourceRole);
         if (publisher == null)

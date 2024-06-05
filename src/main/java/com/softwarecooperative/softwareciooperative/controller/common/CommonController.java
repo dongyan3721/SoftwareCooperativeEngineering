@@ -7,6 +7,7 @@ import com.softwarecooperative.softwareciooperative.pojo.entity.BClass;
 import com.softwarecooperative.softwareciooperative.pojo.entity.BDict;
 import com.softwarecooperative.softwareciooperative.service.ClassService;
 import com.softwarecooperative.softwareciooperative.service.CommonService;
+import com.softwarecooperative.softwareciooperative.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,9 @@ public class CommonController {
     @Autowired
     private ClassService classService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping("/dict/{dictName}")
     @Operation(summary = "获取字典键值对")
     @AccessWithoutVerification
@@ -57,5 +61,17 @@ public class CommonController {
     public AjaxResult getClassByClassId(@PathVariable Integer classId) {
         BClass res = classService.getClassByClassId(classId);
         return AjaxResult.success(res);
+    }
+
+    @PostMapping("/test/teacherNotification")
+    @Operation(summary = "发送一条测试消息")
+    @AccessWithoutVerification
+    public AjaxResult sendOneTeacherNotif(String message, Integer teacherId) throws IOException {
+        notificationService.sendNotifToOneTeacher(
+                BClass.SYSTEM,
+                teacherId,
+                message
+        );
+        return AjaxResult.success();
     }
 }
